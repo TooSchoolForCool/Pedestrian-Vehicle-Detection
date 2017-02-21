@@ -42,6 +42,10 @@ public:
 
 private:
 	cv::CascadeClassifier cascade_;
+	double scaler_;
+	int min_neighbors_;
+	int haar_flags_;
+	cv::Size window_size_;
 };
 
 
