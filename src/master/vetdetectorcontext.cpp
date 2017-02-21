@@ -58,13 +58,11 @@ VetDetectorContext::~VetDetectorContext()
     delete ptr_detector_strategy_;
 }
 
-vector<Rect> VetDetectorContext::detect(const Mat &frame)
+int VetDetectorContext::detect(const Mat &frame, vector<Rect> &rois)
 {
-	vector<Rect> ret;
+	ptr_detector_strategy_->detect(frame, rois);
 
-	ptr_detector_strategy_->detect(frame);
-
-	return ret;
+	return 0;
 }
 
 void foo()

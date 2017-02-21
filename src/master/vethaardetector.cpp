@@ -49,11 +49,9 @@ VetHaarDetector::~VetHaarDetector()
 	cout << "VetHaarDetector::~VetHaarDetector: delete cascade_" << endl;
 }
 
-vector<Rect> VetHaarDetector::detect(const Mat &frame)
+int VetHaarDetector::detect(const Mat &frame, vector<Rect> &rois)
 {
-	vector<Rect> rois;
-
 	cout << "VetHaarDetector::detect: detect" << endl;
 
-	return rois;
+	return 0;
 }

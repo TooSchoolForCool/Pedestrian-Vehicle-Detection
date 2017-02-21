@@ -51,7 +51,7 @@ public:
 	virtual ~VetDetectorStrategy();
 
 public:
-	virtual std::vector<cv::Rect> detect(const cv::Mat &frame) = 0;
+	virtual int detect(const cv::Mat &frame, std::vector<cv::Rect> &rois) = 0;
 };
 
 

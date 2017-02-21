@@ -13,8 +13,9 @@ int main()
 	VetDetectorContext car_detector(HAAR_FRONT_CAR_DETECTOR);
 
 	Mat frame;
+	vector<Rect> rois;
 
-	car_detector.detect(frame);
+	car_detector.detect(frame, rois);
 
 	return 0;
 }
