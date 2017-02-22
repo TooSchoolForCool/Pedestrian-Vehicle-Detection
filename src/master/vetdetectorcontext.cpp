@@ -44,6 +44,10 @@ VetDetectorContext::VetDetectorContext(int detector_id)
 			cout << "VetDetectorContext::VetDetectorContext: HAAR_FRONT_CAR_DETECTOR" << endl;
 			ptr_detector_strategy_ = new VetHaarDetector(HAAR_FRONT_CAR_DETECTOR);
 			break;
+		case HAAR_REAR_CAR_DETECTOR:
+			cout << "VetDetectorContext::VetDetectorContext: HAAR_REAR_CAR_DETECTOR" << endl;
+			ptr_detector_strategy_ = new VetHaarDetector(HAAR_REAR_CAR_DETECTOR);
+			break;
 		default:
 			cout << "no such option" << endl;
 			break;
@@ -58,14 +62,7 @@ VetDetectorContext::~VetDetectorContext()
     delete ptr_detector_strategy_;
 }
 
-int VetDetectorContext::detect(const Mat &frame, vector<Rect> &rois)
+void VetDetectorContext::detect(const Mat &frame, vector<Rect> &rois)
 {
 	ptr_detector_strategy_->detect(frame, rois);
-
-	return 0;
-}
-
-void foo()
-{
-	cout << "Hello world..." << endl;
 }
