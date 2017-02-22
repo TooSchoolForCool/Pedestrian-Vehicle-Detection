@@ -39,14 +39,24 @@
  */ 
 #define FRONT_REAR_CAR_HAAR_TESTER 0
 #define NMS_TESTER 1
+#define PLAY_VIDEO_TESTER 2
 
 /**
- * Tester File Path
+ * Tester Video File Path
  */
 #define TEST_VIDEO_PATH "../../video/HPIM0026.mov"
 
+/**
+ * Tester Picture File Path
+ */
+#define PIC_NMS_PATH "../../image-dataset/nms.jpg"
+
+/**
+ * Tester Functions
+ */
 void frontRearCarHaarTester();
 void NMSTester();
+void playVideoTester();
 
 class VetTester
 {

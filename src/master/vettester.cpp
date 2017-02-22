@@ -35,7 +35,8 @@ using namespace cv;
 
 static void (*ptr_test_process[])(void) 
 	= {frontRearCarHaarTester,
-	   NMSTester};
+	   NMSTester,
+	   playVideoTester};
 
 VetTester::VetTester(int tester_id)
 {
@@ -57,10 +58,52 @@ void VetTester::run()
 	ptr_test_process[tester_id_]();
 }
 
+void playVideoTester()
+{
+	VideoCapture videoStream(TEST_VIDEO_PATH);
+	Mat frame;
+
+	while(videoStream.read(frame)){
+		imshow("frame", frame);
+
+		char resp = waitKey(30);
+
+		if(resp == KEY_ESC){
+			cout << "window: frame closed" << endl;
+			break;
+		}
+		else if(resp == KEY_SPACE){
+			cout << "window: frame paused" << endl;
+			cout << "Press any key to continue..." << endl;
+			waitKey(-1);
+		}
+	}
+}
+
 void NMSTester()
 {
 	VetImageProcessor image_processor;
-	image_processor.NMS();	
+
+	Mat image = imread(PIC_NMS_PATH);
+	Mat originImg = image.clone();
+
+	vector<Rect> rois;
+
+	// Rect(x, y, width, height)
+	rois.push_back( Rect(84, 48, 212 - 84, 176 - 48) );
+	rois.push_back( Rect(12, 30, 76 - 12, 94 - 30) );
+	rois.push_back( Rect(72, 36, 200 - 72, 164 - 36) );
+	rois.push_back( Rect(12, 36, 76 - 12, 100 - 36) );
+
+	image_processor.drawRectangles(originImg, rois, COLOR_GREEN);
+	imshow("origin", originImg);
+
+	image_processor.NMS(rois, 0.3);
+	image_processor.drawRectangles(image, rois, COLOR_GREEN);
+	imshow("After NMS", image);
+
+	while(waitKey(30) != KEY_ESC)
+		continue;
 }
 
 void frontRearCarHaarTester()
@@ -81,9 +124,9 @@ void frontRearCarHaarTester()
 		rear_car_detector.detect(frame, temp_rois);
 		rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
 
-		image_processor.drawRectangles(frame, rois, COLOR_RED);
 		image_processor.NMS(rois, 0.3);
-		rois.clear();
+		image_processor.drawRectangles(frame, rois, COLOR_RED);
+		rois.clear();  
 
 		imshow("frame", frame);
 
