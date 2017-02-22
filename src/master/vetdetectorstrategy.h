@@ -34,6 +34,7 @@
  * \brief Define the identifier for each detector
  */
 #define HAAR_FRONT_CAR_DETECTOR 1
+#define HAAR_REAR_CAR_DETECTOR 2
 
 /*!
  * \brief Define the xml file path
@@ -51,7 +52,7 @@ public:
 	virtual ~VetDetectorStrategy();
 
 public:
-	virtual int detect(const cv::Mat &frame, std::vector<cv::Rect> &rois) = 0;
+	virtual void detect(const cv::Mat &frame, std::vector<cv::Rect> &rois) = 0;
 };
 
 

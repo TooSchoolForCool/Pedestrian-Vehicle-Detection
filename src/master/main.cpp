@@ -12,7 +12,7 @@ using namespace std;
 
 int main()
 {
-	VetTester tester(NMS_TESTER);
+	VetTester tester(PLAY_VIDEO_TESTER);
 	tester.run();
 	return 0;
 }
