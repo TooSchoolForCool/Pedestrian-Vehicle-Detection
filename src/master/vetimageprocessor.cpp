@@ -100,7 +100,8 @@ void VetImageProcessor::NMS(vector<Rect> &rois, double overlap_threshold)
 
 			// compute the ratio of overlap between the computed
 			// bounding box(cur_rect) and the bounding box(iter) in the rois
-			double overlap_rate = (float)(overlap_width * overlap_height) / cur_rect.area();
+			double overlap_area = (float)(overlap_width * overlap_height);
+			double overlap_rate = max(overlap_area / cur_rect.area(), overlap_area / iter->area());
 			
 			// if there is sufficient overlap, suppress the
 			// current bounding box(iter)
