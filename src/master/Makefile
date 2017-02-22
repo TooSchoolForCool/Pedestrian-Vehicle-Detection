@@ -11,7 +11,9 @@ LIBS = `pkg-config --libs opencv`
 SRCS = main.cpp \
 	   vetdetectorcontext.cpp \
 	   vetdetectorstrategy.cpp \
-	   vethaardetector.cpp
+	   vethaardetector.cpp \
+	   vetimageprocessor.cpp \
+	   vettester.cpp
 
 # object files
 OBJS = $(SRCS:.cpp=.o)
