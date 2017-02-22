@@ -38,7 +38,7 @@ public:
 	~VetHaarDetector();
 
 public:
-	int detect(const cv::Mat &frame, std::vector<cv::Rect> &rois);
+	void detect(const cv::Mat &frame, std::vector<cv::Rect> &rois);
 
 private:
 	cv::CascadeClassifier cascade_;

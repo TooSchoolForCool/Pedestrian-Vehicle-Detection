@@ -38,6 +38,10 @@ VetHaarDetector::VetHaarDetector(int detector_id)
 			cout << "VetHaarDetector::VetHaarDetector: load " << HAAR_CASCADE_FRONT_CAR_XML << endl;
 			cascade_.load(HAAR_CASCADE_FRONT_CAR_XML);
 			break;
+		case HAAR_REAR_CAR_DETECTOR:
+			cout << "VetHaarDetector::VetHaarDetector: load " << HAAR_CASCADE_REAR_CAR_XML << endl;
+			cascade_.load(HAAR_CASCADE_REAR_CAR_XML);
+			break;
 		default:
 			cout << "VetHaarDetector::VetHaarDetector: No such option" << endl;
 			break;
@@ -46,7 +50,7 @@ VetHaarDetector::VetHaarDetector(int detector_id)
 	this->scaler_ = 1.1;
 	this->min_neighbors_ = 3;
 	this->haar_flags_ = 0 | CASCADE_SCALE_IMAGE;
-	this->window_size_ = Size(30, 30);
+	this->window_size_ = Size(120, 120);
 
 	// cout << this->scaler_ << endl;
 	// cout << this->min_neighbors_ << endl;
@@ -59,7 +63,7 @@ VetHaarDetector::~VetHaarDetector()
 	cout << "VetHaarDetector::~VetHaarDetector: delete cascade_" << endl;
 }
 
-int VetHaarDetector::detect(const Mat &frame, vector<Rect> &rois)
+void VetHaarDetector::detect(const Mat &frame, vector<Rect> &rois)
 {
 	cout << "VetHaarDetector::detect: detect" << endl;
 
@@ -69,6 +73,4 @@ int VetHaarDetector::detect(const Mat &frame, vector<Rect> &rois)
 	// cout << this->window_size_ << endl;
 
 	cascade_.detectMultiScale(frame, rois, scaler_, min_neighbors_, haar_flags_, window_size_);
-
-	return 0;
 }
