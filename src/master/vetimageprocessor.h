@@ -33,6 +33,9 @@
 #define COLOR_GREEN	cv::Scalar(0, 255, 0)
 #define COLOR_RED 	cv::Scalar(0, 0, 255)
 
+#define KEY_ESC		27
+#define KEY_SPACE	32
+
 class VetImageProcessor
 {
 public:
