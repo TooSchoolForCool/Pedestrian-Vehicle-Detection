@@ -25,13 +25,13 @@
 #ifndef VETIMAGEPROCESSOR_H
 #define VETIMAGEPROCESSOR_H
 
-#include <opencv2/opencv.hpp>>
+#include <opencv2/opencv.hpp>
 
 #include <iostream>
 
-#define COLOR_BLUE 	cv::Scaler(255, 0, 0)
-#define COLOR_GREEN	cv::Scaler(0, 255, 0)
-#define COLOR_RED 	cv::Scaler(0, 0, 255)
+#define COLOR_BLUE 	cv::Scalar(255, 0, 0)
+#define COLOR_GREEN	cv::Scalar(0, 255, 0)
+#define COLOR_RED 	cv::Scalar(0, 0, 255)
 
 class VetImageProcessor
 {
@@ -40,8 +40,8 @@ public:
 	~VetImageProcessor();
 
 public:
-	void drawDetectedRegions(const cv::Mat &frame, const std::vector<cv::Rect> &rois,
-		const cv::Scaler &color);
+	void drawRectangles(cv::Mat &frame, const std::vector<cv::Rect> &rois,
+		const cv::Scalar &color);
 
 	void NMS(std::vector<cv::Rect> &rois, double overlap_threshold);
 
