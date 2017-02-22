@@ -30,7 +30,7 @@
 #include "vetimageprocessor.h"
 
 #include <opencv2/opencv.hpp>
-
+ 
 #include <iostream>
 #include <algorithm>
 
@@ -45,6 +45,7 @@
  * Tester Video File Path
  */
 #define TEST_VIDEO_PATH "../../video/HPIM0026.mov"
+#define TEST_TRIMED_VIDEO_PATH "../../video/HPIM0026_Trimed.mov"
 
 /**
  * Tester Picture File Path
@@ -54,9 +55,9 @@
 /**
  * Tester Functions
  */
-void frontRearCarHaarTester();
-void NMSTester();
-void playVideoTester();
+void frontRearCarHaarTester(std::string video_path);
+void NMSTester(std::string image_path);
+void playVideoTester(std::string video_path);
 
 class VetTester
 {
@@ -65,7 +66,7 @@ public:
 	~VetTester();
 
 public:
-	void run();
+	void run(std::string file_path);
 	void setTesterID(int tester_id);
 
 private:

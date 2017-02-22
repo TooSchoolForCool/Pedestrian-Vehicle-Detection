@@ -33,7 +33,7 @@
 using namespace std;
 using namespace cv;
 
-static void (*ptr_test_process[])(void) 
+static void (*ptr_test_process[])(string) 
 	= {frontRearCarHaarTester,
 	   NMSTester,
 	   playVideoTester};
@@ -53,14 +53,14 @@ void VetTester::setTesterID(int tester_id)
 	tester_id_ = tester_id;
 }
 
-void VetTester::run()
+void VetTester::run(string file_path)
 {
-	ptr_test_process[tester_id_]();
+	ptr_test_process[tester_id_](file_path);
 }
 
-void playVideoTester()
+void playVideoTester(string video_path)
 {
-	VideoCapture videoStream(TEST_VIDEO_PATH);
+	VideoCapture videoStream(video_path);
 	Mat frame;
 
 	while(videoStream.read(frame)){
@@ -80,11 +80,11 @@ void playVideoTester()
 	}
 }
 
-void NMSTester()
+void NMSTester(string image_path)
 {
 	VetImageProcessor image_processor;
 
-	Mat image = imread(PIC_NMS_PATH);
+	Mat image = imread(image_path);
 	Mat originImg = image.clone();
 
 	vector<Rect> rois;
@@ -106,9 +106,9 @@ void NMSTester()
 		continue;
 }
 
-void frontRearCarHaarTester()
+void frontRearCarHaarTester(string video_path)
 {
-	VideoCapture videoStream(TEST_VIDEO_PATH);
+	VideoCapture videoStream(video_path);
 	Mat frame;
 	vector<Rect> temp_rois, rois;
 
@@ -130,7 +130,7 @@ void frontRearCarHaarTester()
 
 		imshow("frame", frame);
 
-		char resp = waitKey(30);
+		char resp = waitKey(5 );
 
 		if(resp == KEY_ESC){
 			cout << "window: frame closed" << endl;
