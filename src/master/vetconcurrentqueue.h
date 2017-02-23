@@ -26,6 +26,8 @@
 #define VETCONCURRENTQUEUE_H 	// VETCONCURRENTQUEUE_H
 
 #include <pthread.h>
+#include <stdio.h>
+
 #include <iostream>
 #include <queue>
 
@@ -42,7 +44,9 @@ public:
     void pop();
     int size();
     Object& front();
+    void front(Object &obj);
     Object& back();
+    void back(Object &obj);
     void clear();
 
 private:
@@ -67,7 +71,15 @@ VetConcurrentQueue<Object>::~VetConcurrentQueue()
 template <typename Object>
 bool VetConcurrentQueue<Object>::empty()
 {
-    if(size_ == 0)
+    int cur_size;
+    
+    pthread_mutex_lock(&mutex_);
+
+    cur_size = size_;
+
+    pthread_mutex_unlock(&mutex_);
+
+    if(cur_size == 0)
         return true;
     else
         return false;
@@ -98,7 +110,15 @@ void VetConcurrentQueue<Object>::pop()
 template <typename Object>
 int VetConcurrentQueue<Object>::size()
 {
-    return size_;
+    int cur_size;
+
+    pthread_mutex_lock(&mutex_);
+
+    cur_size = size_;
+
+    pthread_mutex_unlock(&mutex_);
+
+    return cur_size;
 }
 
 template <typename Object>
@@ -113,6 +133,16 @@ Object& VetConcurrentQueue<Object>::front()
 }
 
 template <typename Object>
+void VetConcurrentQueue<Object>::front(Object &obj)
+{
+    pthread_mutex_lock(&mutex_);
+
+    obj = queue_.front();
+
+    pthread_mutex_unlock(&mutex_);
+}
+
+template <typename Object>
 Object& VetConcurrentQueue<Object>::back()
 {
     pthread_mutex_lock(&mutex_);
@@ -121,6 +151,16 @@ Object& VetConcurrentQueue<Object>::back()
 
     pthread_mutex_unlock(&mutex_);
     return obj;
+}
+
+template <typename Object>
+void VetConcurrentQueue<Object>::back(Object &obj)
+{
+    pthread_mutex_lock(&mutex_);
+
+    obj = queue_.back();
+
+    pthread_mutex_unlock(&mutex_);
 }
 
 template <typename Object>
