@@ -14,6 +14,8 @@ SRCS = main.cpp \
 	   vethaardetector.cpp \
 	   vetimageprocessor.cpp \
 	   vettester.cpp \
+	   vetfastvideocapture.cpp \
+	   vetconcurrentqueue.cpp
 
 # object files
 OBJS = $(SRCS:.cpp=.o)

@@ -37,10 +37,12 @@ using namespace std;
 using namespace cv;
 
 static void (*ptr_test_process[])(string) 
-	= {	carHaarTester,				// CAR_HAAR_TESTER
+	= {	
+		carHaarTester,						// CAR_HAAR_TESTER
 	   	NMSTester,							// NMS_TESTER
 	   	videoPlayerTester,					// VIDEO_PLAYER_TESTER
-	   	fastVideoPlayerTester };			// FAST_VIDEO_PLAYER_TESTER
+	   	fastVideoPlayerTester,				// FAST_VIDEO_PLAYER_TESTER
+	  };			
 
 static VetConcurrentQueue<int> q;
 
@@ -72,14 +74,14 @@ void fastVideoPlayerTester(string video_path)
 
 	fvs.start();
 
-	while( !fvs.stopped_ ){
+	while( !fvs.isStopped() ){
 		if(fvs.read(frame) == true)
 			imshow("frame", frame);
 
 		if(waitKey(30) == KEY_ESC)
 			break;
 	}
-	
+
 	fvs.stop();
 }
 
