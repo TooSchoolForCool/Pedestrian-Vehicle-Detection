@@ -30,13 +30,19 @@
 #include <iostream>
 #include <algorithm>
 
+#include <cstdio>
+#include <unistd.h>
+
 using namespace std;
 using namespace cv;
 
 static void (*ptr_test_process[])(string) 
-	= {frontRearCarHaarTester,
-	   NMSTester,
-	   playVideoTester};
+	= {	frontRearCarHaarTester,				// FRONT_REAR_CAR_HAAR_TESTER
+	   	NMSTester,							// NMS_TESTER
+	   	videoPlayerTester,					// VIDEO_PLAYER_TESTER
+	   	fasterVideoPlayerTester };			// FASTER_VIDEO_PLAYER_TESTER
+
+static VetConcurrentQueue<int> q;
 
 VetTester::VetTester(int tester_id)
 {
@@ -55,10 +61,86 @@ void VetTester::setTesterID(int tester_id)
 
 void VetTester::run(string file_path)
 {
+
 	ptr_test_process[tester_id_](file_path);
 }
 
-void playVideoTester(string video_path)
+void *thread1(void *ptr)
+{
+	int max_size = 10;
+	int cnt = 100;
+
+	// printf("start thread 1\n");
+	while(cnt){
+		if(q.size() != max_size){
+			q.push(cnt);
+			// printf("push:\t%5d, size:\t%d\n", cnt, q.size());
+			cnt--;
+		}
+		//usleep(10);
+	}
+	
+	return NULL;
+}
+
+void *thread2(void *ptr)
+{
+	int max_size = 10;
+	int cnt = 100;
+	int i;
+
+	// printf("start thread 2\n");
+
+	while(cnt){
+		if( !q.empty() ){
+			i = q.front();
+			q.pop();
+			// printf("pop:\t%5d, size:\t%d\n", i, q.size());
+			cnt--;
+			if(i == 0){
+				printf("ERROR~~~~~~~~~~~~~~~\n");
+				return NULL;
+			}
+		}
+		//usleep(10);
+	}
+	
+	return NULL;
+}
+
+void fasterVideoPlayerTester(string video_path)
+{
+	pthread_t id1, id2;
+	int ret;
+
+	// printf("create thread 1\n");
+	ret = pthread_create(&id1, NULL, &thread1, NULL);
+	// printf("create thread 1 is done\n");
+
+	if(ret != 0){
+		printf ("Create pthread error!\n");
+		return;
+	}
+
+	// printf("create thread 2\n");
+	ret = pthread_create(&id2, NULL, &thread2, NULL);
+	// printf("create thread 2 is done\n");
+
+	if(ret != 0){
+		printf ("Create pthread error!\n");
+		return;
+	}
+
+
+	pthread_join(id1, NULL);
+	// printf("join thread 1 is done\n");	
+
+	pthread_join(id2, NULL);
+	// printf("join thread 2 is done\n");
+	cout << "succeed" << endl;
+}
+
+void videoPlayerTester(string video_path)
 {
 	VideoCapture videoStream(video_path);
 	Mat frame;
@@ -130,7 +212,7 @@ void frontRearCarHaarTester(string video_path)
 
 		imshow("frame", frame);
 
-		char resp = waitKey(5 );
+		char resp = waitKey(5);
 
 		if(resp == KEY_ESC){
 			cout << "window: frame closed" << endl;

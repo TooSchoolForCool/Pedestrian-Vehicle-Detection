@@ -2,10 +2,10 @@
 COMPILER  = g++
 
 # compile arguments
-CFLAGS = `pkg-config --cflags opencv`
+CFLAGS = `pkg-config --cflags opencv` -Ipthread 
 
 # linking arguments
-LIBS = `pkg-config --libs opencv`
+LIBS = `pkg-config --libs opencv` -lpthread
 
 # source files
 SRCS = main.cpp \
@@ -13,7 +13,7 @@ SRCS = main.cpp \
 	   vetdetectorstrategy.cpp \
 	   vethaardetector.cpp \
 	   vetimageprocessor.cpp \
-	   vettester.cpp
+	   vettester.cpp \
 
 # object files
 OBJS = $(SRCS:.cpp=.o)

@@ -28,18 +28,22 @@
 #include "vetdetectorcontext.h"
 #include "vetdetectorstrategy.h"
 #include "vetimageprocessor.h"
+#include "vetconcurrentqueue.h"
 
 #include <opencv2/opencv.hpp>
  
 #include <iostream>
 #include <algorithm>
 
+#include <pthread.h>
+
 /**
  * Tester ID Number
  */ 
-#define FRONT_REAR_CAR_HAAR_TESTER 0
-#define NMS_TESTER 1
-#define PLAY_VIDEO_TESTER 2
+#define FRONT_REAR_CAR_HAAR_TESTER 	0
+#define NMS_TESTER 					1
+#define VIDEO_PLAYER_TESTER 		2
+#define FASTER_VIDEO_PLAYER_TESTER	3
 
 /**
  * Tester Video File Path
@@ -57,7 +61,8 @@
  */
 void frontRearCarHaarTester(std::string video_path);
 void NMSTester(std::string image_path);
-void playVideoTester(std::string video_path);
+void videoPlayerTester(std::string video_path);
+void fasterVideoPlayerTester(std::string video_path);
 
 class VetTester
 {
