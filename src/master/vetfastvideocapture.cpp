@@ -100,6 +100,12 @@ bool VetFastVideoCapture::read(Mat &frame)
 
 void VetFastVideoCapture::stop()
 {
+	stopped_ = true;
 	pthread_join(pid_, NULL);
 	cout << "Thread joined" << endl;
+}
+
+bool VetFastVideoCapture::isStopped()
+{
+	return stopped_;
 }

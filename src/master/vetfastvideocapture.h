@@ -32,26 +32,34 @@
 #include <iostream>
 
 #include <pthread.h>
+#include <stdio.h>
+
+void* update(void *ptr);
 
 class VetFastVideoCapture
 {
 public:
-	VetFastVideoCapture(std::string video_path, int queue_max_size);
+	VetFastVideoCapture(std::string video_path, int queue_max_size = 128);
 	~VetFastVideoCapture();
 
 public:
 	void start();
 	void stop();
-	bool read(Mat &frame);
+	bool isStopped();
+	bool read(cv::Mat &frame);
 
-private:
-	void update();
+	friend void* update(void *ptr);
 
 private:
 	int queue_max_size_;
 	bool stopped_;
+	std::string video_path_;
+
+	pthread_t pid_;
+
 	cv::VideoCapture video_stream_;
-	VetConcurrentQueue<Mat> queue_;
+	
+	VetConcurrentQueue<cv::Mat> queue_;
 };
 
 #endif	// VETFASTVIDEOCAPTURE_H
