@@ -37,6 +37,8 @@
 #include <algorithm>
 
 #include <pthread.h>
+#include <stdio.h>
+#include <unistd.h>
 
 /**
  * Tester ID Number
@@ -65,6 +67,7 @@ void carHaarTester(std::string video_path);
 void NMSTester(std::string image_path);
 void videoPlayerTester(std::string video_path);
 void fastVideoPlayerTester(std::string video_path);
+
 
 class VetTester
 {

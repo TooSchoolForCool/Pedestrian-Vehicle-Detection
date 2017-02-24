@@ -30,7 +30,7 @@
 #include <iostream>
 #include <algorithm>
 
-#include <cstdio>
+#include <stdio.h>
 #include <unistd.h>
 
 using namespace std;
@@ -69,33 +69,22 @@ void VetTester::run(string file_path)
 
 void fastVideoPlayerTester(string video_path)
 {
-	VetFastVideoCapture fvs(video_path);
+	VetFastVideoCapture fvs(video_path, 128);
 	Mat frame;
+
+	printf("FAST_VIDEO_PLAYER_TESTER starts.\n");
 
 	fvs.start();
 
-	while( !fvs.isStopped() ){
-		if(fvs.read(frame) == true)
+	while( fvs.more() ){
+		if( fvs.read(frame) ){
 			imshow("frame", frame);
-
-		if(waitKey(30) == KEY_ESC)
-			break;
-	}
-
-	fvs.stop();
-}
-
-void videoPlayerTester(string video_path)
-{
-	VideoCapture videoStream(video_path);
-	Mat frame;
-
-	while(videoStream.read(frame)){
-		imshow("frame", frame);
+		}
 
 		char resp = waitKey(30);
 
 		if(resp == KEY_ESC){
+			destroyWindow("frame");
 			cout << "window: frame closed" << endl;
 			break;
 		}
@@ -105,6 +94,37 @@ void videoPlayerTester(string video_path)
 			waitKey(-1);
 		}
 	}
+
+	fvs.stop();
+
+	printf("FAST_VIDEO_PLAYER_TESTER ends.\n");
+}
+
+void videoPlayerTester(string video_path)
+{
+	VideoCapture videoStream(video_path);
+	Mat frame;
+
+	printf("VIDEO_PLAYER_TESTER starts.\n");
+
+	while(videoStream.read(frame)){
+		imshow("frame", frame);
+
+		char resp = waitKey(30);
+
+		if(resp == KEY_ESC){
+			destroyWindow("frame");
+			cout << "window: frame closed" << endl;
+			break;
+		}
+		else if(resp == KEY_SPACE){
+			cout << "window: frame paused" << endl;
+			cout << "Press any key to continue..." << endl;
+			waitKey(-1);
+		}
+	}
+
+	printf("VIDEO_PLAYER_TESTER ends.\n");
 }
 
 void NMSTester(string image_path)
@@ -115,6 +135,8 @@ void NMSTester(string image_path)
 	Mat originImg = image.clone();
 
 	vector<Rect> rois;
+
+	printf("NMS_TESTER starts.\n");
 
 	// Rect(x, y, width, height)
 	rois.push_back( Rect(84, 48, 212 - 84, 176 - 48) );
@@ -131,6 +153,11 @@ void NMSTester(string image_path)
 
 	while(waitKey(30) != KEY_ESC)
 		continue;
+
+	destroyWindow("origin");
+	destroyWindow("After NMS");
+
+	printf("NMS_TESTER ends.\n");
 }
 
 void carHaarTester(string video_path)
@@ -143,6 +170,8 @@ void carHaarTester(string video_path)
 	VetDetectorContext rear_car_detector(HAAR_REAR_CAR_DETECTOR);
 
 	VetImageProcessor image_processor;
+
+	printf("CAR_HAAR_TESTER starts.\n");
 
 	while(videoStream.read(frame)){
 		front_car_detector.detect(frame, temp_rois);
@@ -161,6 +190,7 @@ void carHaarTester(string video_path)
 
 		if(resp == KEY_ESC){
 			cout << "window: frame closed" << endl;
+			destroyWindow("frame");
 			break;
 		}
 		else if(resp == KEY_SPACE){
@@ -170,5 +200,7 @@ void carHaarTester(string video_path)
 		}
 	}
 
-	videoStream.release();
+	printf("CAR_HAAR_TESTER ends.\n");
+
+	videoStream.release();	
 }

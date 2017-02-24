@@ -107,7 +107,7 @@ void VetFastVideoCapture::stop()
 	stopped_ = true;
 	pthread_join(pid_, NULL);
 	stopped_ = false;
-	// cout << "Thread joined" << endl;
+	cout << "Thread joined" << endl;
 }
 
 bool VetFastVideoCapture::more()

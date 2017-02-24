@@ -65,7 +65,7 @@ VetHaarDetector::~VetHaarDetector()
 
 void VetHaarDetector::detect(const Mat &frame, vector<Rect> &rois)
 {
-	cout << "VetHaarDetector::detect: detect" << endl;
+	// cout << "VetHaarDetector::detect: detect" << endl;
 
 	// cout << this->scaler_ << endl;
 	// cout << this->min_neighbors_ << endl;
