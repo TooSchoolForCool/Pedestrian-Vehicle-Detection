@@ -34,10 +34,12 @@ using namespace cv;
 
 bool compareCvRect(Rect &a, Rect &b)
 {
-	int a_y2 = a.br().y;
-	int b_y2 = b.br().y;
+	// int a_y2 = a.br().y;
+	// int b_y2 = b.br().y;
 
-	return a_y2 < b_y2;
+	// return a_y2 < b_y2;
+
+	return a.area() > b.area();
 }
 
 VetImageProcessor::VetImageProcessor()
