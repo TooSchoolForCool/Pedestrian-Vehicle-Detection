@@ -40,15 +40,17 @@ void* update(void *ptr)
 
 	while( !ptr_fvc->stopped_ ){
 		if(ptr_fvc->queue_.size() != ptr_fvc->queue_max_size_){
-			
 			ret = ptr_fvc->video_stream_.read(frame);
 
 			if(ret == 0){
+				// printf("update: stopped\n");
 				ptr_fvc->stopped_ = true;
 				return NULL;
 			}
 
-			ptr_fvc->queue_.push(frame);
+			// printf("update - Before push: queue size: %5d\n", ptr_fvc->queue_.size());
+			ptr_fvc->queue_.push(frame.clone());
+			// printf("update - Before push: queue size: %5d\n", ptr_fvc->queue_.size());
 		}
 	}
 	return NULL;
@@ -89,9 +91,11 @@ bool VetFastVideoCapture::read(Mat &frame)
 		queue_.front(frame);
 		// cout << "VetFastVideoCapture::read: read frame is done" << endl;
 
+		// printf("read - Before pop: queue size: %5d\n", queue_.size());
 		// cout << "VetFastVideoCapture::read: before pop queue" << endl;
 		queue_.pop();
 		// cout << "VetFastVideoCapture::read: pop queue is done" << endl;
+		// printf("read - After pop: queue size: %5d\n", queue_.size());
 		return true;
 	}
 
@@ -102,10 +106,11 @@ void VetFastVideoCapture::stop()
 {
 	stopped_ = true;
 	pthread_join(pid_, NULL);
-	cout << "Thread joined" << endl;
+	stopped_ = false;
+	// cout << "Thread joined" << endl;
 }
 
-bool VetFastVideoCapture::isStopped()
+bool VetFastVideoCapture::more()
 {
-	return stopped_;
+	return ( !stopped_ || !queue_.empty() );
 }

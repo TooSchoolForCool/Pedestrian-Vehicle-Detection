@@ -45,7 +45,7 @@ public:
 public:
 	void start();
 	void stop();
-	bool isStopped();
+	bool more();
 	bool read(cv::Mat &frame);
 
 	friend void* update(void *ptr);

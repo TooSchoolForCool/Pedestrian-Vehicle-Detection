@@ -62,7 +62,7 @@ void VetConcurrentQueue<Object>::push(const Object &obj)
     pthread_mutex_lock(&mutex_);
 
     queue_.push(obj);
-    size_ = queue_.size();
+    size_++;
 
     pthread_mutex_unlock(&mutex_);
 }
@@ -73,7 +73,7 @@ void VetConcurrentQueue<Object>::pop()
     pthread_mutex_lock(&mutex_);
 
     queue_.pop();
-    size_ = queue_.size();
+    size_--;
 
     pthread_mutex_unlock(&mutex_);
 }
