@@ -48,6 +48,10 @@ VetDetectorContext::VetDetectorContext(int detector_id)
 			cout << "VetDetectorContext::VetDetectorContext: HAAR_REAR_CAR_DETECTOR" << endl;
 			ptr_detector_strategy_ = new VetHaarDetector(HAAR_REAR_CAR_DETECTOR);
 			break;
+		case HAAR_FULLBODY_DETECTOR:
+			cout << "VetDetectorContext::VetDetectorContext: HAAR_FULLBODY_DETECTOR" << endl;
+			ptr_detector_strategy_ = new VetHaarDetector(HAAR_FULLBODY_DETECTOR);
+			break;
 		default:
 			cout << "no such option" << endl;
 			break;

@@ -33,14 +33,17 @@
 /*!
  * \brief Define the identifier for each detector
  */
-#define HAAR_FRONT_CAR_DETECTOR 1
-#define HAAR_REAR_CAR_DETECTOR 2
+#define HAAR_FRONT_CAR_DETECTOR	1
+#define HAAR_REAR_CAR_DETECTOR 	2
+#define HAAR_FULLBODY_DETECTOR 	3
 
 /*!
  * \brief Define the xml file path
  */
 #define HAAR_CASCADE_FRONT_CAR_XML "./haar-cascades/haar_cascade_front_car.xml"
 #define HAAR_CASCADE_REAR_CAR_XML "./haar-cascades/haar_cascade_rear_car.xml"
+#define HAAR_CASCADE_FULLBODY_XML "./haar-cascades/vision_art_lbp_human.xml"
+
 
 /*!
  * \brief The VetDetectorStrategy class

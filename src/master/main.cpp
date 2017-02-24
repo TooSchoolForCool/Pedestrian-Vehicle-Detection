@@ -37,7 +37,7 @@ using namespace std;
 
 int main()
 {	
-	VetTester tester(FAST_CAR_HAAR_TESTER);
+	VetTester tester(FAST_FULLBODY_HAAR_TESTER);
 	tester.run(TEST_TRIMED_VIDEO_PATH);
 	return 0;
 }

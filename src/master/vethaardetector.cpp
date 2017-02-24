@@ -37,20 +37,31 @@ VetHaarDetector::VetHaarDetector(int detector_id)
 		case HAAR_FRONT_CAR_DETECTOR:
 			cout << "VetHaarDetector::VetHaarDetector: load " << HAAR_CASCADE_FRONT_CAR_XML << endl;
 			cascade_.load(HAAR_CASCADE_FRONT_CAR_XML);
+			this->scaler_ = 1.1;
+			this->min_neighbors_ = 3;
+			this->haar_flags_ = 0 | CASCADE_SCALE_IMAGE;
+			this->window_size_ = Size(120, 120);
 			break;
 		case HAAR_REAR_CAR_DETECTOR:
 			cout << "VetHaarDetector::VetHaarDetector: load " << HAAR_CASCADE_REAR_CAR_XML << endl;
 			cascade_.load(HAAR_CASCADE_REAR_CAR_XML);
+			this->scaler_ = 1.1;
+			this->min_neighbors_ = 3;
+			this->haar_flags_ = 0 | CASCADE_SCALE_IMAGE;
+			this->window_size_ = Size(120, 120);
+			break;
+		case HAAR_FULLBODY_DETECTOR:
+			cout << "VetHaarDetector::VetHaarDetector: load " << HAAR_CASCADE_FULLBODY_XML << endl;
+			cascade_.load(HAAR_CASCADE_FULLBODY_XML);
+			this->scaler_ = 1.1;
+			this->min_neighbors_ = 3;
+			this->haar_flags_ = 0 | CASCADE_SCALE_IMAGE;
+			this->window_size_ = Size(52, 148);
 			break;
 		default:
 			cout << "VetHaarDetector::VetHaarDetector: No such option" << endl;
 			break;
 	}
-
-	this->scaler_ = 1.1;
-	this->min_neighbors_ = 3;
-	this->haar_flags_ = 0 | CASCADE_SCALE_IMAGE;
-	this->window_size_ = Size(120, 120);
 
 	// cout << this->scaler_ << endl;
 	// cout << this->min_neighbors_ << endl;
