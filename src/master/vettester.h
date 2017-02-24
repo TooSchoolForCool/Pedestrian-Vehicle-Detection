@@ -67,6 +67,7 @@ void carHaarTester(std::string video_path);
 void NMSTester(std::string image_path);
 void videoPlayerTester(std::string video_path);
 void fastVideoPlayerTester(std::string video_path);
+void fastCarHaarTester(std::string video_path);
 
 
 class VetTester

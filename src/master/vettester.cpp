@@ -42,6 +42,7 @@ static void (*ptr_test_process[])(string)
 	   	NMSTester,							// NMS_TESTER
 	   	videoPlayerTester,					// VIDEO_PLAYER_TESTER
 	   	fastVideoPlayerTester,				// FAST_VIDEO_PLAYER_TESTER
+	   	fastCarHaarTester					// FAST_CAR_HAAR_TESTER
 	  };			
 
 static VetConcurrentQueue<int> q;
@@ -203,4 +204,52 @@ void carHaarTester(string video_path)
 	printf("CAR_HAAR_TESTER ends.\n");
 
 	videoStream.release();	
+}
+
+void fastCarHaarTester(string video_path)
+{
+	VetFastVideoCapture fvs(video_path, 128);
+	Mat frame;
+	vector<Rect> temp_rois, rois;
+
+	VetDetectorContext front_car_detector(HAAR_FRONT_CAR_DETECTOR);
+	VetDetectorContext rear_car_detector(HAAR_REAR_CAR_DETECTOR);
+
+	VetImageProcessor image_processor;
+
+	printf("FAST_CAR_HAAR_TESTER starts.\n");
+
+	fvs.start();
+
+	while( fvs.more() ){
+		if ( fvs.read(frame) ){
+			front_car_detector.detect(frame, temp_rois);
+			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
+
+			rear_car_detector.detect(frame, temp_rois);
+			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
+
+			image_processor.NMS(rois, 0.3);
+			image_processor.drawRectangles(frame, rois, COLOR_RED);
+			rois.clear();  
+
+			imshow("frame", frame);
+		}
+
+		char resp = waitKey(5);
+
+		if(resp == KEY_ESC){
+			cout << "window: frame closed" << endl;
+			destroyWindow("frame");
+			break;
+		}
+		else if(resp == KEY_SPACE){
+			cout << "window: frame paused" << endl;
+			cout << "Press any key to continue..." << endl;
+			waitKey(-1);
+		}
+	}
+
+	fvs.stop();
+	printf("FAST_CAR_HAAR_TESTER ends.\n");
 }
