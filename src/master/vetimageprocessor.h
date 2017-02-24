@@ -44,7 +44,7 @@ public:
 
 public:
 	void drawRectangles(cv::Mat &frame, const std::vector<cv::Rect> &rois,
-		const cv::Scalar &color);
+		const cv::Scalar &color, std::string label="");
 
 	void NMS(std::vector<cv::Rect> &rois, double overlap_threshold);
 

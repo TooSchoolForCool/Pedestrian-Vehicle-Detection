@@ -53,7 +53,7 @@ VetImageProcessor::~VetImageProcessor()
 }
 
 void VetImageProcessor::drawRectangles(Mat &frame, const vector<Rect> &rois,
-	const Scalar &color)
+	const Scalar &color, string label)
 {
 	if( !rois.empty() ){
 		vector<Rect>::const_iterator roi = rois.begin();
@@ -61,6 +61,11 @@ void VetImageProcessor::drawRectangles(Mat &frame, const vector<Rect> &rois,
 
 		while(roi != end){
 			rectangle(frame, *roi, color, 2);
+
+			if(label != ""){
+				putText(frame, label, roi->tl(), FONT_HERSHEY_TRIPLEX , 1.3, color); 
+			}
+
 			roi++;
 		}
 	}

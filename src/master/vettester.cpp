@@ -183,7 +183,7 @@ void carHaarTester(string video_path)
 		rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
 
 		image_processor.NMS(rois, 0.3);
-		image_processor.drawRectangles(frame, rois, COLOR_RED);
+		image_processor.drawRectangles(frame, rois, COLOR_RED, "Car");
 		rois.clear();  
 
 		imshow("frame", frame);
@@ -231,7 +231,7 @@ void fastCarHaarTester(string video_path)
 			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
 
 			image_processor.NMS(rois, 0.3);
-			image_processor.drawRectangles(frame, rois, COLOR_RED);
+			image_processor.drawRectangles(frame, rois, COLOR_RED, "Car");
 			rois.clear();  
 
 			imshow("frame", frame);
@@ -274,7 +274,7 @@ void fastFullbodyHaarTester(string video_path)
 			human_detector.detect(frame, rois);
 
 			image_processor.NMS(rois, 0.3);
-			image_processor.drawRectangles(frame, rois, COLOR_RED);
+			image_processor.drawRectangles(frame, rois, COLOR_RED, "People");
 			rois.clear();  
 
 			imshow("frame", frame);
