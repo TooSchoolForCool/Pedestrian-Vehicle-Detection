@@ -42,18 +42,15 @@ VetConcurrentQueue<Object>::~VetConcurrentQueue()
 template <typename Object>
 bool VetConcurrentQueue<Object>::empty()
 {
-    int cur_size;
+    bool ret;
     
     pthread_mutex_lock(&mutex_);
 
-    cur_size = size_;
+    ret = (size_ == 0 ? true : false);
 
     pthread_mutex_unlock(&mutex_);
 
-    if(cur_size == 0)
-        return true;
-    else
-        return false;
+    return ret;
 }
 
 template <typename Object>
