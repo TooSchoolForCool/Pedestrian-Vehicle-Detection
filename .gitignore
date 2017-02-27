@@ -1,19 +1,17 @@
 # Some Private Document Folders
 doc/
 src/vetmaincontroltest-12-23/
-src/haar-demo/
+src/test/
 
 # Some huge media files
-video/1.mp4
-video/HPIM0026.mov
-video/*.mov
+data/video/
 
 # Ubuntu Trash folder
 .Trash-1000/
 
 # Some Private pre-trained classifier xml files.
-src/master/haar-cascades/*.xml
-src/master/lbp-boost/*.xml
+data/haar-cascades/
+*.xml
 
 # Compiled Object files
 *.slo

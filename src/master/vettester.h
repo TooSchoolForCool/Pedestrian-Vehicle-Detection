@@ -59,7 +59,7 @@
 /**
  * Tester Picture File Path
  */
-#define PIC_NMS_PATH "../../image-dataset/nms.jpg"
+#define PIC_NMS_PATH "../../images/nms.jpg"
 
 /**
  * Tester Functions
