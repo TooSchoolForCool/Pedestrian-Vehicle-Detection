@@ -27,6 +27,8 @@
 
 #include "vetdetectorcontext.h"
 #include "vetdetectorstrategy.h"
+#include "vethaardetector.h"
+#include "vetcolordetector.h"
 #include "vetimagetoolkit.h"
 #include "vetconcurrentqueue.h"
 #include "vetfastvideocapture.h"
@@ -49,6 +51,7 @@
 #define FAST_VIDEO_PLAYER_TESTER	3
 #define FAST_CAR_HAAR_TESTER		4
 #define FAST_FULLBODY_HAAR_TESTER	5
+#define RED_DETECTOR_TESTER			6
 
 /**
  * Tester Video File Path
@@ -70,6 +73,7 @@ void videoPlayerTester(std::string video_path);
 void fastVideoPlayerTester(std::string video_path);
 void fastCarHaarTester(std::string video_path);
 void fastFullbodyHaarTester(std::string video_path);
+void redDetectorTester(std::string video_path);
 
 
 class VetTester

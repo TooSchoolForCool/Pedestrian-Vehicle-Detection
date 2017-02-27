@@ -28,6 +28,7 @@
 
 #include "vetdetectorstrategy.h"
 #include "vethaardetector.h"
+#include "vetcolordetector.h"
 
 #include <opencv2/opencv.hpp>
 

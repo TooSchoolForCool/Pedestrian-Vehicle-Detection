@@ -34,6 +34,7 @@
  * \brief Define the identifier for each detector
  */
 #define HAAR_DETECTOR	0
+#define COLOR_DETECTOR	1
 
 /*!
  * \brief Define the identifier for each detector-specification
@@ -41,6 +42,9 @@
 #define FRONT_CAR 		0
 #define REAR_CAR 		1
 #define FULLBODY		2
+#define GREEN_REGION	3
+#define RED_REGION		4
+#define BLUE_REGION		5
 
 /*!
  * \brief Define the xml file path

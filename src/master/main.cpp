@@ -22,10 +22,6 @@
 * \date 2016-02-22
 */
 
-#include "vetdetectorcontext.h"
-#include "vetdetectorstrategy.h"
-#include "vetimagetoolkit.h"
-#include "vetconcurrentqueue.h"
 #include "vettester.h"
 
 #include <opencv2/opencv.hpp>
@@ -37,7 +33,7 @@ using namespace std;
 
 int main()
 {	
-	VetTester tester(FAST_CAR_HAAR_TESTER);
+	VetTester tester(RED_DETECTOR_TESTER);
 	tester.run(TEST_TRIMED_VIDEO_PATH);
 	return 0;
 }

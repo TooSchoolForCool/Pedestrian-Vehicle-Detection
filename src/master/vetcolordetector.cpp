@@ -16,30 +16,51 @@
 
 
 /*!
-* \file vetimagetoolkit.h
+* \file vetcolordetector.h
 * \author [Zeyu Zhang]
 * \version [0.1]
 * \date 2016-02-22
 */
 
-#ifndef VETIMAGEPROCESSOR_H
-#define VETIMAGEPROCESSOR_H
+#include "vetcolordetector.h"
+#include "vetdetectorstrategy.h"
 
 #include <opencv2/opencv.hpp>
 
 #include <iostream>
 
-#define COLOR_BLUE 	cv::Scalar(255, 0, 0)
-#define COLOR_GREEN	cv::Scalar(0, 255, 0)
-#define COLOR_RED 	cv::Scalar(0, 0, 255)
+using namespace std;
+using namespace cv;
 
-#define KEY_ESC		27
-#define KEY_SPACE	32
+VetColorDetector::VetColorDetector(int specification_id)
+{
+	switch(specification_id){
+		case RED_REGION:
+			sensitivity_ = 15;
+			lower_bound_ = Scalar(0 - sensitivity_, 100, 100);
+			upper_bound_ = Scalar(0 + sensitivity_, 255, 255);
+			break;
+		default:
+			cout << "No such option..." << endl;
+			break;
+	}
+}
 
+VetColorDetector::~VetColorDetector()
+{
+	// ...
+}
 
-void drawRectangles(cv::Mat &frame, const std::vector<cv::Rect> &rois,
-	const cv::Scalar &color, std::string label="");
+void VetColorDetector::detect(const Mat &frame, vector<Rect> &rois)
+{
+	Mat hsvFrame;
 
-void NMS(std::vector<cv::Rect> &rois, double overlap_threshold);
+	cvtColor(frame, hsvFrame, COLOR_BGR2HSV);
 
-#endif
+	imshow("HSV Channel", hsvFrame);
+	
+	while(waitKey(30) != 27)
+		continue;
+
+	destroyWindow("HSV Channel");
+}

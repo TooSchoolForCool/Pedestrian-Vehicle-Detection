@@ -16,7 +16,7 @@
 
 
 /*!
-* \file vetimageprocessor.h
+* \file vetimagetoolkit.h
 * \author [Zeyu Zhang]
 * \version [0.1]
 * \date 2016-02-22

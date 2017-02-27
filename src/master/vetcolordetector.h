@@ -16,30 +16,34 @@
 
 
 /*!
-* \file vetimagetoolkit.h
+* \file vetcolordetector.h
 * \author [Zeyu Zhang]
 * \version [0.1]
 * \date 2016-02-22
 */
 
-#ifndef VETIMAGEPROCESSOR_H
-#define VETIMAGEPROCESSOR_H
+#ifndef VETCOLORDETECTOR_H
+#define VETCOLORDETECTOR_H
+
+#include "vetdetectorstrategy.h"
 
 #include <opencv2/opencv.hpp>
 
 #include <iostream>
 
-#define COLOR_BLUE 	cv::Scalar(255, 0, 0)
-#define COLOR_GREEN	cv::Scalar(0, 255, 0)
-#define COLOR_RED 	cv::Scalar(0, 0, 255)
+class VetColorDetector: public VetDetectorStrategy
+{
+public:
+	VetColorDetector(int specification_id);
+	~VetColorDetector();
 
-#define KEY_ESC		27
-#define KEY_SPACE	32
+public:
+	void detect(const cv::Mat &frame, std::vector<cv::Rect> &rois);
 
-
-void drawRectangles(cv::Mat &frame, const std::vector<cv::Rect> &rois,
-	const cv::Scalar &color, std::string label="");
-
-void NMS(std::vector<cv::Rect> &rois, double overlap_threshold);
+private:
+	cv::Scalar lower_bound_;
+	cv::Scalar upper_bound_;
+	int sensitivity_;
+};
 
 #endif

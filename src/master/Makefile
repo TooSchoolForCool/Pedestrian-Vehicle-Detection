@@ -12,6 +12,7 @@ SRCS = main.cpp \
 	   vetdetectorcontext.cpp \
 	   vetdetectorstrategy.cpp \
 	   vethaardetector.cpp \
+	   vetcolordetector.cpp \
 	   vetimagetoolkit.cpp \
 	   vettester.cpp \
 	   vetfastvideocapture.cpp \

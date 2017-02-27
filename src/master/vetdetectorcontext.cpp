@@ -25,6 +25,7 @@
 #include "vetdetectorcontext.h"
 #include "vetdetectorstrategy.h"
 #include "vethaardetector.h"
+#include "vetcolordetector.h"
 
 #include <opencv2/opencv.hpp>
 
@@ -43,6 +44,10 @@ VetDetectorContext::VetDetectorContext(int detector_id, int specification_id)
 		case HAAR_DETECTOR:
 			cout << "VetDetectorContext::VetDetectorContext: HAAR_DETECTOR" << endl;
 			ptr_detector_strategy_ = new VetHaarDetector(specification_id);
+			break;
+		case COLOR_DETECTOR:
+			cout << "VetDetectorContext::VetDetectorContext: COLOR_DETECTOR" << endl;
+			ptr_detector_strategy_ = new VetColorDetector(specification_id);
 			break;
 		default:
 			cout << "no such option" << endl;
