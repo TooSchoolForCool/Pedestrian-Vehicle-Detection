@@ -305,27 +305,29 @@ void redDetectorTester(string video_path)
 
 	while( fvs.more() ){
 		if ( fvs.read(frame) ){
+			// Mat hsvImage;
 			color_detector.detect(frame, rois);
 
 			// NMS(rois, 0.3);
-			// drawRectangles(frame, rois, COLOR_RED, "People");
-			// rois.clear();  
+			drawRectangles(frame, rois, COLOR_RED, "Red");
+			rois.clear();  
 
-			// imshow("frame", frame);
+			imshow("frame", frame);
 		}
 
-		// char resp = waitKey(5);
+		char resp = waitKey(5);
 
-		// if(resp == KEY_ESC){
-		// 	cout << "window: frame closed" << endl;
-		// 	destroyWindow("frame");
-		// 	break;
-		// }
-		// else if(resp == KEY_SPACE){
-		// 	cout << "window: frame paused" << endl;
-		// 	cout << "Press any key to continue..." << endl;
-		// 	waitKey(-1);
-		// }
+		if(resp == KEY_ESC){
+			cout << "window: frame closed" << endl;
+			destroyWindow("frame");
+			destroyWindow("hsvImage");
+			break;
+		}
+		else if(resp == KEY_SPACE){
+			cout << "window: frame paused" << endl;
+			cout << "Press any key to continue..." << endl;
+			waitKey(-1);
+		}
 	}
 
 	fvs.stop();

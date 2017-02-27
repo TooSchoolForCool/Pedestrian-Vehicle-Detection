@@ -36,8 +36,9 @@ VetColorDetector::VetColorDetector(int specification_id)
 {
 	switch(specification_id){
 		case RED_REGION:
+			cout << "VetColorDetector::VetColorDetector: RED_REGION" << endl;
 			sensitivity_ = 15;
-			lower_bound_ = Scalar(0 - sensitivity_, 100, 100);
+			lower_bound_ = Scalar(0 - sensitivity_, 100, 50);
 			upper_bound_ = Scalar(0 + sensitivity_, 255, 255);
 			break;
 		default:
@@ -54,13 +55,25 @@ VetColorDetector::~VetColorDetector()
 void VetColorDetector::detect(const Mat &frame, vector<Rect> &rois)
 {
 	Mat hsvFrame;
+	vector<vector<Point> > contours;
+	vector<Vec4i> hierarchy;
+
+	rois.clear();
 
 	cvtColor(frame, hsvFrame, COLOR_BGR2HSV);
+	inRange(hsvFrame, lower_bound_, upper_bound_, hsvFrame);
 
-	imshow("HSV Channel", hsvFrame);
-	
-	while(waitKey(30) != 27)
-		continue;
+	Mat element = getStructuringElement(MORPH_RECT, Size(20, 20));
 
-	destroyWindow("HSV Channel");
+	dilate(hsvFrame, hsvFrame, element);
+	// dilate(hsvFrame, hsvFrame, element);
+	GaussianBlur(hsvFrame, hsvFrame, Size(5, 5), 0, 0);
+
+	findContours(hsvFrame, contours, hierarchy, RETR_CCOMP, CHAIN_APPROX_SIMPLE);
+
+	for(vector<vector<Point> >::iterator iter = contours.begin(); 
+		iter != contours.end(); iter++){
+		// rois.push_back(minAreaRect(*iter));
+		rois.push_back(boundingRect(*iter));
+	}
 }

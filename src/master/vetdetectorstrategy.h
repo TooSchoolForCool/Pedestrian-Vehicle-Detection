@@ -42,9 +42,8 @@
 #define FRONT_CAR 		0
 #define REAR_CAR 		1
 #define FULLBODY		2
-#define GREEN_REGION	3
-#define RED_REGION		4
-#define BLUE_REGION		5
+#define RED_REGION		3
+
 
 /*!
  * \brief Define the xml file path
