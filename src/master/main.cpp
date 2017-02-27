@@ -24,7 +24,7 @@
 
 #include "vetdetectorcontext.h"
 #include "vetdetectorstrategy.h"
-#include "vetimageprocessor.h"
+#include "vetimagetoolkit.h"
 #include "vetconcurrentqueue.h"
 #include "vettester.h"
 

@@ -27,7 +27,7 @@
 
 #include "vetdetectorcontext.h"
 #include "vetdetectorstrategy.h"
-#include "vetimageprocessor.h"
+#include "vetimagetoolkit.h"
 #include "vetconcurrentqueue.h"
 #include "vetfastvideocapture.h"
 
@@ -53,13 +53,13 @@
 /**
  * Tester Video File Path
  */
-#define TEST_VIDEO_PATH "../../video/HPIM0026.mov"
-#define TEST_TRIMED_VIDEO_PATH "../../video/HPIM0026_Trimed.mov"
+#define TEST_VIDEO_PATH "../../data/video/HPIM0026.mov"
+#define TEST_TRIMED_VIDEO_PATH "../../data/video/HPIM0026_Trimed.mov"
 
 /**
  * Tester Picture File Path
  */
-#define PIC_NMS_PATH "../../images/nms.jpg"
+#define PIC_NMS_PATH "../../data/images/nms.jpg"
 
 /**
  * Tester Functions

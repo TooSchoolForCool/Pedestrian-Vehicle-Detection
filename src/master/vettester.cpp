@@ -131,8 +131,6 @@ void videoPlayerTester(string video_path)
 
 void NMSTester(string image_path)
 {
-	VetImageProcessor image_processor;
-
 	Mat image = imread(image_path);
 	Mat originImg = image.clone();
 
@@ -146,11 +144,11 @@ void NMSTester(string image_path)
 	rois.push_back( Rect(72, 36, 200 - 72, 164 - 36) );
 	rois.push_back( Rect(12, 36, 76 - 12, 100 - 36) );
 
-	image_processor.drawRectangles(originImg, rois, COLOR_GREEN);
+	drawRectangles(originImg, rois, COLOR_GREEN);
 	imshow("origin", originImg);
 
-	image_processor.NMS(rois, 0.3);
-	image_processor.drawRectangles(image, rois, COLOR_GREEN);
+	NMS(rois, 0.3);
+	drawRectangles(image, rois, COLOR_GREEN);
 	imshow("After NMS", image);
 
 	while(waitKey(30) != KEY_ESC)
@@ -171,8 +169,6 @@ void carHaarTester(string video_path)
 	VetDetectorContext front_car_detector(HAAR_DETECTOR, FRONT_CAR);
 	VetDetectorContext rear_car_detector(HAAR_DETECTOR, REAR_CAR);
 
-	VetImageProcessor image_processor;
-
 	printf("CAR_HAAR_TESTER starts.\n");
 
 	while(videoStream.read(frame)){
@@ -182,8 +178,8 @@ void carHaarTester(string video_path)
 		rear_car_detector.detect(frame, temp_rois);
 		rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
 
-		image_processor.NMS(rois, 0.3);
-		image_processor.drawRectangles(frame, rois, COLOR_RED, "Car");
+		NMS(rois, 0.3);
+		drawRectangles(frame, rois, COLOR_RED, "Car");
 		rois.clear();  
 
 		imshow("frame", frame);
@@ -216,8 +212,6 @@ void fastCarHaarTester(string video_path)
 	VetDetectorContext front_car_detector(HAAR_DETECTOR, FRONT_CAR);
 	VetDetectorContext rear_car_detector(HAAR_DETECTOR, REAR_CAR);
 
-	VetImageProcessor image_processor;
-
 	printf("FAST_CAR_HAAR_TESTER starts.\n");
 
 	fvs.start();
@@ -230,8 +224,8 @@ void fastCarHaarTester(string video_path)
 			rear_car_detector.detect(frame, temp_rois);
 			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
 
-			image_processor.NMS(rois, 0.3);
-			image_processor.drawRectangles(frame, rois, COLOR_RED, "Car");
+			NMS(rois, 0.3);
+			drawRectangles(frame, rois, COLOR_RED, "Car");
 			rois.clear();  
 
 			imshow("frame", frame);
@@ -263,8 +257,6 @@ void fastFullbodyHaarTester(string video_path)
 
 	VetDetectorContext human_detector(HAAR_DETECTOR, FULLBODY);
 
-	VetImageProcessor image_processor;
-
 	printf("FAST_FULLBODY_HAAR_TESTER starts.\n");
 
 	fvs.start();
@@ -273,8 +265,8 @@ void fastFullbodyHaarTester(string video_path)
 		if ( fvs.read(frame) ){
 			human_detector.detect(frame, rois);
 
-			image_processor.NMS(rois, 0.3);
-			image_processor.drawRectangles(frame, rois, COLOR_RED, "People");
+			NMS(rois, 0.3);
+			drawRectangles(frame, rois, COLOR_RED, "People");
 			rois.clear();  
 
 			imshow("frame", frame);

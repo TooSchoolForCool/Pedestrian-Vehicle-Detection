@@ -22,7 +22,7 @@
 * \date 2016-02-22
 */
 
-#include "vetimageprocessor.h"
+#include "vetimagetoolkit.h"
 
 #include <opencv2/opencv.hpp>
 
@@ -42,17 +42,8 @@ bool compareCvRect(Rect &a, Rect &b)
 	return a.area() > b.area();
 }
 
-VetImageProcessor::VetImageProcessor()
-{
-	// ...
-}
 
-VetImageProcessor::~VetImageProcessor()
-{
-	// ...
-}
-
-void VetImageProcessor::drawRectangles(Mat &frame, const vector<Rect> &rois,
+void drawRectangles(Mat &frame, const vector<Rect> &rois,
 	const Scalar &color, string label)
 {
 	if( !rois.empty() ){
@@ -71,7 +62,7 @@ void VetImageProcessor::drawRectangles(Mat &frame, const vector<Rect> &rois,
 	}
 }
 
-void VetImageProcessor::NMS(vector<Rect> &rois, double overlap_threshold)
+void NMS(vector<Rect> &rois, double overlap_threshold)
 {
 	if( rois.empty() )
 		return;

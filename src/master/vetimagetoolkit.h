@@ -36,20 +36,10 @@
 #define KEY_ESC		27
 #define KEY_SPACE	32
 
-class VetImageProcessor
-{
-public:
-	VetImageProcessor();
-	~VetImageProcessor();
 
-public:
-	void drawRectangles(cv::Mat &frame, const std::vector<cv::Rect> &rois,
-		const cv::Scalar &color, std::string label="");
+void drawRectangles(cv::Mat &frame, const std::vector<cv::Rect> &rois,
+	const cv::Scalar &color, std::string label="");
 
-	void NMS(std::vector<cv::Rect> &rois, double overlap_threshold);
-
-private:
-
-};
+void NMS(std::vector<cv::Rect> &rois, double overlap_threshold);
 
 #endif
