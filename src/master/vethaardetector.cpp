@@ -31,27 +31,27 @@
 using namespace std;
 using namespace cv;
 
-VetHaarDetector::VetHaarDetector(int detector_id)
+VetHaarDetector::VetHaarDetector(int specification_id)
 {
-	switch(detector_id){
-		case HAAR_FRONT_CAR_DETECTOR:
-			cout << "VetHaarDetector::VetHaarDetector: load " << HAAR_CASCADE_FRONT_CAR_XML << endl;
+	switch(specification_id){
+		case FRONT_CAR:
+			cout << "VetHaarDetector::VetHaarDetector: load FRONT_CAR xml file" << HAAR_CASCADE_FRONT_CAR_XML << endl;
 			cascade_.load(HAAR_CASCADE_FRONT_CAR_XML);
 			this->scaler_ = 1.1;
 			this->min_neighbors_ = 3;
 			this->haar_flags_ = 0 | CASCADE_SCALE_IMAGE;
 			this->window_size_ = Size(120, 120);
 			break;
-		case HAAR_REAR_CAR_DETECTOR:
-			cout << "VetHaarDetector::VetHaarDetector: load " << HAAR_CASCADE_REAR_CAR_XML << endl;
+		case REAR_CAR:
+			cout << "VetHaarDetector::VetHaarDetector: load REAR_CAR xml file" << HAAR_CASCADE_REAR_CAR_XML << endl;
 			cascade_.load(HAAR_CASCADE_REAR_CAR_XML);
 			this->scaler_ = 1.1;
 			this->min_neighbors_ = 3;
 			this->haar_flags_ = 0 | CASCADE_SCALE_IMAGE;
 			this->window_size_ = Size(120, 120);
 			break;
-		case HAAR_FULLBODY_DETECTOR:
-			cout << "VetHaarDetector::VetHaarDetector: load " << HAAR_CASCADE_FULLBODY_XML << endl;
+		case FULLBODY:
+			cout << "VetHaarDetector::VetHaarDetector: load FULLBODY xml file" << HAAR_CASCADE_FULLBODY_XML << endl;
 			cascade_.load(HAAR_CASCADE_FULLBODY_XML);
 			this->scaler_ = 1.1;
 			this->min_neighbors_ = 3;

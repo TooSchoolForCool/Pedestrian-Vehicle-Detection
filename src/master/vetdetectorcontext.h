@@ -39,7 +39,7 @@
 class VetDetectorContext
 {
 public:
-	VetDetectorContext(int strategy_id);
+	VetDetectorContext(int detector_id, int specification_id);
 	~VetDetectorContext();
 
 public:

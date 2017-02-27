@@ -37,20 +37,12 @@ using namespace cv;
  * \brief VetDetectorContext::VetDetectorContext 构造函数
  * \param detector_id 具体策略类别
  */
-VetDetectorContext::VetDetectorContext(int detector_id)
+VetDetectorContext::VetDetectorContext(int detector_id, int specification_id)
 {
 	switch(detector_id){
-		case HAAR_FRONT_CAR_DETECTOR:
-			cout << "VetDetectorContext::VetDetectorContext: HAAR_FRONT_CAR_DETECTOR" << endl;
-			ptr_detector_strategy_ = new VetHaarDetector(HAAR_FRONT_CAR_DETECTOR);
-			break;
-		case HAAR_REAR_CAR_DETECTOR:
-			cout << "VetDetectorContext::VetDetectorContext: HAAR_REAR_CAR_DETECTOR" << endl;
-			ptr_detector_strategy_ = new VetHaarDetector(HAAR_REAR_CAR_DETECTOR);
-			break;
-		case HAAR_FULLBODY_DETECTOR:
-			cout << "VetDetectorContext::VetDetectorContext: HAAR_FULLBODY_DETECTOR" << endl;
-			ptr_detector_strategy_ = new VetHaarDetector(HAAR_FULLBODY_DETECTOR);
+		case HAAR_DETECTOR:
+			cout << "VetDetectorContext::VetDetectorContext: HAAR_DETECTOR" << endl;
+			ptr_detector_strategy_ = new VetHaarDetector(specification_id);
 			break;
 		default:
 			cout << "no such option" << endl;

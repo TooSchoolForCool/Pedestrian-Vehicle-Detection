@@ -34,7 +34,7 @@
 class VetHaarDetector: public VetDetectorStrategy
 {
 public:
-	VetHaarDetector(int detector_id);
+	VetHaarDetector(int specification_id);
 	~VetHaarDetector();
 
 public:

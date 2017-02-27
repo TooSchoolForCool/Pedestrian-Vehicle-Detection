@@ -168,8 +168,8 @@ void carHaarTester(string video_path)
 	Mat frame;
 	vector<Rect> temp_rois, rois;
 
-	VetDetectorContext front_car_detector(HAAR_FRONT_CAR_DETECTOR);
-	VetDetectorContext rear_car_detector(HAAR_REAR_CAR_DETECTOR);
+	VetDetectorContext front_car_detector(HAAR_DETECTOR, FRONT_CAR);
+	VetDetectorContext rear_car_detector(HAAR_DETECTOR, REAR_CAR);
 
 	VetImageProcessor image_processor;
 
@@ -213,8 +213,8 @@ void fastCarHaarTester(string video_path)
 	Mat frame;
 	vector<Rect> temp_rois, rois;
 
-	VetDetectorContext front_car_detector(HAAR_FRONT_CAR_DETECTOR);
-	VetDetectorContext rear_car_detector(HAAR_REAR_CAR_DETECTOR);
+	VetDetectorContext front_car_detector(HAAR_DETECTOR, FRONT_CAR);
+	VetDetectorContext rear_car_detector(HAAR_DETECTOR, REAR_CAR);
 
 	VetImageProcessor image_processor;
 
@@ -261,7 +261,7 @@ void fastFullbodyHaarTester(string video_path)
 	Mat frame;
 	vector<Rect> rois;
 
-	VetDetectorContext human_detector(HAAR_FULLBODY_DETECTOR);
+	VetDetectorContext human_detector(HAAR_DETECTOR, FULLBODY);
 
 	VetImageProcessor image_processor;
 

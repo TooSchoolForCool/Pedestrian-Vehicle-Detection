@@ -33,9 +33,14 @@
 /*!
  * \brief Define the identifier for each detector
  */
-#define HAAR_FRONT_CAR_DETECTOR	1
-#define HAAR_REAR_CAR_DETECTOR 	2
-#define HAAR_FULLBODY_DETECTOR 	3
+#define HAAR_DETECTOR	0
+
+/*!
+ * \brief Define the identifier for each detector-specification
+ */
+#define FRONT_CAR 		0
+#define REAR_CAR 		1
+#define FULLBODY		2
 
 /*!
  * \brief Define the xml file path
