@@ -63,10 +63,10 @@ void VetColorDetector::detect(const Mat &frame, vector<Rect> &rois)
 	cvtColor(frame, hsvFrame, COLOR_BGR2HSV);
 	inRange(hsvFrame, lower_bound_, upper_bound_, hsvFrame);
 
-	Mat element = getStructuringElement(MORPH_RECT, Size(20, 20));
-
+	Mat element = getStructuringElement(MORPH_RECT, Size(25, 25));
 	dilate(hsvFrame, hsvFrame, element);
-	// dilate(hsvFrame, hsvFrame, element);
+	dilate(hsvFrame, hsvFrame, element);
+	
 	GaussianBlur(hsvFrame, hsvFrame, Size(5, 5), 0, 0);
 
 	findContours(hsvFrame, contours, hierarchy, RETR_CCOMP, CHAIN_APPROX_SIMPLE);

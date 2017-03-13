@@ -308,7 +308,7 @@ void redDetectorTester(string video_path)
 			// Mat hsvImage;
 			color_detector.detect(frame, rois);
 
-			// NMS(rois, 0.3);
+			NMS(rois, 0.3);
 			drawRectangles(frame, rois, COLOR_RED, "Red");
 			rois.clear();  
 
@@ -320,7 +320,6 @@ void redDetectorTester(string video_path)
 		if(resp == KEY_ESC){
 			cout << "window: frame closed" << endl;
 			destroyWindow("frame");
-			destroyWindow("hsvImage");
 			break;
 		}
 		else if(resp == KEY_SPACE){
