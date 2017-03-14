@@ -41,6 +41,7 @@ VetHaarDetector::VetHaarDetector(int specification_id)
 			this->min_neighbors_ = 3;
 			this->haar_flags_ = 0 | CASCADE_SCALE_IMAGE;
 			this->window_size_ = Size(120, 120);
+			this->label_ = "Car";
 			break;
 		case REAR_CAR:
 			cout << "VetHaarDetector::VetHaarDetector: load REAR_CAR xml file" << HAAR_CASCADE_REAR_CAR_XML << endl;
@@ -49,6 +50,7 @@ VetHaarDetector::VetHaarDetector(int specification_id)
 			this->min_neighbors_ = 3;
 			this->haar_flags_ = 0 | CASCADE_SCALE_IMAGE;
 			this->window_size_ = Size(120, 120);
+			this->label_ = "Car";
 			break;
 		case FULLBODY:
 			cout << "VetHaarDetector::VetHaarDetector: load FULLBODY xml file" << HAAR_CASCADE_FULLBODY_XML << endl;
@@ -57,6 +59,7 @@ VetHaarDetector::VetHaarDetector(int specification_id)
 			this->min_neighbors_ = 3;
 			this->haar_flags_ = 0 | CASCADE_SCALE_IMAGE;
 			this->window_size_ = Size(52, 148);
+			this->label_ = "People";
 			break;
 		default:
 			cout << "VetHaarDetector::VetHaarDetector: No such option" << endl;
@@ -74,7 +77,7 @@ VetHaarDetector::~VetHaarDetector()
 	cout << "VetHaarDetector::~VetHaarDetector: delete cascade_" << endl;
 }
 
-void VetHaarDetector::detect(const Mat &frame, vector<Rect> &rois)
+void VetHaarDetector::detect(const Mat &frame, vector<VetROI> &rois)
 {
 	// cout << "VetHaarDetector::detect: detect" << endl;
 
@@ -82,6 +85,14 @@ void VetHaarDetector::detect(const Mat &frame, vector<Rect> &rois)
 	// cout << this->min_neighbors_ << endl;
 	// cout << this->haar_flags_ << endl;
 	// cout << this->window_size_ << endl;
+	vector<Rect> rects;
 
-	cascade_.detectMultiScale(frame, rois, scaler_, min_neighbors_, haar_flags_, window_size_);
+	// clear previous rois records
+	rois.clear();
+
+	cascade_.detectMultiScale(frame, rects, scaler_, min_neighbors_, haar_flags_, window_size_);
+
+	for(vector<Rect>::iterator iter = rects.begin(); iter != rects.end(); iter++){
+		rois.push_back( VetROI(*iter, label_) );
+	}
 }

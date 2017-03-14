@@ -44,7 +44,7 @@ public:
 	~VetDetectorContext();
 
 public:
-	void detect(const cv::Mat &frame, std::vector<cv::Rect> &rois);
+	void detect(const cv::Mat &frame, std::vector<VetROI> &rois);
 
 private:
 	VetDetectorStrategy *ptr_detector_strategy_;

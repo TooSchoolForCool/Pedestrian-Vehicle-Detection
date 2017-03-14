@@ -38,12 +38,13 @@ public:
 	~VetColorDetector();
 
 public:
-	void detect(const cv::Mat &frame, std::vector<cv::Rect> &rois);
+	void detect(const cv::Mat &frame, std::vector<VetROI> &rois);
 
 private:
 	cv::Scalar lower_bound_;
 	cv::Scalar upper_bound_;
 	int sensitivity_;
+	std::string color_label_;
 };
 
 #endif

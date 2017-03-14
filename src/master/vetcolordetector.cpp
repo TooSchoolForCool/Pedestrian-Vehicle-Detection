@@ -23,7 +23,6 @@
 */
 
 #include "vetcolordetector.h"
-#include "vetdetectorstrategy.h"
 
 #include <opencv2/opencv.hpp>
 
@@ -40,6 +39,7 @@ VetColorDetector::VetColorDetector(int specification_id)
 			sensitivity_ = 15;
 			lower_bound_ = Scalar(0 - sensitivity_, 100, 50);
 			upper_bound_ = Scalar(0 + sensitivity_, 255, 255);
+			color_label_ = "Red";
 			break;
 		default:
 			cout << "No such option..." << endl;
@@ -52,7 +52,7 @@ VetColorDetector::~VetColorDetector()
 	// ...
 }
 
-void VetColorDetector::detect(const Mat &frame, vector<Rect> &rois)
+void VetColorDetector::detect(const Mat &frame, vector<VetROI> &rois)
 {
 	Mat hsvFrame;
 	vector<vector<Point> > contours;
@@ -74,6 +74,6 @@ void VetColorDetector::detect(const Mat &frame, vector<Rect> &rois)
 	for(vector<vector<Point> >::iterator iter = contours.begin(); 
 		iter != contours.end(); iter++){
 		// rois.push_back(minAreaRect(*iter));
-		rois.push_back(boundingRect(*iter));
+		rois.push_back( VetROI(boundingRect(*iter), color_label_) );
 	}
 }

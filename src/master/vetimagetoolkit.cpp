@@ -16,7 +16,7 @@
 
 
 /*!
-* \file vetimagetoolkit.h
+* \file vetimagetoolkit.cpp
 * \author [Zeyu Zhang]
 * \version [0.1]
 * \date 2016-02-22
@@ -32,7 +32,7 @@
 using namespace std;
 using namespace cv;
 
-bool compareCvRect(Rect &a, Rect &b)
+bool compareCvRect(VetROI &a, VetROI &b)
 {
 	// int a_y2 = a.br().y;
 	// int b_y2 = b.br().y;
@@ -43,18 +43,18 @@ bool compareCvRect(Rect &a, Rect &b)
 }
 
 
-void drawRectangles(Mat &frame, const vector<Rect> &rois,
+void drawRectangles(Mat &frame, vector<VetROI> &rois,
 	const Scalar &color, string label)
 {
 	if( !rois.empty() ){
-		vector<Rect>::const_iterator roi = rois.begin();
-		vector<Rect>::const_iterator end = rois.end();
+		vector<VetROI>::iterator roi = rois.begin();
+		vector<VetROI>::iterator end = rois.end();
 
 		while(roi != end){
-			rectangle(frame, *roi, color, 2);
+			rectangle(frame, roi->rect(), color, 2);
 
-			if(label != ""){
-				putText(frame, label, roi->tl(), FONT_HERSHEY_TRIPLEX , 1.3, color); 
+			if(roi->label() != ""){
+				putText(frame, roi->label(), roi->tl(), FONT_HERSHEY_TRIPLEX , 1.3, color); 
 			}
 
 			roi++;
@@ -62,13 +62,13 @@ void drawRectangles(Mat &frame, const vector<Rect> &rois,
 	}
 }
 
-void NMS(vector<Rect> &rois, double overlap_threshold)
+void NMS(vector<VetROI> &rois, double overlap_threshold)
 {
 	if( rois.empty() )
 		return;
 
 	// initilize picked-up region vector, where we store the NMS result
-	vector<Rect> pick;
+	vector<VetROI> pick;
 
 	// sort the bounding boxes by the bottom-right 
 	// y-coordinate of the bounding box
@@ -79,11 +79,11 @@ void NMS(vector<Rect> &rois, double overlap_threshold)
 		// bounding box as the picked-up region and push it into 
 		// the pick vector. Then erase the picked-up last one in 
 		// the rois vector.
-		Rect cur_rect = rois[rois.size() - 1];
+		VetROI cur_rect = rois[rois.size() - 1];
 		pick.push_back(cur_rect);
 		rois.erase(rois.end() - 1);
 
-		vector<Rect>::iterator iter = rois.begin();
+		vector<VetROI>::iterator iter = rois.begin();
 		while(iter != rois.end()){
 			// find the overlap bounding box top-left & bottom-right coordinates
 			int overlap_x1 = max(cur_rect.tl().x, iter->tl().x);

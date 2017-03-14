@@ -38,7 +38,7 @@ public:
 	~VetHaarDetector();
 
 public:
-	void detect(const cv::Mat &frame, std::vector<cv::Rect> &rois);
+	void detect(const cv::Mat &frame, std::vector<VetROI> &rois);
 
 private:
 	cv::CascadeClassifier cascade_;
@@ -46,6 +46,7 @@ private:
 	int min_neighbors_;
 	int haar_flags_;
 	cv::Size window_size_;
+	std::string label_;
 };
 
 

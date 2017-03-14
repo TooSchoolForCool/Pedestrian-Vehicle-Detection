@@ -32,6 +32,7 @@
 #include "vetimagetoolkit.h"
 #include "vetconcurrentqueue.h"
 #include "vetfastvideocapture.h"
+#include "vetroi.h"
 
 #include <opencv2/opencv.hpp>
  

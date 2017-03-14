@@ -70,6 +70,10 @@ void VetTester::run(string file_path)
 	ptr_test_process[tester_id_](file_path);
 }
 
+/*******************************************
+ * Tester Functions go below
+ *******************************************/
+
 void fastVideoPlayerTester(string video_path)
 {
 	VetFastVideoCapture fvs(video_path, 128);
@@ -135,7 +139,7 @@ void NMSTester(string image_path)
 	Mat image = imread(image_path);
 	Mat originImg = image.clone();
 
-	vector<Rect> rois;
+	vector<VetROI> rois;
 
 	printf("NMS_TESTER starts.\n");
 
@@ -165,7 +169,7 @@ void carHaarTester(string video_path)
 {
 	VideoCapture videoStream(video_path);
 	Mat frame;
-	vector<Rect> temp_rois, rois;
+	vector<VetROI> temp_rois, rois;
 
 	VetDetectorContext front_car_detector(HAAR_DETECTOR, FRONT_CAR);
 	VetDetectorContext rear_car_detector(HAAR_DETECTOR, REAR_CAR);
@@ -199,16 +203,16 @@ void carHaarTester(string video_path)
 		}
 	}
 
-	printf("CAR_HAAR_TESTER ends.\n");
-
 	videoStream.release();	
+
+	printf("CAR_HAAR_TESTER ends.\n");
 }
 
 void fastCarHaarTester(string video_path)
 {
 	VetFastVideoCapture fvs(video_path, 128);
 	Mat frame;
-	vector<Rect> temp_rois, rois;
+	vector<VetROI> temp_rois, rois;
 
 	VetDetectorContext front_car_detector(HAAR_DETECTOR, FRONT_CAR);
 	VetDetectorContext rear_car_detector(HAAR_DETECTOR, REAR_CAR);
@@ -254,7 +258,7 @@ void fastFullbodyHaarTester(string video_path)
 {
 	VetFastVideoCapture fvs(video_path, 128);
 	Mat frame;
-	vector<Rect> rois;
+	vector<VetROI> rois;
 
 	VetDetectorContext human_detector(HAAR_DETECTOR, FULLBODY);
 
@@ -295,7 +299,7 @@ void redDetectorTester(string video_path)
 {
 	VetFastVideoCapture fvs(video_path, 128);
 	Mat frame;
-	vector<Rect> rois;
+	vector<VetROI> rois;
 
 	VetDetectorContext color_detector(COLOR_DETECTOR, RED_REGION);
 

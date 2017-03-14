@@ -25,6 +25,8 @@
 #ifndef VETIMAGEPROCESSOR_H
 #define VETIMAGEPROCESSOR_H
 
+#include "vetroi.h"
+
 #include <opencv2/opencv.hpp>
 
 #include <iostream>
@@ -37,9 +39,9 @@
 #define KEY_SPACE	32
 
 
-void drawRectangles(cv::Mat &frame, const std::vector<cv::Rect> &rois,
+void drawRectangles(cv::Mat &frame, std::vector<VetROI> &rois,
 	const cv::Scalar &color, std::string label="");
 
-void NMS(std::vector<cv::Rect> &rois, double overlap_threshold);
+void NMS(std::vector<VetROI> &rois, double overlap_threshold);
 
 #endif

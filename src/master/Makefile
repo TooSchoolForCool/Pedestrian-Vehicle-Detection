@@ -9,6 +9,7 @@ LIBS = `pkg-config --libs opencv` -lpthread
 
 # source files
 SRCS = main.cpp \
+	   vetroi.cpp \
 	   vetdetectorcontext.cpp \
 	   vetdetectorstrategy.cpp \
 	   vethaardetector.cpp \
@@ -16,8 +17,7 @@ SRCS = main.cpp \
 	   vetimagetoolkit.cpp \
 	   vettester.cpp \
 	   vetfastvideocapture.cpp \
-	   vetconcurrentqueue.cpp \
-	   vetroi.cpp
+	   vetconcurrentqueue.cpp
 
 # object files
 OBJS = $(SRCS:.cpp=.o)

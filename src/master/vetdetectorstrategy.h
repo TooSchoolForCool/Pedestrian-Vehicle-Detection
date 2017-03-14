@@ -26,11 +26,11 @@
 #ifndef VETDETECTORSTRATEGY_H
 #define VETDETECTORSTRATEGY_H
 
+#include "vetroi.h"
+
 #include <opencv2/opencv.hpp>
 
 #include <iostream>
-
-#include "vetroi.h"
 
 /*!
  * \brief Define the identifier for each detector
@@ -65,7 +65,7 @@ public:
 	virtual ~VetDetectorStrategy();
 
 public:
-	virtual void detect(const cv::Mat &frame, std::vector<cv::Rect> &rois) = 0;
+	virtual void detect(const cv::Mat &frame, std::vector<VetROI> &rois) = 0;
 };
 
 
