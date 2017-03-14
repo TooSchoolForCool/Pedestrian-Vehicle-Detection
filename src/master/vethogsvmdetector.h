@@ -41,6 +41,14 @@ public:
 	void detect(const cv::Mat &frame, std::vector<VetROI> &rois);
 
 private:
+	cv::HOGDescriptor cv_hog_detector_;
+
+	double hit_threshold_;
+	cv::Size win_stride_;
+	cv::Size padding_;
+	double scaler_;
+	int group_threshold_;
+
 	std::string label_;
 };
 

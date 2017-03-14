@@ -20,4 +20,50 @@
 * \author [Zeyu Zhang]
 * \version [0.1]
 * \date 2016-02-22
-*/ 
+*/
+
+#include "vethogsvmdetector.h"
+
+using namespace std;
+using namespace cv;
+
+VetHOGSVMDetector::VetHOGSVMDetector(int specification_id)
+{
+	switch(specification_id)
+	{
+		case FULLBODY:
+			cout << "VetHOGSVMDetector::VetHOGSVMDetector: load HOGDescriptor::getDefaultPeopleDetector()" << endl;
+
+			cv_hog_detector_.setSVMDetector( HOGDescriptor::getDefaultPeopleDetector() );
+			
+			hit_threshold_ = 0.1;
+			win_stride_ = Size(8, 8);
+			padding_ = Size(32, 32);
+			scaler_ = 1.2;
+			group_threshold_ = 2;
+
+			label_ = "People";
+			break;
+		default:
+			cout << "VetHOGSVMDetector::VetHOGSVMDetector: No such option" << endl;
+			break;
+	}
+}
+
+VetHOGSVMDetector::~VetHOGSVMDetector()
+{
+	cout << "VetHOGSVMDetector::~VetHOGSVMDetector: delete cv_hog_detector_" << endl;
+}
+
+VetHOGSVMDetector::detect(const Mat &frame, vector<VetROI> &rois)
+{
+	vector<Rect> rects;
+
+	cv_hog_detector_.detectMultiScale(frame, rects, hit_threshold_, 
+		win_stride_, padding_, scaler_, group_threshold_);
+
+	for(vector<Rect>::iterator iter = rects.begin(); iter != rects.end(); iter++)
+	{
+		rois.push_back( VetROI(*iter, label_) );
+	}
+}
