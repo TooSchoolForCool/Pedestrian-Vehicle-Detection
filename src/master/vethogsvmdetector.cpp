@@ -36,10 +36,10 @@ VetHOGSVMDetector::VetHOGSVMDetector(int specification_id)
 
 			cv_hog_detector_.setSVMDetector( HOGDescriptor::getDefaultPeopleDetector() );
 			
-			hit_threshold_ = 0.1;
+			hit_threshold_ = 0.3;
 			win_stride_ = Size(8, 8);
 			padding_ = Size(32, 32);
-			scaler_ = 1.2;
+			scaler_ = 1.3;
 			group_threshold_ = 2;
 
 			label_ = "People";
@@ -55,7 +55,7 @@ VetHOGSVMDetector::~VetHOGSVMDetector()
 	cout << "VetHOGSVMDetector::~VetHOGSVMDetector: delete cv_hog_detector_" << endl;
 }
 
-VetHOGSVMDetector::detect(const Mat &frame, vector<VetROI> &rois)
+void VetHOGSVMDetector::detect(const Mat &frame, vector<VetROI> &rois)
 {
 	vector<Rect> rects;
 
