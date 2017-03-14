@@ -33,6 +33,7 @@
 #include "vetconcurrentqueue.h"
 #include "vetfastvideocapture.h"
 #include "vetroi.h"
+#include "veterror.h"
 
 #include <opencv2/opencv.hpp>
  

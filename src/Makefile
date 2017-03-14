@@ -46,6 +46,7 @@ SRCS = main.cpp \
 	   vethogsvmdetector.cpp \
 	   vetcolordetector.cpp \
 	   vetimagetoolkit.cpp \
+	   veterror.cpp \
 	   vettester.cpp \
 	   vetfastvideocapture.cpp \
 	   vetconcurrentqueue.cpp
@@ -190,13 +191,15 @@ main.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/highgui.hpp
 main.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/highgui/highgui_c.h
 main.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/imgcodecs/imgcodecs_c.h
 main.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/videoio/videoio_c.h
-main.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/ml.hpp
-main.o: vethaardetector.h vetcolordetector.h vethogsvmdetector.h
-main.o: vetimagetoolkit.h vetconcurrentqueue.h /usr/include/pthread.h
-main.o: /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h
-main.o: /usr/include/pthread_impl.h /usr/include/time.h
-main.o: /usr/include/sys/_types/_clock_t.h /usr/include/sys/_types/_time_t.h
-main.o: /usr/include/sys/_types/_timespec.h
+main.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/ml.hpp veterror.h
+main.o: /usr/include/stdio.h /usr/include/sys/_types/_va_list.h
+main.o: /usr/include/sys/stdio.h /usr/include/sys/_types/_off_t.h
+main.o: /usr/include/secure/_stdio.h vethaardetector.h vetcolordetector.h
+main.o: vethogsvmdetector.h vetimagetoolkit.h vetconcurrentqueue.h
+main.o: /usr/include/pthread.h /usr/include/pthread/pthread_impl.h
+main.o: /usr/include/pthread/sched.h /usr/include/pthread_impl.h
+main.o: /usr/include/time.h /usr/include/sys/_types/_clock_t.h
+main.o: /usr/include/sys/_types/_time_t.h /usr/include/sys/_types/_timespec.h
 main.o: /usr/include/sys/_pthread/_pthread_cond_t.h
 main.o: /usr/include/sys/_pthread/_pthread_condattr_t.h
 main.o: /usr/include/sys/_pthread/_pthread_key_t.h
@@ -207,11 +210,8 @@ main.o: /usr/include/sys/_pthread/_pthread_rwlock_t.h
 main.o: /usr/include/sys/_pthread/_pthread_rwlockattr_t.h
 main.o: /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h
 main.o: /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h
-main.o: /usr/include/stdio.h /usr/include/sys/_types/_va_list.h
-main.o: /usr/include/sys/stdio.h /usr/include/sys/_types/_off_t.h
-main.o: /usr/include/secure/_stdio.h vetconcurrentqueue.cpp
-main.o: vetfastvideocapture.h /usr/include/unistd.h /usr/include/sys/unistd.h
-main.o: /usr/include/sys/_types/_posix_vdisable.h
+main.o: vetconcurrentqueue.cpp vetfastvideocapture.h /usr/include/unistd.h
+main.o: /usr/include/sys/unistd.h /usr/include/sys/_types/_posix_vdisable.h
 main.o: /usr/include/sys/_types/_seek_set.h /usr/include/sys/_types/_gid_t.h
 main.o: /usr/include/sys/_types/_useconds_t.h /usr/include/sys/select.h
 main.o: /usr/include/sys/_types/_fd_def.h
@@ -434,8 +434,12 @@ vetdetectorcontext.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/highgui/
 vetdetectorcontext.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/imgcodecs/imgcodecs_c.h
 vetdetectorcontext.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/videoio/videoio_c.h
 vetdetectorcontext.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/ml.hpp
-vetdetectorcontext.o: vethaardetector.h vetcolordetector.h
-vetdetectorcontext.o: vethogsvmdetector.h
+vetdetectorcontext.o: veterror.h /usr/include/stdio.h
+vetdetectorcontext.o: /usr/include/sys/_types/_va_list.h
+vetdetectorcontext.o: /usr/include/sys/stdio.h
+vetdetectorcontext.o: /usr/include/sys/_types/_off_t.h
+vetdetectorcontext.o: /usr/include/secure/_stdio.h vethaardetector.h
+vetdetectorcontext.o: vetcolordetector.h vethogsvmdetector.h
 vetdetectorstrategy.o: vetdetectorstrategy.h vetroi.h
 vetdetectorstrategy.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/opencv.hpp
 vetdetectorstrategy.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core.hpp
@@ -553,6 +557,11 @@ vetdetectorstrategy.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/highgui
 vetdetectorstrategy.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/imgcodecs/imgcodecs_c.h
 vetdetectorstrategy.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/videoio/videoio_c.h
 vetdetectorstrategy.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/ml.hpp
+vetdetectorstrategy.o: veterror.h /usr/include/stdio.h
+vetdetectorstrategy.o: /usr/include/sys/_types/_va_list.h
+vetdetectorstrategy.o: /usr/include/sys/stdio.h
+vetdetectorstrategy.o: /usr/include/sys/_types/_off_t.h
+vetdetectorstrategy.o: /usr/include/secure/_stdio.h
 vethaardetector.o: vethaardetector.h vetdetectorstrategy.h vetroi.h
 vethaardetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/opencv.hpp
 vethaardetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core.hpp
@@ -662,6 +671,10 @@ vethaardetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/highgui/hig
 vethaardetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/imgcodecs/imgcodecs_c.h
 vethaardetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/videoio/videoio_c.h
 vethaardetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/ml.hpp
+vethaardetector.o: veterror.h /usr/include/stdio.h
+vethaardetector.o: /usr/include/sys/_types/_va_list.h
+vethaardetector.o: /usr/include/sys/stdio.h /usr/include/sys/_types/_off_t.h
+vethaardetector.o: /usr/include/secure/_stdio.h
 vethogsvmdetector.o: vethogsvmdetector.h vetdetectorstrategy.h vetroi.h
 vethogsvmdetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/opencv.hpp
 vethogsvmdetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core.hpp
@@ -773,6 +786,11 @@ vethogsvmdetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/highgui/h
 vethogsvmdetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/imgcodecs/imgcodecs_c.h
 vethogsvmdetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/videoio/videoio_c.h
 vethogsvmdetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/ml.hpp
+vethogsvmdetector.o: veterror.h /usr/include/stdio.h
+vethogsvmdetector.o: /usr/include/sys/_types/_va_list.h
+vethogsvmdetector.o: /usr/include/sys/stdio.h
+vethogsvmdetector.o: /usr/include/sys/_types/_off_t.h
+vethogsvmdetector.o: /usr/include/secure/_stdio.h
 vetcolordetector.o: vetcolordetector.h vetdetectorstrategy.h vetroi.h
 vetcolordetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/opencv.hpp
 vetcolordetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core.hpp
@@ -883,6 +901,10 @@ vetcolordetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/highgui/hi
 vetcolordetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/imgcodecs/imgcodecs_c.h
 vetcolordetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/videoio/videoio_c.h
 vetcolordetector.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/ml.hpp
+vetcolordetector.o: veterror.h /usr/include/stdio.h
+vetcolordetector.o: /usr/include/sys/_types/_va_list.h
+vetcolordetector.o: /usr/include/sys/stdio.h /usr/include/sys/_types/_off_t.h
+vetcolordetector.o: /usr/include/secure/_stdio.h
 vetimagetoolkit.o: vetimagetoolkit.h vetroi.h
 vetimagetoolkit.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/opencv.hpp
 vetimagetoolkit.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core.hpp
@@ -992,6 +1014,10 @@ vetimagetoolkit.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/highgui/hig
 vetimagetoolkit.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/imgcodecs/imgcodecs_c.h
 vetimagetoolkit.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/videoio/videoio_c.h
 vetimagetoolkit.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/ml.hpp
+vetimagetoolkit.o: veterror.h /usr/include/stdio.h
+vetimagetoolkit.o: /usr/include/sys/_types/_va_list.h
+vetimagetoolkit.o: /usr/include/sys/stdio.h /usr/include/sys/_types/_off_t.h
+vetimagetoolkit.o: /usr/include/secure/_stdio.h
 vettester.o: vettester.h vetdetectorcontext.h vetdetectorstrategy.h vetroi.h
 vettester.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/opencv.hpp
 vettester.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core.hpp
@@ -1092,6 +1118,9 @@ vettester.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/highgui/highgui_c
 vettester.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/imgcodecs/imgcodecs_c.h
 vettester.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/videoio/videoio_c.h
 vettester.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/ml.hpp
+vettester.o: veterror.h /usr/include/stdio.h
+vettester.o: /usr/include/sys/_types/_va_list.h /usr/include/sys/stdio.h
+vettester.o: /usr/include/sys/_types/_off_t.h /usr/include/secure/_stdio.h
 vettester.o: vethaardetector.h vetcolordetector.h vethogsvmdetector.h
 vettester.o: vetimagetoolkit.h vetconcurrentqueue.h /usr/include/pthread.h
 vettester.o: /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h
@@ -1109,11 +1138,9 @@ vettester.o: /usr/include/sys/_pthread/_pthread_rwlock_t.h
 vettester.o: /usr/include/sys/_pthread/_pthread_rwlockattr_t.h
 vettester.o: /usr/include/sys/_pthread/_pthread_t.h
 vettester.o: /usr/include/pthread/qos.h /usr/include/sys/qos.h
-vettester.o: /usr/include/sys/_types/_mach_port_t.h /usr/include/stdio.h
-vettester.o: /usr/include/sys/_types/_va_list.h /usr/include/sys/stdio.h
-vettester.o: /usr/include/sys/_types/_off_t.h /usr/include/secure/_stdio.h
-vettester.o: vetconcurrentqueue.cpp vetfastvideocapture.h
-vettester.o: /usr/include/unistd.h /usr/include/sys/unistd.h
+vettester.o: /usr/include/sys/_types/_mach_port_t.h vetconcurrentqueue.cpp
+vettester.o: vetfastvideocapture.h /usr/include/unistd.h
+vettester.o: /usr/include/sys/unistd.h
 vettester.o: /usr/include/sys/_types/_posix_vdisable.h
 vettester.o: /usr/include/sys/_types/_seek_set.h
 vettester.o: /usr/include/sys/_types/_gid_t.h
@@ -1165,20 +1192,21 @@ vetfastvideocapture.o: /usr/include/sys/_types/_off_t.h
 vetfastvideocapture.o: /usr/include/sys/_types/_ssize_t.h
 vetfastvideocapture.o: /usr/include/secure/_stdio.h
 vetfastvideocapture.o: /usr/include/secure/_common.h vetconcurrentqueue.cpp
-vetfastvideocapture.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/opencv.hpp
-vetfastvideocapture.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core.hpp
-vetfastvideocapture.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core/cvdef.h
-vetfastvideocapture.o: /usr/include/limits.h /usr/include/machine/limits.h
-vetfastvideocapture.o: /usr/include/i386/limits.h /usr/include/i386/_limits.h
-vetfastvideocapture.o: /usr/include/sys/syslimits.h
-vetfastvideocapture.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core/hal/interface.h
-vetfastvideocapture.o: /usr/include/stddef.h
-vetfastvideocapture.o: /usr/include/sys/_types/_offsetof.h
-vetfastvideocapture.o: /usr/include/sys/_types/_ptrdiff_t.h
-vetfastvideocapture.o: /usr/include/sys/_types/_rsize_t.h
-vetfastvideocapture.o: /usr/include/sys/_types/_wchar_t.h
-vetfastvideocapture.o: /usr/include/sys/_types/_wint_t.h
-vetfastvideocapture.o: /usr/include/stdint.h
+vetfastvideocapture.o: veterror.h /usr/include/stdlib.h
+vetfastvideocapture.o: /usr/include/sys/wait.h
+vetfastvideocapture.o: /usr/include/sys/_types/_pid_t.h
+vetfastvideocapture.o: /usr/include/sys/_types/_id_t.h
+vetfastvideocapture.o: /usr/include/sys/signal.h
+vetfastvideocapture.o: /usr/include/sys/appleapiopts.h
+vetfastvideocapture.o: /usr/include/machine/signal.h
+vetfastvideocapture.o: /usr/include/i386/signal.h
+vetfastvideocapture.o: /usr/include/machine/_mcontext.h
+vetfastvideocapture.o: /usr/include/i386/_mcontext.h
+vetfastvideocapture.o: /usr/include/mach/i386/_structs.h
+vetfastvideocapture.o: /usr/include/sys/_types/_sigaltstack.h
+vetfastvideocapture.o: /usr/include/sys/_types/_ucontext.h
+vetfastvideocapture.o: /usr/include/sys/_types/_uid_t.h
+vetfastvideocapture.o: /usr/include/sys/resource.h /usr/include/stdint.h
 vetfastvideocapture.o: /usr/include/sys/_types/_int8_t.h
 vetfastvideocapture.o: /usr/include/sys/_types/_int16_t.h
 vetfastvideocapture.o: /usr/include/sys/_types/_int32_t.h
@@ -1191,6 +1219,30 @@ vetfastvideocapture.o: /usr/include/sys/_types/_intptr_t.h
 vetfastvideocapture.o: /usr/include/sys/_types/_uintptr_t.h
 vetfastvideocapture.o: /usr/include/_types/_intmax_t.h
 vetfastvideocapture.o: /usr/include/_types/_uintmax_t.h
+vetfastvideocapture.o: /usr/include/sys/_types/_timeval.h
+vetfastvideocapture.o: /usr/include/machine/endian.h
+vetfastvideocapture.o: /usr/include/i386/endian.h /usr/include/sys/_endian.h
+vetfastvideocapture.o: /usr/include/libkern/_OSByteOrder.h
+vetfastvideocapture.o: /usr/include/libkern/i386/_OSByteOrder.h
+vetfastvideocapture.o: /usr/include/alloca.h
+vetfastvideocapture.o: /usr/include/sys/_types/_ct_rune_t.h
+vetfastvideocapture.o: /usr/include/sys/_types/_rune_t.h
+vetfastvideocapture.o: /usr/include/sys/_types/_wchar_t.h
+vetfastvideocapture.o: /usr/include/machine/types.h /usr/include/i386/types.h
+vetfastvideocapture.o: /usr/include/sys/_types/_dev_t.h
+vetfastvideocapture.o: /usr/include/sys/_types/_mode_t.h
+vetfastvideocapture.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/opencv.hpp
+vetfastvideocapture.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core.hpp
+vetfastvideocapture.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core/cvdef.h
+vetfastvideocapture.o: /usr/include/limits.h /usr/include/machine/limits.h
+vetfastvideocapture.o: /usr/include/i386/limits.h /usr/include/i386/_limits.h
+vetfastvideocapture.o: /usr/include/sys/syslimits.h
+vetfastvideocapture.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core/hal/interface.h
+vetfastvideocapture.o: /usr/include/stddef.h
+vetfastvideocapture.o: /usr/include/sys/_types/_offsetof.h
+vetfastvideocapture.o: /usr/include/sys/_types/_ptrdiff_t.h
+vetfastvideocapture.o: /usr/include/sys/_types/_rsize_t.h
+vetfastvideocapture.o: /usr/include/sys/_types/_wint_t.h
 vetfastvideocapture.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core/version.hpp
 vetfastvideocapture.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core/base.hpp
 vetfastvideocapture.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core/cvstd.hpp
@@ -1211,33 +1263,7 @@ vetfastvideocapture.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core/cv
 vetfastvideocapture.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core/utility.hpp
 vetfastvideocapture.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core/core_c.h
 vetfastvideocapture.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core/types_c.h
-vetfastvideocapture.o: /usr/include/assert.h /usr/include/stdlib.h
-vetfastvideocapture.o: /usr/include/sys/wait.h
-vetfastvideocapture.o: /usr/include/sys/_types/_pid_t.h
-vetfastvideocapture.o: /usr/include/sys/_types/_id_t.h
-vetfastvideocapture.o: /usr/include/sys/signal.h
-vetfastvideocapture.o: /usr/include/sys/appleapiopts.h
-vetfastvideocapture.o: /usr/include/machine/signal.h
-vetfastvideocapture.o: /usr/include/i386/signal.h
-vetfastvideocapture.o: /usr/include/machine/_mcontext.h
-vetfastvideocapture.o: /usr/include/i386/_mcontext.h
-vetfastvideocapture.o: /usr/include/mach/i386/_structs.h
-vetfastvideocapture.o: /usr/include/sys/_types/_sigaltstack.h
-vetfastvideocapture.o: /usr/include/sys/_types/_ucontext.h
-vetfastvideocapture.o: /usr/include/sys/_types/_uid_t.h
-vetfastvideocapture.o: /usr/include/sys/resource.h
-vetfastvideocapture.o: /usr/include/sys/_types/_timeval.h
-vetfastvideocapture.o: /usr/include/machine/endian.h
-vetfastvideocapture.o: /usr/include/i386/endian.h /usr/include/sys/_endian.h
-vetfastvideocapture.o: /usr/include/libkern/_OSByteOrder.h
-vetfastvideocapture.o: /usr/include/libkern/i386/_OSByteOrder.h
-vetfastvideocapture.o: /usr/include/alloca.h
-vetfastvideocapture.o: /usr/include/sys/_types/_ct_rune_t.h
-vetfastvideocapture.o: /usr/include/sys/_types/_rune_t.h
-vetfastvideocapture.o: /usr/include/machine/types.h /usr/include/i386/types.h
-vetfastvideocapture.o: /usr/include/sys/_types/_dev_t.h
-vetfastvideocapture.o: /usr/include/sys/_types/_mode_t.h
-vetfastvideocapture.o: /usr/include/string.h
+vetfastvideocapture.o: /usr/include/assert.h /usr/include/string.h
 vetfastvideocapture.o: /usr/include/sys/_types/_errno_t.h
 vetfastvideocapture.o: /usr/include/strings.h /usr/include/secure/_string.h
 vetfastvideocapture.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core/optim.hpp

@@ -27,6 +27,7 @@
 #define VETDETECTORSTRATEGY_H
 
 #include "vetroi.h"
+#include "veterror.h"
 
 #include <opencv2/opencv.hpp>
 

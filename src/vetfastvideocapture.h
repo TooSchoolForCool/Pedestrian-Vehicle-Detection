@@ -26,6 +26,7 @@
 #define VETFASTVIDEOCAPTURE_H	// VETFASTVIDEOCAPTURE_H
 
 #include "vetconcurrentqueue.h"
+#include "veterror.h"
 
 #include <opencv2/opencv.hpp>
 
