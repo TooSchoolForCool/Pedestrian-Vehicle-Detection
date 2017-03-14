@@ -32,12 +32,13 @@
 class VetROI
 {
 public:
-	VetROI(cv::Rect rect, std::string label);
+	VetROI(cv::Rect rect, std::string label = "");
 	~VetROI();
 
 public:
 	cv::Point br();
 	cv::Point tl();
+	cv::Rect rect();
 	int area();
 
 	std::string label();

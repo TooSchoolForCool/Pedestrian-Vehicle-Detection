@@ -47,6 +47,11 @@ Point VetROI::tl()
 	return rect_.tl();
 }
 
+Rect VetROI::rect()
+{
+	return rect_;
+}
+
 int VetROI::area()
 {
 	return rect_.area();
