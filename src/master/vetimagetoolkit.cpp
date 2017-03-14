@@ -43,12 +43,12 @@ bool compareCvRect(VetROI &a, VetROI &b)
 }
 
 
-void drawRectangles(Mat &frame, vector<VetROI> &rois,
+void drawRectangles(Mat &frame, const vector<VetROI> &rois,
 	const Scalar &color, string label)
 {
 	if( !rois.empty() ){
-		vector<VetROI>::iterator roi = rois.begin();
-		vector<VetROI>::iterator end = rois.end();
+		vector<VetROI>::const_iterator roi = rois.begin();
+		vector<VetROI>::const_iterator end = rois.end();
 
 		while(roi != end){
 			rectangle(frame, roi->rect(), color, 2);

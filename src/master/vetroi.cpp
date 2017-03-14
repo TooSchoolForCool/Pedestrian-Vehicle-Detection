@@ -37,27 +37,27 @@ VetROI::~VetROI()
 	// ...
 }
 
-Point VetROI::br()
+Point VetROI::br() const
 {
 	return rect_.br();
 }
 
-Point VetROI::tl()
+Point VetROI::tl() const
 {
 	return rect_.tl();
 }
 
-Rect VetROI::rect()
+Rect VetROI::rect() const
 {
 	return rect_;
 }
 
-int VetROI::area()
+int VetROI::area() const
 {
 	return rect_.area();
 }
 
-string VetROI::label()
+string VetROI::label() const
 {
 	return label_;
 }

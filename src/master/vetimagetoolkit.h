@@ -39,7 +39,7 @@
 #define KEY_SPACE	32
 
 
-void drawRectangles(cv::Mat &frame, std::vector<VetROI> &rois,
+void drawRectangles(cv::Mat &frame, const std::vector<VetROI> &rois,
 	const cv::Scalar &color, std::string label="");
 
 void NMS(std::vector<VetROI> &rois, double overlap_threshold);

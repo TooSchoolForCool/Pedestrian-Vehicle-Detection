@@ -36,12 +36,12 @@ public:
 	~VetROI();
 
 public:
-	cv::Point br();
-	cv::Point tl();
-	cv::Rect rect();
-	int area();
+	cv::Point br() const;
+	cv::Point tl() const ;
+	cv::Rect rect() const;
+	int area() const;
 
-	std::string label();
+	std::string label() const;
 
 private:
 	cv::Rect rect_;
