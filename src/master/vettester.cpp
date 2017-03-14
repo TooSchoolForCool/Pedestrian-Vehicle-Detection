@@ -44,7 +44,8 @@ static void (*ptr_test_process[])(string)
 	   	fastVideoPlayerTester,				// FAST_VIDEO_PLAYER_TESTER
 	   	fastCarHaarTester,					// FAST_CAR_HAAR_TESTER
 	   	fastFullbodyHaarTester,				// FAST_FULLBODY_HAAR_TESTER
-	   	redDetectorTester					// RED_DETECTOR_TESTER
+	   	redDetectorTester,					// RED_DETECTOR_TESTER
+	   	fastHOGSVMTester					// FAST_HOG_SVM_TESTER
 	  };			
 
 static VetConcurrentQueue<int> q;
@@ -335,4 +336,45 @@ void redDetectorTester(string video_path)
 
 	fvs.stop();
 	printf("FAST_FULLBODY_HAAR_TESTER ends.\n");
+}
+
+void fastHOGSVMTester(std::string video_path)
+{
+	VetFastVideoCapture fvs(video_path, 128);
+	Mat frame;
+	vector<VetROI> rois;
+
+	VetDetectorContext human_detector(HOG_SVM_DETECTOR, FULLBODY);
+
+	printf("FAST_HOG_SVM_TESTER starts.\n");
+
+	fvs.start();
+
+	while( fvs.more() ){
+		if ( fvs.read(frame) ){
+			human_detector.detect(frame, rois);
+
+			NMS(rois, 0.3);
+			drawRectangles(frame, rois, COLOR_RED, "People");
+			rois.clear();  
+
+			imshow("frame", frame);
+		}
+
+		char resp = waitKey(5);
+
+		if(resp == KEY_ESC){
+			cout << "window: frame closed" << endl;
+			destroyWindow("frame");
+			break;
+		}
+		else if(resp == KEY_SPACE){
+			cout << "window: frame paused" << endl;
+			cout << "Press any key to continue..." << endl;
+			waitKey(-1);
+		}
+	}
+
+	fvs.stop();
+	printf("FAST_HOG_SVM_TESTER ends.\n");
 }
