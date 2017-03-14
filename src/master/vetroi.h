@@ -36,7 +36,11 @@ public:
 	~VetROI();
 
 public:
+	cv::Point br();
+	cv::Point tl();
+	int area();
 
+	std::string label();
 
 private:
 	cv::Rect rect_;

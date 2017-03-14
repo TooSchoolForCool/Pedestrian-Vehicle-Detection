@@ -30,6 +30,8 @@
 
 #include <iostream>
 
+#include "vetroi.h"
+
 /*!
  * \brief Define the identifier for each detector
  */

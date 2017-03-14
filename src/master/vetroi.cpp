@@ -23,3 +23,36 @@
 */ 
 
 #include "vetroi.h"
+
+using namespace std;
+using namespace cv;
+
+VetROI::VetROI(Rect rect, string label): rect_(rect), label_(label)
+{
+	// ...
+}
+
+VetROI::~VetROI()
+{
+	// ...
+}
+
+Point VetROI::br()
+{
+	return rect_.br();
+}
+
+Point VetROI::tl()
+{
+	return rect_.tl();
+}
+
+int VetROI::area()
+{
+	return rect_.area();
+}
+
+string VetROI::label()
+{
+	return label_;
+}
