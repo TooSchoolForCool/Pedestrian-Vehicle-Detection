@@ -304,7 +304,7 @@ void redDetectorTester(string video_path)
 
 	VetDetectorContext color_detector(COLOR_DETECTOR, RED_REGION);
 
-	printf("FAST_FULLBODY_HAAR_TESTER starts.\n");
+	printf("RED_DETECTOR_TESTER starts.\n");
 
 	fvs.start();
 
@@ -335,7 +335,7 @@ void redDetectorTester(string video_path)
 	}
 
 	fvs.stop();
-	printf("FAST_FULLBODY_HAAR_TESTER ends.\n");
+	printf("RED_DETECTOR_TESTER ends.\n");
 }
 
 void fastHOGSVMTester(std::string video_path)

@@ -63,7 +63,7 @@ TARGET = launch
 # deleting dependencies appended to the file from 'make depend'
 #
 
-.PHONY: depend clean
+.PHONY: depend clean run
 
 all: $(TARGET)
 	@echo launch has been succesfully compiled
