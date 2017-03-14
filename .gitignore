@@ -4,6 +4,9 @@ doc/
 # Others irrelative files
 others/
 
+# backup file
+*.bak
+
 # Some huge media files
 data/video/
 
