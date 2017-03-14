@@ -12,22 +12,28 @@ CC = g++
 # define thr remove command
 RM = rm
 
+# define object files directory
+OBJS_DIR = obj
+
 # define any compile-time flags
 CFLAGS = -Wall -g
 
 # define any directories containing header files other than /usr/include
-#
+# eg: INCLUDES = -I/home/newhall/include  -I../include
+# 
 INCLUDES = `pkg-config --cflags opencv`
 
 # define library paths in addition to /usr/lib
 #   if I wanted to include libraries not in /usr/lib I'd specify
 #   their path using -Lpath, something like:
-#
+#	eg: LFLAGS = -L/home/newhall/lib  -L../lib
+# 
 LFLAGS = `pkg-config --libs opencv`
 
 # define any libraries to link into executable:
 #   if I want to link in libraries (libx.so or libx.a) I use the -llibname 
 #   option, something like (this will link in libmylib.so and libm.so:
+#	eg: LIBS = -lmylib -lm
 #
 LIBS =
 
@@ -52,7 +58,7 @@ SRCS = main.cpp \
 # Below we are replacing the suffix .c of all words in the macro SRCS
 # with the .o suffix
 #
-OBJS = $(SRCS:.cpp=.o)
+OBJS = $(SRCS:%.cpp=$(OBJS_DIR)/%.o)
 
 # define the executable file 
 TARGET = launch
@@ -76,14 +82,20 @@ $(TARGET): $(OBJS)
 # the rule(a .c file) and $@: the name of the target of the rule (a .o file) 
 # (see the gnu make manual section about automatic variables)
 #
-%.o: %.cpp
+$(OBJS_DIR)/%.o: %.cpp
+	@mkdir -p $(OBJS_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+# $(OBJS): $(OBJS_DIR)/%.o : %.c  
+# 	@mkdir -p $(OBJS_DIR)
+# 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 run: $(TARGET)
 	./$(TARGET)
 
 clean:
-	$(RM) -f *.o $(TARGET)
+	$(RM) -f $(OBJS_DIR)/*.o $(TARGET)
+	$(RM) -r $(OBJS_DIR)
 
 depend: $(SRCS)
 	makedepend $(INCLUDES) $^
