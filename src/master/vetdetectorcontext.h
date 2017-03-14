@@ -29,6 +29,7 @@
 #include "vetdetectorstrategy.h"
 #include "vethaardetector.h"
 #include "vetcolordetector.h"
+#include "vethogsvmdetector.h"
 
 #include <opencv2/opencv.hpp>
 

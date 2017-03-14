@@ -35,8 +35,9 @@
 /*!
  * \brief Define the identifier for each detector
  */
-#define HAAR_DETECTOR	0
-#define COLOR_DETECTOR	1
+#define HAAR_DETECTOR		0
+#define COLOR_DETECTOR		1
+#define HOG_SVM_DETECTOR	2
 
 /*!
  * \brief Define the identifier for each detector-specification

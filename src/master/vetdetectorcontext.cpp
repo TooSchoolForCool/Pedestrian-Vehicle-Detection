@@ -49,6 +49,10 @@ VetDetectorContext::VetDetectorContext(int detector_id, int specification_id)
 			cout << "VetDetectorContext::VetDetectorContext: COLOR_DETECTOR" << endl;
 			ptr_detector_strategy_ = new VetColorDetector(specification_id);
 			break;
+		case HOG_SVM_DETECTOR:
+			cout << "VetDetectorContext::VetDetectorContext: HOG_SVM_DETECTOR" << endl;
+			ptr_detector_strategy_ = new VetHOGSVMDetector(specification_id);
+			break;
 		default:
 			cout << "no such option" << endl;
 			break;
