@@ -60,6 +60,7 @@
  */
 #define TEST_VIDEO_PATH "../../data/video/HPIM0026.mov"
 #define TEST_TRIMED_VIDEO_PATH "../../data/video/HPIM0026_Trimed.mov"
+#define TEST_PEOPLE_VIDEO_PATH "../../data/video/HPIM0026_people.mp4"
 
 /**
  * Tester Picture File Path
