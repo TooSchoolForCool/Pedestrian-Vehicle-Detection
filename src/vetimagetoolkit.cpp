@@ -46,17 +46,23 @@ bool compareCvRect(VetROI &a, VetROI &b)
 void drawRectangles(Mat &frame, const vector<VetROI> &rois,
 	const Scalar &color, string label)
 {
-	if( !rois.empty() ){
+	if( !rois.empty() )
+	{
 		vector<VetROI>::const_iterator roi = rois.begin();
 		vector<VetROI>::const_iterator end = rois.end();
 
-		while(roi != end){
+		while(roi != end)
+		{
 			rectangle(frame, roi->rect(), color, 2);
 
-			if(roi->label() != ""){
+			if(roi->label() != "")
+			{
 				putText(frame, roi->label(), roi->tl(), FONT_HERSHEY_TRIPLEX , 1.3, color); 
 			}
-
+			else if(label != "")
+			{
+				putText(frame, label, roi->tl(), FONT_HERSHEY_TRIPLEX , 1.3, color); 
+			}
 			roi++;
 		}
 	}

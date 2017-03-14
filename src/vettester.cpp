@@ -185,7 +185,7 @@ void carHaarTester(string video_path)
 		rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
 
 		NMS(rois, 0.3);
-		drawRectangles(frame, rois, COLOR_RED, "Car");
+		drawRectangles(frame, rois, COLOR_RED);
 		rois.clear();  
 
 		imshow("frame", frame);
@@ -231,7 +231,7 @@ void fastCarHaarTester(string video_path)
 			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
 
 			NMS(rois, 0.3);
-			drawRectangles(frame, rois, COLOR_RED, "Car");
+			drawRectangles(frame, rois, COLOR_RED);
 			rois.clear();  
 
 			imshow("frame", frame);
@@ -272,7 +272,7 @@ void fastFullbodyHaarTester(string video_path)
 			human_detector.detect(frame, rois);
 
 			NMS(rois, 0.3);
-			drawRectangles(frame, rois, COLOR_RED, "People");
+			drawRectangles(frame, rois, COLOR_RED);
 			rois.clear();  
 
 			imshow("frame", frame);
@@ -314,7 +314,7 @@ void redDetectorTester(string video_path)
 			color_detector.detect(frame, rois);
 
 			NMS(rois, 0.3);
-			drawRectangles(frame, rois, COLOR_RED, "Red");
+			drawRectangles(frame, rois, COLOR_RED);
 			rois.clear();  
 
 			imshow("frame", frame);
@@ -355,7 +355,7 @@ void fastHOGSVMTester(std::string video_path)
 			human_detector.detect(frame, rois);
 
 			NMS(rois, 0.3);
-			drawRectangles(frame, rois, COLOR_RED, "People");
+			drawRectangles(frame, rois, COLOR_RED);
 			rois.clear();  
 
 			imshow("frame", frame);
