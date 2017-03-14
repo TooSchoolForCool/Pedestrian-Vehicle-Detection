@@ -40,7 +40,7 @@ VetHaarDetector::VetHaarDetector(int specification_id)
 			this->scaler_ = 1.1;
 			this->min_neighbors_ = 3;
 			this->haar_flags_ = 0 | CASCADE_SCALE_IMAGE;
-			this->window_size_ = Size(120, 120);
+			this->window_size_ = Size(120, 120);	// minimum window size
 			this->label_ = "Car";
 			break;
 		case REAR_CAR:
@@ -49,7 +49,7 @@ VetHaarDetector::VetHaarDetector(int specification_id)
 			this->scaler_ = 1.1;
 			this->min_neighbors_ = 3;
 			this->haar_flags_ = 0 | CASCADE_SCALE_IMAGE;
-			this->window_size_ = Size(120, 120);
+			this->window_size_ = Size(120, 120);	// minimum window size
 			this->label_ = "Car";
 			break;
 		case FULLBODY:
@@ -58,7 +58,7 @@ VetHaarDetector::VetHaarDetector(int specification_id)
 			this->scaler_ = 1.1;
 			this->min_neighbors_ = 3;
 			this->haar_flags_ = 0 | CASCADE_SCALE_IMAGE;
-			this->window_size_ = Size(52, 148);
+			this->window_size_ = Size(52, 148);		// minimum window size
 			this->label_ = "People";
 			break;
 		default:
