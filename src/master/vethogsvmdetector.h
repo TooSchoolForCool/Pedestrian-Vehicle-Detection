@@ -16,24 +16,32 @@
 
 
 /*!
-* \file main.cpp
+* \file vethogsvmdetector.h
 * \author [Zeyu Zhang]
 * \version [0.1]
 * \date 2016-02-22
-*/
+*/ 
 
-#include "vettester.h"
+#ifndef VETHOGSVMDETECTOR_H
+#define VETHOGSVMDETECTOR_H
+
+#include "vetdetectorstrategy.h"
 
 #include <opencv2/opencv.hpp>
 
 #include <iostream>
 
-using namespace cv;
-using namespace std;
+class VetHOGSVMDetector: public VetDetectorStrategy
+{
+public:
+	VetHOGSVMDetector(int specification_id);
+	~VetHOGSVMDetector();
 
-int main()
-{	
-	VetTester tester(FAST_CAR_HAAR_TESTER);
-	tester.run(TEST_TRIMED_VIDEO_PATH);
-	return 0;
-}
+public:
+	void detect(const cv::Mat &frame, std::vector<VetROI> &rois);
+
+private:
+	std::string label_;
+};
+
+#endif
