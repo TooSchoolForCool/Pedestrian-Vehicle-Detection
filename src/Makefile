@@ -86,10 +86,6 @@ $(OBJS_DIR)/%.o: %.cpp
 	@mkdir -p $(OBJS_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-# $(OBJS): $(OBJS_DIR)/%.o : %.c  
-# 	@mkdir -p $(OBJS_DIR)
-# 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
 run: $(TARGET)
 	./$(TARGET)
 
@@ -101,6 +97,7 @@ depend: $(SRCS)
 	makedepend $(INCLUDES) $^
 
 # DO NOT DELETE THIS LINE -- make depend needs it
+
 main.o: vettester.h vetdetectorcontext.h vetdetectorstrategy.h vetroi.h
 main.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/opencv.hpp
 main.o: /usr/local/Cellar/opencv3/3.1.0_3/include/opencv2/core.hpp
