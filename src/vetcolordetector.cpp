@@ -33,13 +33,18 @@ using namespace cv;
 
 VetColorDetector::VetColorDetector(int specification_id)
 {
-	switch(specification_id){
+	switch(specification_id)
+	{
 		case RED_REGION:
 			cout << "VetColorDetector::VetColorDetector: RED_REGION" << endl;
+
 			sensitivity_ = 15;
 			lower_bound_ = Scalar(0 - sensitivity_, 100, 50);
 			upper_bound_ = Scalar(0 + sensitivity_, 255, 255);
+
 			color_label_ = "Red";
+
+			color_space_converter_ = COLOR_BGR2HSV;
 			break;
 		default:
 			cout << "No such option..." << endl;
@@ -60,7 +65,7 @@ void VetColorDetector::detect(const Mat &frame, vector<VetROI> &rois)
 
 	rois.clear();
 
-	cvtColor(frame, hsvFrame, COLOR_BGR2HSV);
+	cvtColor(frame, hsvFrame, color_space_converter_);
 	inRange(hsvFrame, lower_bound_, upper_bound_, hsvFrame);
 
 	Mat element = getStructuringElement(MORPH_RECT, Size(25, 25));

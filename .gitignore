@@ -1,7 +1,8 @@
 # Some Private Document Folders
 doc/
-src/vetmaincontroltest-12-23/
-src/test/
+
+# Others irrelative files
+others/
 
 # Some huge media files
 data/video/

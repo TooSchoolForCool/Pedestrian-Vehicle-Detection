@@ -16,35 +16,24 @@
 
 
 /*!
-* \file vetcolordetector.h
+* \file main.cpp
 * \author [Zeyu Zhang]
 * \version [0.1]
 * \date 2016-02-22
 */
 
-#ifndef VETCOLORDETECTOR_H
-#define VETCOLORDETECTOR_H
-
-#include "vetdetectorstrategy.h"
+#include "vettester.h"
 
 #include <opencv2/opencv.hpp>
 
 #include <iostream>
 
-class VetColorDetector: public VetDetectorStrategy
-{
-public:
-	VetColorDetector(int specification_id);
-	~VetColorDetector();
+using namespace cv;
+using namespace std;
 
-public:
-	void detect(const cv::Mat &frame, std::vector<VetROI> &rois);
-
-private:
-	cv::Scalar lower_bound_;
-	cv::Scalar upper_bound_;
-	int sensitivity_;
-	std::string color_label_;
-};
-
-#endif
+int main()
+{	
+	VetTester tester(RED_DETECTOR_TESTER);
+	tester.run(TEST_TRIMED_VIDEO_PATH);
+	return 0;
+}
