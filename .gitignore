@@ -29,6 +29,9 @@ data/haar-cascades/
 *.dylib
 *.dll
 
+# debug info files
+*.dSYM
+
 # Fortran module files
 *.mod
 *.smod

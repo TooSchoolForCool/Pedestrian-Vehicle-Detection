@@ -58,14 +58,14 @@
 /**
  * Tester Video File Path
  */
-#define TEST_VIDEO_PATH "../../data/video/HPIM0026.mov"
-#define TEST_TRIMED_VIDEO_PATH "../../data/video/HPIM0026_Trimed.mov"
-#define TEST_PEOPLE_VIDEO_PATH "../../data/video/HPIM0026_people.mp4"
+#define TEST_VIDEO_PATH "../data/video/HPIM0026.mov"
+#define TEST_TRIMED_VIDEO_PATH "../data/video/HPIM0026_Trimed.mov"
+#define TEST_PEOPLE_VIDEO_PATH "../data/video/HPIM0026_people.mp4"
 
 /**
  * Tester Picture File Path
  */
-#define PIC_NMS_PATH "../../data/images/nms.jpg"
+#define PIC_NMS_PATH "../data/images/nms.jpg"
 
 /**
  * Tester Functions
