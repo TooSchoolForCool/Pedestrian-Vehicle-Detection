@@ -45,4 +45,6 @@ void drawRectangles(cv::Mat &frame, const std::vector<VetROI> &rois,
 
 void NMS(std::vector<VetROI> &rois, double overlap_threshold);
 
+void equalizeHist4ColorImage(const cv::Mat &srcImg, cv::Mat &dstImg);
+
 #endif

@@ -59,23 +59,33 @@ VetColorDetector::~VetColorDetector()
 
 void VetColorDetector::detect(const Mat &frame, vector<VetROI> &rois)
 {
-	Mat hsvFrame;
+	Mat equalizeFrame, hsvFrame;
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
 
 	rois.clear();
 
-	cvtColor(frame, hsvFrame, color_space_converter_);
+	// euqalize histogram
+	equalizeHist4ColorImage(frame, equalizeFrame);
+	
+	// converter to target color space
+	cvtColor(equalizeFrame, hsvFrame, color_space_converter_);
+
+	// find specific color region
 	inRange(hsvFrame, lower_bound_, upper_bound_, hsvFrame);
 
+	// dilate the target color region
 	Mat element = getStructuringElement(MORPH_RECT, Size(25, 25));
 	dilate(hsvFrame, hsvFrame, element);
 	dilate(hsvFrame, hsvFrame, element);
 	
+	// blur the region to make it smooth
 	GaussianBlur(hsvFrame, hsvFrame, Size(5, 5), 0, 0);
 
+	// find the contour of the target region (stored as points set)
 	findContours(hsvFrame, contours, hierarchy, RETR_CCOMP, CHAIN_APPROX_SIMPLE);
 
+	// convert the points set into a bounding rectangle box
 	for(vector<vector<Point> >::iterator iter = contours.begin(); 
 		iter != contours.end(); iter++){
 		// rois.push_back(minAreaRect(*iter));

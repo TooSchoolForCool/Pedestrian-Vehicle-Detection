@@ -59,6 +59,9 @@ void* update(void *ptr)
 VetFastVideoCapture::VetFastVideoCapture(string video_path, 
 	int queue_max_size): video_stream_(video_path)
 {
+	if( !video_stream_.isOpened() )
+		error(string("Cannot open video '") + video_path + "'");
+
 	queue_max_size_ = queue_max_size;
 	stopped_ = false;
 	video_path_ = video_path;

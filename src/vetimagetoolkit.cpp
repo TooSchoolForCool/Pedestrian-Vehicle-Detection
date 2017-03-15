@@ -119,3 +119,21 @@ void NMS(vector<VetROI> &rois, double overlap_threshold)
 	// update the region of interests
 	rois.swap(pick);
 }
+
+void equalizeHist4ColorImage(const Mat &srcImg, Mat &dstImg)
+{
+	vector<Mat> channels;  
+	vector<Mat> combinedImg;  
+
+	split(srcImg, channels);  
+
+	for(vector<Mat>::iterator iter = channels.begin(); 
+		iter != channels.end(); iter++)
+	{
+		equalizeHist(*iter, *iter);
+	}
+
+	combinedImg.insert(combinedImg.end(), channels.begin(), channels.end()); 
+
+	merge(combinedImg, dstImg);
+}
