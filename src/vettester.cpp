@@ -45,7 +45,8 @@ static void (*ptr_test_process[])(string)
 	   	fastCarHaarTester,					// FAST_CAR_HAAR_TESTER
 	   	fastFullbodyHaarTester,				// FAST_FULLBODY_HAAR_TESTER
 	   	redDetectorTester,					// RED_DETECTOR_TESTER
-	   	fastHOGSVMTester					// FAST_HOG_SVM_TESTER
+	   	fastHOGSVMTester,					// FAST_HOG_SVM_TESTER
+	   	fooTester							// FOO_TESTER
 	  };			
 
 static VetConcurrentQueue<int> q;
@@ -89,7 +90,7 @@ void fastVideoPlayerTester(string video_path)
 			imshow("frame", frame);
 		}
 
-		char resp = waitKey(30);
+		char resp = waitKey(5);
 
 		if(resp == KEY_ESC){
 			destroyWindow("frame");
@@ -118,7 +119,7 @@ void videoPlayerTester(string video_path)
 	while(videoStream.read(frame)){
 		imshow("frame", frame);
 
-		char resp = waitKey(30);
+		char resp = waitKey(5);
 
 		if(resp == KEY_ESC){
 			destroyWindow("frame");
@@ -301,6 +302,7 @@ void redDetectorTester(string video_path)
 	VetFastVideoCapture fvs(video_path, 128);
 	Mat frame;
 	vector<VetROI> rois;
+	int cnt = 1;
 
 	VetDetectorContext color_detector(COLOR_DETECTOR, RED_REGION);
 
@@ -315,8 +317,9 @@ void redDetectorTester(string video_path)
 
 			NMS(rois, 0.3);
 			drawRectangles(frame, rois, COLOR_RED);
-			rois.clear();  
+			rois.clear();
 
+			printf("Frame %d\n", cnt++);
 			imshow("frame", frame);
 		}
 
@@ -377,4 +380,18 @@ void fastHOGSVMTester(std::string video_path)
 
 	fvs.stop();
 	printf("FAST_HOG_SVM_TESTER ends.\n");
+}
+
+void fooTester(string video_path)
+{
+	Mat img = imread(video_path);
+	Mat histImg;
+
+	equalizeHist4ColorImage(img, histImg);
+
+	imshow("origin", img);
+	imshow("hist", histImg);
+
+	while(waitKey(1) != 27)
+		continue;
 }

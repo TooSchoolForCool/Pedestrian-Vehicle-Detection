@@ -13,6 +13,10 @@ data/video/
 # Ubuntu Trash folder
 .Trash-1000/
 
+# Mac Folder Info
+.DS_Store
+Thumbs.db
+
 # Some Private pre-trained classifier xml files.
 data/haar-cascades/
 *.xml
