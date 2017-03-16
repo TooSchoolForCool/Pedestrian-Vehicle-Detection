@@ -39,7 +39,9 @@ VetColorDetector::VetColorDetector(int specification_id)
 			cout << "VetColorDetector::VetColorDetector: RED_REGION" << endl;
 
 			sensitivity_ = 15;
-			lower_bound_ = Scalar(0 - sensitivity_, 100, 50);
+
+			// Hue, Saturation, Brightness Value
+			lower_bound_ = Scalar(0 - sensitivity_, 100, 90);
 			upper_bound_ = Scalar(0 + sensitivity_, 255, 255);
 
 			color_label_ = "Red";
