@@ -32,7 +32,7 @@
 using namespace std;
 using namespace cv;
 
-bool compareCvRect(VetROI &a, VetROI &b)
+bool compareCvRect(const VetROI &a, const VetROI &b)
 {
 	// int a_y2 = a.br().y;
 	// int b_y2 = b.br().y;
