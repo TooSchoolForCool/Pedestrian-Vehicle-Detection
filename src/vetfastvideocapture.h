@@ -48,6 +48,7 @@ public:
 	void stop();
 	bool more();
 	bool read(cv::Mat &frame);
+	bool isOpened();
 
 	friend void* update(void *ptr);
 

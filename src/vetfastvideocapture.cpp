@@ -117,3 +117,8 @@ bool VetFastVideoCapture::more()
 {
 	return ( !stopped_ || !queue_.empty() );
 }
+
+bool VetFastVideoCapture::isOpened()
+{
+	return video_stream_.isOpened();
+}
