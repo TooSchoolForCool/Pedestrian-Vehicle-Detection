@@ -64,7 +64,7 @@ bool VetOptFlowDetector::startFarneback(const Mat &frame, Mat &flow)
 	calcOpticalFlowFarneback(prev_gray_img_, gray_image, optical_flow, 0.5,
 		3, 15, 3, 5, 1.2, 0);
 
-	motion2color(optical_flow, flow);
+	_motion2color(optical_flow, flow);
 
 	prev_gray_img_ = gray_image;
 
@@ -99,7 +99,7 @@ void VetOptFlowDetector::_makeColorPalette()
     	color_palette_.push_back( Scalar(255, 0, 255 - 255*i/MR) );
 }
 
-void VetOptFlowDetector::motion2color(Mat &flow, Mat &color)
+void VetOptFlowDetector::_motion2color(Mat &flow, Mat &color)
 {
 	if (color.empty())
 		color.create(flow.rows, flow.cols, CV_8UC3);

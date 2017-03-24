@@ -45,7 +45,7 @@ public:
 
 private:
 	void _makeColorPalette();
-	void motion2color(cv::Mat &flow, cv::Mat &color);
+	void _motion2color(cv::Mat &flow, cv::Mat &color);
 
 private:
 	// previous gray image
