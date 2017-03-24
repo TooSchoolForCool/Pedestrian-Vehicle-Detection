@@ -31,20 +31,31 @@
 
 #include <iostream>
 
-class VetOptFlowDetector: public vetdetectorstrategy
+#define UNKNOWN_FLOW_THRESH 1e9 
+
+class VetOptFlowDetector: public VetDetectorStrategy
 {
 public:
 	VetOptFlowDetector();
 	~VetOptFlowDetector();
 
 public:
-	// void detect(const cv::Mat &frame, std::vector<VetROI> &rois);
-	bool startTracking(const cv::Mat &frame, cv::Mat &flow);
+	void detect(const cv::Mat &frame, std::vector<VetROI> &rois);
+	bool startFarneback(const cv::Mat &frame, cv::Mat &flow);
 
 private:
+	void _makeColorPalette();
+	void motion2color(cv::Mat &flow, cv::Mat &color);
+
+private:
+	// previous gray image
 	cv::Mat prev_gray_img_;
+
+	// is ready for reading
 	bool is_ready_;
-	std::string label_;
+
+	// color palette for Optical Flow Farneback approach
+	std::vector<cv::Scalar> color_palette_;
 };
 
 #endif 	// VETOPTFLOWDETECTOR_H
