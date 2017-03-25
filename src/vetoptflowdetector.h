@@ -42,7 +42,7 @@ public:
 
 public:
 	void detect(const cv::Mat &frame, std::vector<VetROI> &rois);
-	bool startFarneback(const cv::Mat &frame, cv::Mat &flow);
+	bool optFlowFarneback(const cv::Mat &frame, cv::Mat &flow);
 	bool optFlowPyrLK(cv::Mat &frame, cv::Mat &flow);
 
 private:

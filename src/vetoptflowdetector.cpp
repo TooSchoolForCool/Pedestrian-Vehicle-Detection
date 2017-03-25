@@ -47,7 +47,7 @@ void VetOptFlowDetector::detect(const Mat &frame, vector<VetROI> &rois)
 	// ...
 }
 
-bool VetOptFlowDetector::startFarneback(const Mat &frame, Mat &flow)
+bool VetOptFlowDetector::optFlowFarneback(const Mat &frame, Mat &flow)
 {
 	Mat gray_image;
 	Mat optical_flow;
