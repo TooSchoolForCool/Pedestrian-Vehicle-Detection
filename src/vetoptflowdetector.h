@@ -31,7 +31,8 @@
 
 #include <iostream>
 
-#define UNKNOWN_FLOW_THRESH 1e9 
+#define UNKNOWN_FLOW_THRESH 1e9
+#define MAX_CORNERS 500
 
 class VetOptFlowDetector: public VetDetectorStrategy
 {
@@ -42,6 +43,7 @@ public:
 public:
 	void detect(const cv::Mat &frame, std::vector<VetROI> &rois);
 	bool startFarneback(const cv::Mat &frame, cv::Mat &flow);
+	bool optFlowPyrLK(cv::Mat &frame, cv::Mat &flow);
 
 private:
 	void _makeColorPalette();
@@ -50,6 +52,8 @@ private:
 private:
 	// previous gray image
 	cv::Mat prev_gray_img_;
+
+	std::vector<cv::Point2f> prev_points_;
 
 	// is ready for reading
 	bool is_ready_;

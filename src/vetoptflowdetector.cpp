@@ -71,6 +71,45 @@ bool VetOptFlowDetector::startFarneback(const Mat &frame, Mat &flow)
 	return true;
 }
 
+bool VetOptFlowDetector::optFlowPyrLK(cv::Mat &frame, cv::Mat &flow)
+{
+	Mat cur_gray_image;
+
+	cvtColor(frame, cur_gray_image, CV_BGR2GRAY);
+
+	if( !is_ready_ )
+	{
+		cur_gray_image.copyTo(prev_gray_img_);
+		is_ready_ = true;
+		return false;
+	}
+
+	vector<Point2f> prev_points, next_points;
+	vector<uchar> state;
+	vector<float> err;
+
+	goodFeaturesToTrack(prev_gray_img_, prev_points, 500, 
+		0.001, 10, Mat(), 3, false, 0.04);
+
+	cornerSubPix(prev_gray_img_, prev_points, Size(10,10), Size(-1,-1), 
+		TermCriteria(CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.03));
+
+	calcOpticalFlowPyrLK(prev_gray_img_, cur_gray_image, prev_points, 
+		next_points, state, err, Size(31,31), 3);
+
+	for(int i=0;i<state.size();i++)
+    {
+        if(state[i]!=0)
+        {
+            line(frame, Point((int)prev_points[i].x, (int)prev_points[i].y),
+            	Point((int)next_points[i].x, (int)next_points[i].y), Scalar(0, 0, 255));
+        }
+    }
+
+	cur_gray_image.copyTo(prev_gray_img_);
+	return true;	
+}
+
 void VetOptFlowDetector::_makeColorPalette()
 {
     int RY = 15;
