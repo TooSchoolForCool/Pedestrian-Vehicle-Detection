@@ -22,6 +22,14 @@ VetDetectorStrategy *VetDetectorFactory::createDetector(DetectorType detector_ty
 			cout << "[VetDetectorFactory::createDetector]: Create Haar Detector" << endl;
 			return new VetHaarDetector(detected_object);
 			break;
+		case HOG_SVM_DETECTOR:
+			cout << "[VetDetectorFactory::createDetector]: Create HOG SVM Detector" << endl;
+			return new VetHOGSVMDetector(detected_object);
+			break;
+		case COLOR_DETECTOR:
+			cout << "[VetDetectorFactory::createDetector]: Create Color Detector" << endl;
+			return new VetColorDetector(detected_object);
+			break;
 		default:
 			cout << "No Such Detector Option" << endl;
 			return NULL;
