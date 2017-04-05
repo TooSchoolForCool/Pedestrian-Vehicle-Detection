@@ -1,4 +1,4 @@
-g/**
+/**
 * [
 *  Copyright (c) 2016 by Vehicle-Eye Technology
 *  ALL RIGHTS RESERVED.
