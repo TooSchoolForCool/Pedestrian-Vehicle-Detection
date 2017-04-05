@@ -16,26 +16,43 @@
 
 
 /*!
-* \file main.cpp
+* \file vetdetectorfactory.h
 * \author [Zeyu Zhang]
 * \version [0.1]
-* \date 2016-02-22
+* \date 2017-04-05
 */
 
-#include "vetusercontext.h"
+#ifndef VETDETECTORFACTORY_H
+#define VETDETECTORFACTORY_H
+
+#include "vetdetectorstrategy.h"
+#include "vethaardetector.h"
+#include "vetcolordetector.h"
+#include "vethogsvmdetector.h"
+#include "vetoptflowdetector.h"
 
 #include <opencv2/opencv.hpp>
 
 #include <iostream>
 
-using namespace cv;
-using namespace std;
+typedef enum _DetectorType
+{
+	HAAR_DETECTOR = 1,
+	HOG_SVM_DETECTOR = 2,
+	COLOR_DETECTOR = 3,
+	OPT_FLOW_DETECTOR = 4
+}DetectorType;
 
-int main()
-{	
-	VetUserContext user(TEST_MODE);
-	
-	user.start(TEST_TRIMED_VIDEO_PATH);
+class VetDetectorFactory
+{
+public:
+	VetDetectorFactory();
+	~VetDetectorFactory();
 
-	return 0;
-}
+public:
+	VetDetectorStrategy *createDetector(DetectorType detector_type, 
+		DetectedObject detected_object);
+};
+
+#endif	// VETDETECTORFACTORY_H
+

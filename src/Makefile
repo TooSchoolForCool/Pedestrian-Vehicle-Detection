@@ -40,15 +40,17 @@ LIBS =
 # define the C source files
 SRCS = main.cpp \
 	   vetroi.cpp \
-	   vetdetectorcontext.cpp \
+	   vetdetectorfactory.cpp \
 	   vetdetectorstrategy.cpp \
 	   vethaardetector.cpp \
 	   vethogsvmdetector.cpp \
 	   vetcolordetector.cpp \
 	   vetoptflowdetector.cpp \
+	   vetuserstrategy.cpp \
+	   vetusercontext.cpp \
+	   vettestmode.cpp \
 	   vetimagetoolkit.cpp \
 	   veterror.cpp \
-	   vettester.cpp \
 	   vetfastvideocapture.cpp \
 	   vetconcurrentqueue.cpp
 
