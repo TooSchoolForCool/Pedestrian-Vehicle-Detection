@@ -1,4 +1,4 @@
-/**
+g/**
 * [
 *  Copyright (c) 2016 by Vehicle-Eye Technology
 *  ALL RIGHTS RESERVED.
@@ -34,7 +34,7 @@
 class VetColorDetector: public VetDetectorStrategy
 {
 public:
-	VetColorDetector(int specification_id);
+	VetColorDetector(DetectedObject detected_object);
 	~VetColorDetector();
 
 public:

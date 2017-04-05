@@ -31,9 +31,9 @@
 using namespace std;
 using namespace cv;
 
-VetHaarDetector::VetHaarDetector(int specification_id)
+VetHaarDetector::VetHaarDetector(DetectedObject detected_object)
 {
-	switch(specification_id){
+	switch(detected_object){
 		case FRONT_CAR:
 			cout << "VetHaarDetector::VetHaarDetector: load FRONT_CAR xml file" << HAAR_CASCADE_FRONT_CAR_XML << endl;
 			cascade_.load(HAAR_CASCADE_FRONT_CAR_XML);

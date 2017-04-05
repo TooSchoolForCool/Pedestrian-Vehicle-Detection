@@ -31,17 +31,17 @@
 using namespace std;
 using namespace cv;
 
-VetColorDetector::VetColorDetector(int specification_id)
+VetColorDetector::VetColorDetector(DetectedObject detected_object)
 {
-	switch(specification_id)
+	switch(detected_object)
 	{
 		case RED_REGION:
 			cout << "VetColorDetector::VetColorDetector: RED_REGION" << endl;
 
-			sensitivity_ = 15;
+			sensitivity_ = 10;
 
 			// Hue, Saturation, Brightness Value
-			lower_bound_ = Scalar(0 - sensitivity_, 100, 90);
+			lower_bound_ = Scalar(0 - sensitivity_, 100, 150);
 			upper_bound_ = Scalar(0 + sensitivity_, 255, 255);
 
 			color_label_ = "Red";

@@ -34,21 +34,13 @@
 
 #include <iostream>
 
-/*!
- * \brief Define the identifier for each detector
- */
-#define HAAR_DETECTOR		0
-#define COLOR_DETECTOR		1
-#define HOG_SVM_DETECTOR	2
-
-/*!
- * \brief Define the identifier for each detector-specification
- */
-#define FRONT_CAR 		0
-#define REAR_CAR 		1
-#define FULLBODY		2
-#define RED_REGION		3
-
+typedef enum _DetectedObject
+{
+	FRONT_CAR = 1,
+	REAR_CAR = 2,
+	FULLBODY = 3,
+	RED_REGION = 4
+}DetectedObject;
 
 /*!
  * \brief Define the xml file path

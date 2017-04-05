@@ -27,9 +27,9 @@
 using namespace std;
 using namespace cv;
 
-VetHOGSVMDetector::VetHOGSVMDetector(int specification_id)
+VetHOGSVMDetector::VetHOGSVMDetector(DetectedObject detected_object)
 {
-	switch(specification_id)
+	switch(detected_object)
 	{
 		case FULLBODY:
 			cout << "VetHOGSVMDetector::VetHOGSVMDetector: load HOGDescriptor::getDefaultPeopleDetector()" << endl;

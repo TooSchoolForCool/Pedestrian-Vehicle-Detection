@@ -384,14 +384,63 @@ void fastHOGSVMTester(std::string video_path)
 
 void fooTester(string video_path)
 {
-	Mat img = imread(video_path);
-	Mat histImg;
+	VetFastVideoCapture fvs(video_path, 128);
+	Mat frame;
+	Mat flow;
+	vector<VetROI> temp_rois, rois;
 
-	equalizeHist4ColorImage(img, histImg);
+	if( !fvs.isOpened() )
+		error(string("Cannot open video:") + video_path);
 
-	imshow("origin", img);
-	imshow("hist", histImg);
+	VetDetectorContext front_car_detector(HAAR_DETECTOR, FRONT_CAR);
+	VetDetectorContext rear_car_detector(HAAR_DETECTOR, REAR_CAR);
+	// VetDetectorContext human_detector(HAAR_DETECTOR, FULLBODY);
+	VetOptFlowDetector optFlowDetector;
 
-	while(waitKey(1) != 27)
-		continue;
+	printf("FOO_TESTER starts.\n");
+
+	fvs.start();
+
+	namedWindow("frame");
+	moveWindow("frame", 25, 25);
+
+	while( fvs.more() )
+	{
+		if ( fvs.read(frame) )
+		{
+			front_car_detector.detect(frame, temp_rois);
+			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
+
+			rear_car_detector.detect(frame, temp_rois);
+			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
+
+			// human_detector.detect(frame, temp_rois);
+			// rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
+
+			NMS(rois, 0.3);
+
+			optFlowDetector.optFlowPyrLK(frame, flow);
+
+			drawRectangles(frame, rois, COLOR_GREEN);
+			rois.clear();  
+
+			imshow("frame", frame);
+		}
+
+		char resp = waitKey(5);
+
+		if(resp == KEY_ESC){
+			cout << "window: frame closed" << endl;
+			destroyWindow("frame");
+			break;
+		}
+		else if(resp == KEY_SPACE){
+			cout << "window: frame paused" << endl;
+			cout << "Press any key to continue..." << endl;
+			waitKey(-1);
+		}
+	}
+
+	fvs.stop();
+	printf("FOO_TESTER ends.\n");
 }

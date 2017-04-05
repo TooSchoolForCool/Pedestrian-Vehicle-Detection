@@ -34,7 +34,7 @@
 class VetHOGSVMDetector: public VetDetectorStrategy
 {
 public:
-	VetHOGSVMDetector(int specification_id);
+	VetHOGSVMDetector(DetectedObject detected_object);
 	~VetHOGSVMDetector();
 
 public:

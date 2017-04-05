@@ -29,7 +29,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
+#include <errno.h>
 
 void error(std::string msg);
 
