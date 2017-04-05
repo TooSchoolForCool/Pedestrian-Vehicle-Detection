@@ -27,13 +27,10 @@
 using namespace std;
 using namespace cv;
 
-
-
-
-
 VetOptFlowDetector::VetOptFlowDetector()
 {
 	is_ready_ = false;
+	pyrLK_max_corners_ = 200;
 	_makeColorPalette();
 }
 
@@ -58,7 +55,7 @@ bool VetOptFlowDetector::optFlowFarneback(const Mat &frame, Mat &flow)
 	{
 		prev_gray_img_ = gray_image;
 		is_ready_ = true;
-		return false;
+		return false; 
 	}
 
 	calcOpticalFlowFarneback(prev_gray_img_, gray_image, optical_flow, 0.5,
@@ -69,6 +66,77 @@ bool VetOptFlowDetector::optFlowFarneback(const Mat &frame, Mat &flow)
 	prev_gray_img_ = gray_image;
 
 	return true;
+}
+
+inline static double square(int a)
+{
+	return a * a;
+}
+
+double getDistance(Point &pointA, Point &pointB)    
+{    
+    double distance;    
+    distance = powf((pointA.x - pointB.x),2) + powf((pointA.y - pointB.y),2);    
+    distance = sqrtf(distance);    
+    
+    return distance;    
+}
+
+double getAngle(Point &pointO, Point &pointA)    
+{    
+    double angle = 0;    
+    Point point;    
+    double temp;    
+  
+    point = Point((pointA.x - pointO.x), (pointA.y - pointO.y));//pointAdd(pointA,pointMultiply(pointO,-1));    
+  
+    if ((0==point.x) && (0==point.y))    
+    {    
+        return 0;    
+    }    
+  
+    if (0==point.x)    
+    {    
+        angle = 90;    
+        return angle;    
+    }    
+  
+    if (0==point.y)    
+    {    
+        angle = 0;    
+        return angle;    
+    }    
+  
+    temp = fabsf(float(point.y)/float(point.x));    
+    temp = atan(temp);    
+    temp = temp*180/CV_PI ;    
+  
+    if ((0<point.x)&&(0<point.y))    
+    {    
+        angle = 360 - temp;    
+        return angle;    
+    }    
+  
+    if ((0>point.x)&&(0<point.y))    
+    {    
+        angle = 360 - (180 - temp);    
+        return angle;    
+    }    
+  
+    if ((0<point.x)&&(0>point.y))    
+    {    
+        angle = temp;    
+        return angle;    
+    }    
+  
+    if ((0>point.x)&&(0>point.y))    
+    {    
+        angle = 180 - temp;    
+        return angle;    
+    }    
+  
+    printf("getAngle error!");    
+    return -1;    
 }
 
 bool VetOptFlowDetector::optFlowPyrLK(cv::Mat &frame, cv::Mat &flow)
@@ -88,21 +156,81 @@ bool VetOptFlowDetector::optFlowPyrLK(cv::Mat &frame, cv::Mat &flow)
 	vector<uchar> state;
 	vector<float> err;
 
-	goodFeaturesToTrack(prev_gray_img_, prev_points, 500, 
-		0.001, 10, Mat(), 3, false, 0.04);
+	Mat mask(frame.size(), CV_8UC1, Scalar(0));
+	vector<vector<Point> > contours;
+	vector<Point> _rois;
+	// for(int i = 0; i < frame.cols / 4; i++)
+	// {
+	// 	for(int j = 0; j < frame.rows; j++)
+	// 	{
+	// 		_rois.push_back( Point(i, j) );
+	// 	}
+	// }
+	for(int i = 0; i <= frame.cols / 4; i += 16)
+	{
+		_rois.push_back( Point(i, frame.rows / 2) );
+		_rois.push_back( Point(i, frame.rows) );
+	}
+	for(int i = frame.rows / 2; i <= frame.rows; i += 16)
+	{
+		_rois.push_back( Point(0, i) );
+		_rois.push_back( Point(frame.cols / 4, i) );
+	}
 
-	cornerSubPix(prev_gray_img_, prev_points, Size(10,10), Size(-1,-1), 
-		TermCriteria(CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.03));
+	contours.push_back(_rois);
+	_rois.clear();
+
+	for(int i = frame.cols * 3 / 4; i <= frame.cols; i += 16)
+	{
+		_rois.push_back( Point(i, frame.rows / 2) );
+		_rois.push_back( Point(i, frame.rows) );
+	}
+	for(int i = frame.rows / 2; i <= frame.rows; i += 16)
+	{
+		_rois.push_back( Point(frame.cols * 3 / 4, i) );
+		_rois.push_back( Point(frame.cols, i) );
+	}
+	contours.push_back(_rois);
+	drawContours(mask, contours, -1, Scalar(255));
+
+	// mask.setTo(Scalar::all(0));
+
+	goodFeaturesToTrack(prev_gray_img_, prev_points, pyrLK_max_corners_, 
+		0.001, 10, mask, 3, false, 0.04);
+
+	// cornerSubPix(prev_gray_img_, prev_points, Size(10,10), Size(-1,-1), 
+	// 	TermCriteria(CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.03));
 
 	calcOpticalFlowPyrLK(prev_gray_img_, cur_gray_image, prev_points, 
 		next_points, state, err, Size(31,31), 3);
 
-	for(int i=0;i<state.size();i++)
+	for(int i = 0; i < (int)state.size();i++)
     {
-        if(state[i]!=0)
+    	Point p = Point((int)prev_points[i].x, (int)prev_points[i].y);
+    	Point q = Point((int)next_points[i].x, (int)next_points[i].y);
+
+
+        if(state[i] != 0)
         {
-            line(frame, Point((int)prev_points[i].x, (int)prev_points[i].y),
-            	Point((int)next_points[i].x, (int)next_points[i].y), Scalar(0, 0, 255));
+        	double angle = atan2( (double) p.y - q.y, (double) p.x - q.x );
+			double hypotenuse = sqrt( square(p.y - q.y) + square(p.x - q.x) );
+			double distance, angle2;
+
+			q.x = (int) (p.x - 3 * hypotenuse * cos(angle));
+			q.y = (int) (p.y - 3 * hypotenuse * sin(angle));
+
+			distance = getDistance(p, q);
+			// angle2 = getAngle(p, q);
+
+            line(frame, p, q, Scalar(0, 0, 255));
+
+            p.x = (int) (q.x + 9 * cos(angle + PI / 4));
+			p.y = (int) (q.y + 9 * sin(angle + PI / 4));
+			line(frame, p, q, Scalar(0, 0, 255));
+
+			p.x = (int) (q.x + 9 * cos(angle - PI / 4));
+			p.y = (int) (q.y + 9 * sin(angle - PI / 4));
+			line(frame, p, q, Scalar(0, 0, 255));
         }
     }
 

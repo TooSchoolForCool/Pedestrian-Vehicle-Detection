@@ -32,7 +32,7 @@
 #include <iostream>
 
 #define UNKNOWN_FLOW_THRESH 1e9
-#define MAX_CORNERS 500
+#define PI 3.141592653576
 
 class VetOptFlowDetector: public VetDetectorStrategy
 {
@@ -57,6 +57,9 @@ private:
 
 	// is ready for reading
 	bool is_ready_;
+
+	// pyrLK approach find maximum number of corners
+	int pyrLK_max_corners_;
 
 	// color palette for Optical Flow Farneback approach
 	std::vector<cv::Scalar> color_palette_;
