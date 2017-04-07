@@ -13,6 +13,7 @@ static void (*ptr_test_process[])(string)
 	   	fastFullbodyHaarTester,				// FAST_FULLBODY_HAAR_TESTER
 	   	redDetectorTester,					// RED_DETECTOR_TESTER
 	   	fastHOGSVMTester,					// FAST_HOG_SVM_TESTER
+	   	optFlowTester,						// OPT_FLOW_TESTER
 	   	fooTester							// FOO_TESTER
 	  };
 
@@ -30,7 +31,7 @@ void VetTestMode::start(string path)
 {
 	cout << "[VetTestMode::start]: test mode starts" << endl;
 
-	ptr_test_process[FOO_TESTER](path);
+	ptr_test_process[OPT_FLOW_TESTER](path);
 
 	cout << "[VetTestMode::start]: test mode ends" << endl;
 }
@@ -364,20 +365,16 @@ void fastHOGSVMTester(std::string video_path)
 	printf("FAST_HOG_SVM_TESTER ends.\n");
 }
 
-void fooTester(string video_path)
+void optFlowTester(string video_path)
 {
 	VetDetectorFactory detector_factory;
 	VetFastVideoCapture fvs(video_path, 128);
 
 	Mat frame;
-	Mat flow;
-	vector<VetROI> temp_rois, rois;
+	vector<VetROI> rois;
 
 	if( !fvs.isOpened() )
 		error(string("Cannot open video:") + video_path);
-
-	VetDetectorStrategy *front_car_detector = detector_factory.createDetector(HAAR_DETECTOR, FRONT_CAR);
-	VetDetectorStrategy *rear_car_detector = detector_factory.createDetector(HAAR_DETECTOR, REAR_CAR);
 
 	VetOptFlowDetector optFlowDetector;
 
@@ -392,18 +389,7 @@ void fooTester(string video_path)
 	{
 		if ( fvs.read(frame) )
 		{
-			front_car_detector->detect(frame, temp_rois);
-			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
-
-			rear_car_detector->detect(frame, temp_rois);
-			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
-
-			NMS(rois, 0.3);
-
-			optFlowDetector.optFlowPyrLK(frame, flow);
-
-			drawRectangles(frame, rois, COLOR_GREEN);
-			rois.clear();  
+			optFlowDetector.detect(frame, rois);
 
 			imshow("frame", frame);
 		}
@@ -423,8 +409,18 @@ void fooTester(string video_path)
 	}
 
 	fvs.stop();
-	delete front_car_detector;
-	delete rear_car_detector;
+
+	printf("FOO_TESTER ends.\n");
+}
+
+
+
+
+void fooTester(string video_path)
+{
+	printf("FOO_TESTER starts.\n");
+
+	cout << "Hello world." << endl;
 
 	printf("FOO_TESTER ends.\n");
 }

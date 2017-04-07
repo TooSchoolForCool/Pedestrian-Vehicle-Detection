@@ -27,7 +27,8 @@
 #define FAST_FULLBODY_HAAR_TESTER	5
 #define RED_DETECTOR_TESTER			6
 #define FAST_HOG_SVM_TESTER			7
-#define FOO_TESTER					8
+#define OPT_FLOW_TESTER				8
+#define FOO_TESTER					9
 
 /**
  * Tester Video File Path
@@ -54,6 +55,7 @@ void fastCarHaarTester(std::string video_path);
 void fastFullbodyHaarTester(std::string video_path);
 void redDetectorTester(std::string video_path);
 void fastHOGSVMTester(std::string video_path);
+void optFlowTester(std::string video_path);
 void fooTester(std::string video_path);
 
 class VetTestMode: public VetUserStrategy
