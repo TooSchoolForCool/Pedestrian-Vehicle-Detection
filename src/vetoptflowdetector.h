@@ -30,9 +30,18 @@
 #include <opencv2/opencv.hpp>
 
 #include <iostream>
+#include <math.h>
 
 #define UNKNOWN_FLOW_THRESH 1e9
 #define PI 3.141592653576
+
+typedef struct _OptFlowPyrLKResult
+{
+	std::vector<cv::Point2f> prev_points_;
+	std::vector<cv::Point2f> next_points_;
+	std::vector<uchar> state_;
+	std::vector<float> err_;
+}OptFlowPyrLKResult;
 
 class VetOptFlowDetector: public VetDetectorStrategy
 {
@@ -42,12 +51,15 @@ public:
 
 public:
 	void detect(const cv::Mat &frame, std::vector<VetROI> &rois);
+	void detect(cv::Mat &frame, std::vector<VetROI> &rois);
 	bool optFlowFarneback(const cv::Mat &frame, cv::Mat &flow);
-	bool optFlowPyrLK(cv::Mat &frame, cv::Mat &flow);
 
 private:
+	bool _optFlowPyrLK(const cv::Mat &frame, OptFlowPyrLKResult &result);
 	void _makeColorPalette();
 	void _motion2color(cv::Mat &flow, cv::Mat &color);
+	double _calcDistance(const cv::Point &a, const cv::Point &b);
+	double _calcAngleInDegree(const cv::Point &a, const cv::Point &b);
 
 private:
 	// previous gray image

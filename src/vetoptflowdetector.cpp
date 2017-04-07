@@ -41,7 +41,91 @@ VetOptFlowDetector::~VetOptFlowDetector()
 
 void VetOptFlowDetector::detect(const Mat &frame, vector<VetROI> &rois)
 {
-	// ...
+	//...
+}
+
+void VetOptFlowDetector::detect(Mat &frame, vector<VetROI> &rois)
+{
+	OptFlowPyrLKResult result;
+
+	if( !_optFlowPyrLK(frame, result) )
+		return;
+
+	vector<Point2f> &prev_points = result.prev_points_;
+	vector<Point2f> &next_points = result.next_points_;
+	vector<uchar> &state = result.state_;
+	vector<float> &err = result.err_;
+
+	// Mat mask(frame.size(), CV_8UC1, Scalar(0));
+	// vector<vector<Point> > contours;
+	// vector<Point> _rois;
+	
+	// for(int i = 0; i < state.size(); i++)
+	// {
+	// 	Point p = Point((int)prev_points[i].x, (int)prev_points[i].y);
+	// 	Point q = Point((int)next_points[i].x, (int)next_points[i].y);
+
+	// 	if(state[i] != 0)
+	// 	{
+	// 		double distance, angle_in_degree;
+
+	// 		distance = _calcDistance(p, q);
+	// 		angle_in_degree = _calcAngleInDegree(p, q);
+
+	// 		if( !(angle_in_degree >= 135 && angle_in_degree <= 225) )
+	// 			continue;
+
+	// 		if( (p.x <= frame.cols / 2 && distance < 40)
+	// 			|| (p.x > frame.cols / 2 && distance < 10) )
+	// 			continue;
+
+	// 		_rois.push_back(p);
+	// 	}
+	// }
+	// contours.push_back(_rois);
+
+	// drawContours(frame, contours, 0, Scalar(255, 0, 0));
+
+
+	for(int i = 0; i < (int)state.size();i++)
+	{
+		Point p = Point((int)prev_points[i].x, (int)prev_points[i].y);
+		Point q = Point((int)next_points[i].x, (int)next_points[i].y);
+
+		if(state[i] != 0)
+		{
+			double delta_x = p.x - q.x;
+			double delta_y = p.y - q.y;
+
+			double angle = atan2( (double)delta_y, (double)delta_x );
+			double hypotenuse = sqrt( delta_y * delta_y + delta_x * delta_x );
+			double distance, angle_in_degree;
+
+			q.x = (int) (p.x - 3 * hypotenuse * cos(angle));
+			q.y = (int) (p.y - 3 * hypotenuse * sin(angle));
+
+			distance = _calcDistance(p, q);
+			angle_in_degree = _calcAngleInDegree(p, q);
+
+			// if( !(p.x > frame.cols / 2 && angle_in_degree >= 135 && angle_in_degree <= 225
+			// 	|| p.x <= frame.cols / 2 && angle_in_degree >= 0 && angle_in_degree <= 45) )
+			// 	continue;
+
+			// if( (p.x <= frame.cols / 2 && distance < 10)
+			// 	|| (p.x > frame.cols / 2 && distance < 10) )
+			// 	continue;
+
+			line(frame, p, q, Scalar(0, 0, 255));
+
+			p.x = (int) (q.x + 9 * cos(angle + PI / 4));
+			p.y = (int) (q.y + 9 * sin(angle + PI / 4));
+			line(frame, p, q, Scalar(0, 0, 255));
+
+			p.x = (int) (q.x + 9 * cos(angle - PI / 4));
+			p.y = (int) (q.y + 9 * sin(angle - PI / 4));
+			line(frame, p, q, Scalar(0, 0, 255));
+		}
+	}
 }
 
 bool VetOptFlowDetector::optFlowFarneback(const Mat &frame, Mat &flow)
@@ -68,78 +152,7 @@ bool VetOptFlowDetector::optFlowFarneback(const Mat &frame, Mat &flow)
 	return true;
 }
 
-inline static double square(int a)
-{
-	return a * a;
-}
-
-double getDistance(Point &pointA, Point &pointB)    
-{    
-    double distance;    
-    distance = powf((pointA.x - pointB.x),2) + powf((pointA.y - pointB.y),2);    
-    distance = sqrtf(distance);    
-    
-    return distance;    
-}
-
-double getAngle(Point &pointO, Point &pointA)    
-{    
-    double angle = 0;    
-    Point point;    
-    double temp;    
-  
-    point = Point((pointA.x - pointO.x), (pointA.y - pointO.y));//pointAdd(pointA,pointMultiply(pointO,-1));    
-  
-    if ((0==point.x) && (0==point.y))    
-    {    
-        return 0;    
-    }    
-  
-    if (0==point.x)    
-    {    
-        angle = 90;    
-        return angle;    
-    }    
-  
-    if (0==point.y)    
-    {    
-        angle = 0;    
-        return angle;    
-    }    
-  
-    temp = fabsf(float(point.y)/float(point.x));    
-    temp = atan(temp);    
-    temp = temp*180/CV_PI ;    
-  
-    if ((0<point.x)&&(0<point.y))    
-    {    
-        angle = 360 - temp;    
-        return angle;    
-    }    
-  
-    if ((0>point.x)&&(0<point.y))    
-    {    
-        angle = 360 - (180 - temp);    
-        return angle;    
-    }    
-  
-    if ((0<point.x)&&(0>point.y))    
-    {    
-        angle = temp;    
-        return angle;    
-    }    
-  
-    if ((0>point.x)&&(0>point.y))    
-    {    
-        angle = 180 - temp;    
-        return angle;    
-    }    
-  
-    printf("getAngle error!");    
-    return -1;    
-}
-
-bool VetOptFlowDetector::optFlowPyrLK(cv::Mat &frame, cv::Mat &flow)
+bool VetOptFlowDetector::_optFlowPyrLK(const cv::Mat &frame, OptFlowPyrLKResult &result)
 {
 	Mat cur_gray_image;
 
@@ -152,26 +165,21 @@ bool VetOptFlowDetector::optFlowPyrLK(cv::Mat &frame, cv::Mat &flow)
 		return false;
 	}
 
-	vector<Point2f> prev_points, next_points;
-	vector<uchar> state;
-	vector<float> err;
+	vector<Point2f> &prev_points = result.prev_points_;
+	vector<Point2f> &next_points = result.next_points_;
+	vector<uchar> &state = result.state_;
+	vector<float> &err = result.err_;
 
 	Mat mask(frame.size(), CV_8UC1, Scalar(0));
 	vector<vector<Point> > contours;
 	vector<Point> _rois;
-	// for(int i = 0; i < frame.cols / 4; i++)
-	// {
-	// 	for(int j = 0; j < frame.rows; j++)
-	// 	{
-	// 		_rois.push_back( Point(i, j) );
-	// 	}
-	// }
-	for(int i = 0; i <= frame.cols / 4; i += 16)
+	
+	for(int i = 0; i <= frame.cols / 4; i++)
 	{
 		_rois.push_back( Point(i, frame.rows / 2) );
 		_rois.push_back( Point(i, frame.rows) );
 	}
-	for(int i = frame.rows / 2; i <= frame.rows; i += 16)
+	for(int i = frame.rows / 2; i <= frame.rows; i++)
 	{
 		_rois.push_back( Point(0, i) );
 		_rois.push_back( Point(frame.cols / 4, i) );
@@ -180,12 +188,12 @@ bool VetOptFlowDetector::optFlowPyrLK(cv::Mat &frame, cv::Mat &flow)
 	contours.push_back(_rois);
 	_rois.clear();
 
-	for(int i = frame.cols * 3 / 4; i <= frame.cols; i += 16)
+	for(int i = frame.cols * 3 / 4; i <= frame.cols; i++)
 	{
 		_rois.push_back( Point(i, frame.rows / 2) );
 		_rois.push_back( Point(i, frame.rows) );
 	}
-	for(int i = frame.rows / 2; i <= frame.rows; i += 16)
+	for(int i = frame.rows / 2; i <= frame.rows; i++)
 	{
 		_rois.push_back( Point(frame.cols * 3 / 4, i) );
 		_rois.push_back( Point(frame.cols, i) );
@@ -193,48 +201,17 @@ bool VetOptFlowDetector::optFlowPyrLK(cv::Mat &frame, cv::Mat &flow)
 	contours.push_back(_rois);
 	drawContours(mask, contours, -1, Scalar(255));
 
-	// mask.setTo(Scalar::all(0));
-
 	goodFeaturesToTrack(prev_gray_img_, prev_points, pyrLK_max_corners_, 
 		0.001, 10, mask, 3, false, 0.04);
 
-	// cornerSubPix(prev_gray_img_, prev_points, Size(10,10), Size(-1,-1), 
-	// 	TermCriteria(CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.03));
+	cornerSubPix(prev_gray_img_, prev_points, Size(10,10), Size(-1,-1), 
+		TermCriteria(CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.03));
 
 	calcOpticalFlowPyrLK(prev_gray_img_, cur_gray_image, prev_points, 
 		next_points, state, err, Size(31,31), 3);
 
-	for(int i = 0; i < (int)state.size();i++)
-    {
-    	Point p = Point((int)prev_points[i].x, (int)prev_points[i].y);
-    	Point q = Point((int)next_points[i].x, (int)next_points[i].y);
-
-
-        if(state[i] != 0)
-        {
-        	double angle = atan2( (double) p.y - q.y, (double) p.x - q.x );
-			double hypotenuse = sqrt( square(p.y - q.y) + square(p.x - q.x) );
-			double distance, angle2;
-
-			q.x = (int) (p.x - 3 * hypotenuse * cos(angle));
-			q.y = (int) (p.y - 3 * hypotenuse * sin(angle));
-
-			distance = getDistance(p, q);
-			// angle2 = getAngle(p, q);
-
-            line(frame, p, q, Scalar(0, 0, 255));
-
-            p.x = (int) (q.x + 9 * cos(angle + PI / 4));
-			p.y = (int) (q.y + 9 * sin(angle + PI / 4));
-			line(frame, p, q, Scalar(0, 0, 255));
-
-			p.x = (int) (q.x + 9 * cos(angle - PI / 4));
-			p.y = (int) (q.y + 9 * sin(angle - PI / 4));
-			line(frame, p, q, Scalar(0, 0, 255));
-        }
-    }
-
 	cur_gray_image.copyTo(prev_gray_img_);
+
 	return true;	
 }
 
@@ -325,4 +302,31 @@ void VetOptFlowDetector::_motion2color(Mat &flow, Mat &color)
 			}
 		}
 	}
+}
+
+double VetOptFlowDetector::_calcDistance(const Point &a, const Point &b)    
+{    
+    double distance;
+
+    distance = powf((a.x - b.x),2) + powf((a.y - b.y),2);    
+    distance = sqrtf(distance);    
+    
+    return distance;    
+}
+
+double VetOptFlowDetector::_calcAngleInDegree(const Point &a, const Point &b)
+{
+	int delta_x = b.x - a.x;
+	int delta_y = b.y - a.y;
+	double delta_hypotenuse = sqrt(delta_x * delta_x + delta_y * delta_y);
+
+	double cos_value = delta_x / delta_hypotenuse;
+
+	double angle = acos(cos_value) * 180 / 3.1415;
+
+	// In opencv, y axis is up-side-down
+	if(delta_y > 0)
+		angle = 360 - angle;
+
+	return angle;
 }
