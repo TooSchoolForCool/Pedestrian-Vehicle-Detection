@@ -56,36 +56,7 @@ void VetOptFlowDetector::detect(Mat &frame, vector<VetROI> &rois)
 	vector<uchar> &state = result.state_;
 	vector<float> &err = result.err_;
 
-	// Mat mask(frame.size(), CV_8UC1, Scalar(0));
-	// vector<vector<Point> > contours;
-	// vector<Point> _rois;
-	
-	// for(int i = 0; i < state.size(); i++)
-	// {
-	// 	Point p = Point((int)prev_points[i].x, (int)prev_points[i].y);
-	// 	Point q = Point((int)next_points[i].x, (int)next_points[i].y);
-
-	// 	if(state[i] != 0)
-	// 	{
-	// 		double distance, angle_in_degree;
-
-	// 		distance = _calcDistance(p, q);
-	// 		angle_in_degree = _calcAngleInDegree(p, q);
-
-	// 		if( !(angle_in_degree >= 135 && angle_in_degree <= 225) )
-	// 			continue;
-
-	// 		if( (p.x <= frame.cols / 2 && distance < 40)
-	// 			|| (p.x > frame.cols / 2 && distance < 10) )
-	// 			continue;
-
-	// 		_rois.push_back(p);
-	// 	}
-	// }
-	// contours.push_back(_rois);
-
-	// drawContours(frame, contours, 0, Scalar(255, 0, 0));
-
+	vector<vector<Point> > roi(2, vector<Point>());
 
 	for(int i = 0; i < (int)state.size();i++)
 	{
@@ -107,13 +78,18 @@ void VetOptFlowDetector::detect(Mat &frame, vector<VetROI> &rois)
 			distance = _calcDistance(p, q);
 			angle_in_degree = _calcAngleInDegree(p, q);
 
-			// if( !(p.x > frame.cols / 2 && angle_in_degree >= 135 && angle_in_degree <= 225
-			// 	|| p.x <= frame.cols / 2 && angle_in_degree >= 0 && angle_in_degree <= 45) )
-			// 	continue;
+			if( !(p.x > frame.cols / 2 && angle_in_degree >= 135 && angle_in_degree <= 225
+				|| p.x <= frame.cols / 2 && angle_in_degree >= 0 && angle_in_degree <= 45) )
+				continue;
 
-			// if( (p.x <= frame.cols / 2 && distance < 10)
-			// 	|| (p.x > frame.cols / 2 && distance < 10) )
-			// 	continue;
+			if( (p.x <= frame.cols / 2 && distance < 10)
+				|| (p.x > frame.cols / 2 && distance < 10) )
+				continue;
+
+			if(p.x <= frame.cols / 2)
+				roi[0].push_back(p);
+			else
+				roi[1].push_back(p);
 
 			line(frame, p, q, Scalar(0, 0, 255));
 
@@ -126,6 +102,11 @@ void VetOptFlowDetector::detect(Mat &frame, vector<VetROI> &rois)
 			line(frame, p, q, Scalar(0, 0, 255));
 		}
 	}
+
+	if(roi[0].size() > 5) 
+		rois.push_back( VetROI(_findBoundingRect(roi[0]), "Warn") );
+	if(roi[1].size() > 5)
+		rois.push_back( VetROI(_findBoundingRect(roi[1]), "Warn") );
 }
 
 bool VetOptFlowDetector::optFlowFarneback(const Mat &frame, Mat &flow)
@@ -329,4 +310,31 @@ double VetOptFlowDetector::_calcAngleInDegree(const Point &a, const Point &b)
 		angle = 360 - angle;
 
 	return angle;
+}
+
+Rect VetOptFlowDetector::_findBoundingRect(const vector<Point> &src)
+{
+	Point tl(9999, 9999), br(0, 0);
+
+	vector<Point>::const_iterator iter = src.begin();
+	vector<Point>::const_iterator end = src.end();
+
+	while(iter != end)
+	{
+		if(iter->x < tl.x)
+			tl.x = iter->x;
+		
+		if(iter->y < tl.y)
+			tl.y = iter->y;
+		
+		if(iter->x > br.x)
+			br.x = iter->x;
+
+		if(iter->y > br.y)
+			br.y = iter->y;
+
+		iter++;
+	}
+
+	return Rect(tl, br);
 }

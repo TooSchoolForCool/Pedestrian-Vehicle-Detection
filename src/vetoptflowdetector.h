@@ -60,6 +60,7 @@ private:
 	void _motion2color(cv::Mat &flow, cv::Mat &color);
 	double _calcDistance(const cv::Point &a, const cv::Point &b);
 	double _calcAngleInDegree(const cv::Point &a, const cv::Point &b);
+	cv::Rect _findBoundingRect(const std::vector<cv::Point> &src);
 
 private:
 	// previous gray image

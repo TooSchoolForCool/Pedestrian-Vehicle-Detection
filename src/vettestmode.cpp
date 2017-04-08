@@ -391,6 +391,10 @@ void optFlowTester(string video_path)
 		{
 			optFlowDetector.detect(frame, rois);
 
+			// NMS(rois, 0.3);
+			drawRectangles(frame, rois, COLOR_GREEN);
+			rois.clear();
+
 			imshow("frame", frame);
 		}
 
