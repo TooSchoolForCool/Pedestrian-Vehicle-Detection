@@ -371,12 +371,14 @@ void optFlowTester(string video_path)
 	VetFastVideoCapture fvs(video_path, 128);
 
 	Mat frame;
-	vector<VetROI> rois;
+	vector<VetROI> rois, temp_rois;
 
 	if( !fvs.isOpened() )
 		error(string("Cannot open video:") + video_path);
 
 	VetOptFlowDetector optFlowDetector;
+	VetDetectorStrategy *front_car_detector = detector_factory.createDetector(HAAR_DETECTOR, FRONT_CAR);
+	VetDetectorStrategy *rear_car_detector = detector_factory.createDetector(HAAR_DETECTOR, REAR_CAR);
 
 	printf("FOO_TESTER starts.\n");
 
@@ -390,9 +392,8 @@ void optFlowTester(string video_path)
 		if ( fvs.read(frame) )
 		{
 			optFlowDetector.detect(frame, rois);
-
-			// NMS(rois, 0.3);
-			drawRectangles(frame, rois, COLOR_GREEN);
+			
+			drawRectangles(frame, rois, COLOR_RED);
 			rois.clear();
 
 			imshow("frame", frame);
@@ -416,9 +417,6 @@ void optFlowTester(string video_path)
 
 	printf("FOO_TESTER ends.\n");
 }
-
-
-
 
 void fooTester(string video_path)
 {
