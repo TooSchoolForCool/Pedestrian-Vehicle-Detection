@@ -46,6 +46,8 @@ void VetOptFlowDetector::detect(const Mat &frame, vector<VetROI> &rois)
 {
 	OptFlowPyrLKResult result;
 
+	rois.clear();
+
 	if( !_optFlowPyrLK(frame, result) )
 		return;
 
