@@ -14,6 +14,8 @@ static void (*ptr_test_process[])(string)
 	   	redDetectorTester,					// RED_DETECTOR_TESTER
 	   	fastHOGSVMTester,					// FAST_HOG_SVM_TESTER
 	   	optFlowTester,						// OPT_FLOW_TESTER
+	   	cascadeHumanTester,					// CASCADE_HUMAN_TESTER
+	   	capstoneTester,						// CAPSTONE_TESTER
 	   	fooTester							// FOO_TESTER
 	  };
 
@@ -31,7 +33,7 @@ void VetTestMode::start(string path)
 {
 	cout << "[VetTestMode::start]: test mode starts" << endl;
 
-	ptr_test_process[OPT_FLOW_TESTER](path);
+	ptr_test_process[CAPSTONE_TESTER](path);
 
 	cout << "[VetTestMode::start]: test mode ends" << endl;
 }
@@ -377,10 +379,8 @@ void optFlowTester(string video_path)
 		error(string("Cannot open video:") + video_path);
 
 	VetOptFlowDetector optFlowDetector;
-	VetDetectorStrategy *front_car_detector = detector_factory.createDetector(HAAR_DETECTOR, FRONT_CAR);
-	VetDetectorStrategy *rear_car_detector = detector_factory.createDetector(HAAR_DETECTOR, REAR_CAR);
 
-	printf("FOO_TESTER starts.\n");
+	printf("OPT_FLOW_TESTER starts.\n");
 
 	fvs.start();
 
@@ -415,7 +415,135 @@ void optFlowTester(string video_path)
 
 	fvs.stop();
 
-	printf("FOO_TESTER ends.\n");
+	printf("OPT_FLOW_TESTER ends.\n");
+}
+
+void cascadeHumanTester(string video_path)
+{
+	VetDetectorFactory detector_factory;
+	VetFastVideoCapture fvs(video_path, 128);
+
+	Mat frame;
+	vector<VetROI> rois, rois1, rois2;
+
+	VetDetectorStrategy *human_detector_haar = detector_factory.createDetector(HAAR_DETECTOR, FULLBODY);
+	VetDetectorStrategy *human_detector_hog = detector_factory.createDetector(HOG_SVM_DETECTOR, FULLBODY);
+
+	printf("CASCADE_HUMAN_TESTER starts.\n");
+
+	fvs.start();
+
+	namedWindow("frame");
+	moveWindow("frame", 25, 25);
+
+	while( fvs.more() ){
+		if ( fvs.read(frame) ){
+			human_detector_haar->detect(frame, rois);
+			human_detector_hog->detect(frame, rois2);
+
+			NMS(rois, 0.3);
+			drawRectangles(frame, rois, COLOR_RED);
+			rois.clear();  
+
+			NMS(rois2, 0.3);
+			drawRectangles(frame, rois2, COLOR_GREEN);
+			rois2.clear();  
+
+			imshow("frame", frame);
+		}
+
+		char resp = waitKey(5);
+
+		if(resp == KEY_ESC){
+			cout << "window: frame closed" << endl;
+			destroyWindow("frame");
+			break;
+		}
+		else if(resp == KEY_SPACE){
+			cout << "window: frame paused" << endl;
+			cout << "Press any key to continue..." << endl;
+			waitKey(-1);
+		}
+	}
+
+	fvs.stop();
+	delete human_detector_haar;
+	delete human_detector_hog;
+
+	printf("CASCADE_HUMAN_TESTER ends.\n");
+}
+
+void capstoneTester(std::string video_path)
+{
+	VetDetectorFactory detector_factory;
+	VetFastVideoCapture fvs(video_path, 128);
+
+	Mat frame;
+	vector<VetROI> rois, temp_rois;
+
+	if( !fvs.isOpened() )
+		error(string("Cannot open video:") + video_path);
+
+	VetOptFlowDetector optFlowDetector;
+
+	VetDetectorStrategy *human_detector = detector_factory.createDetector(HAAR_DETECTOR, FULLBODY);
+
+	VetDetectorStrategy *front_car_detector = detector_factory.createDetector(HAAR_DETECTOR, FRONT_CAR);
+	VetDetectorStrategy *rear_car_detector = detector_factory.createDetector(HAAR_DETECTOR, REAR_CAR);
+
+	printf("CAPSTONE_TESTER starts.\n");
+
+	fvs.start();
+
+	namedWindow("frame");
+	moveWindow("frame", 25, 25);
+
+	while( fvs.more() )
+	{
+		if ( fvs.read(frame) )
+		{
+			optFlowDetector.detect(frame, temp_rois);
+			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
+
+			front_car_detector->detect(frame, temp_rois);
+			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
+
+			rear_car_detector->detect(frame, temp_rois);
+			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
+
+			human_detector->detect(frame, temp_rois);
+			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
+
+			NMS(rois, 0.3);
+			drawRectangles(frame, rois, COLOR_RED);
+			rois.clear();  
+
+			imshow("frame", frame);
+		}
+
+		char resp = waitKey(5);
+
+		if(resp == KEY_ESC)
+		{
+			cout << "window: frame closed" << endl;
+			destroyWindow("frame");
+			break;
+		}
+		else if(resp == KEY_SPACE)
+		{
+			cout << "window: frame paused" << endl;
+			cout << "Press any key to continue..." << endl;
+			waitKey(-1);
+		}
+	}
+
+	fvs.stop();
+
+	delete human_detector;
+	delete rear_car_detector;
+	delete front_car_detector;
+	
+	printf("CAPSTONE_TESTER ends.\n");
 }
 
 void fooTester(string video_path)
