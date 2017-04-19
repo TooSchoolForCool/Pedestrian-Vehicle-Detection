@@ -479,7 +479,7 @@ void capstoneTester(std::string video_path)
 	VetFastVideoCapture fvs(video_path, 128);
 
 	Mat frame;
-	vector<VetROI> rois, temp_rois;
+	vector<VetROI> rois_car, rois_opt, rois_human, temp_rois;
 
 	if( !fvs.isOpened() )
 		error(string("Cannot open video:") + video_path);
@@ -502,21 +502,27 @@ void capstoneTester(std::string video_path)
 	{
 		if ( fvs.read(frame) )
 		{
-			optFlowDetector.detect(frame, temp_rois);
-			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
+			optFlowDetector.detect(frame, rois_opt);
 
 			front_car_detector->detect(frame, temp_rois);
-			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
+			rois_car.insert(rois_car.end(), temp_rois.begin(), temp_rois.end());
 
 			rear_car_detector->detect(frame, temp_rois);
-			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
+			rois_car.insert(rois_car.end(), temp_rois.begin(), temp_rois.end());
 
-			human_detector->detect(frame, temp_rois);
-			rois.insert(rois.end(), temp_rois.begin(), temp_rois.end());
+			human_detector->detect(frame, rois_human);
 
-			NMS(rois, 0.3);
-			drawRectangles(frame, rois, COLOR_RED);
-			rois.clear();  
+			NMS(rois_opt, 0.3);
+			NMS(rois_car, 0.3);
+			NMS(rois_human, 0.3);
+
+			drawRectangles(frame, rois_opt, COLOR_RED);
+			drawRectangles(frame, rois_car, COLOR_GREEN);
+			drawRectangles(frame, rois_human, COLOR_BLUE);
+			
+			rois_opt.clear();
+			rois_car.clear();
+			rois_human.clear();
 
 			imshow("frame", frame);
 		}
@@ -542,7 +548,7 @@ void capstoneTester(std::string video_path)
 	delete human_detector;
 	delete rear_car_detector;
 	delete front_car_detector;
-	
+
 	printf("CAPSTONE_TESTER ends.\n");
 }
 
