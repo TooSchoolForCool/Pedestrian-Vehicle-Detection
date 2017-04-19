@@ -30,7 +30,10 @@ using namespace cv;
 VetOptFlowDetector::VetOptFlowDetector()
 {
 	is_ready_ = false;
+	
+	// set pyrLK method maximum corner tracked
 	pyrLK_max_corners_ = 200;
+
 	_makeColorPalette();
 }
 
@@ -40,11 +43,6 @@ VetOptFlowDetector::~VetOptFlowDetector()
 }
 
 void VetOptFlowDetector::detect(const Mat &frame, vector<VetROI> &rois)
-{
-	//...
-}
-
-void VetOptFlowDetector::detect(Mat &frame, vector<VetROI> &rois)
 {
 	OptFlowPyrLKResult result;
 
@@ -70,6 +68,7 @@ void VetOptFlowDetector::detect(Mat &frame, vector<VetROI> &rois)
 
 			double angle = atan2( (double)delta_y, (double)delta_x );
 			double hypotenuse = sqrt( delta_y * delta_y + delta_x * delta_x );
+
 			double distance, angle_in_degree;
 
 			q.x = (int) (p.x - 3 * hypotenuse * cos(angle));
@@ -91,22 +90,22 @@ void VetOptFlowDetector::detect(Mat &frame, vector<VetROI> &rois)
 			else
 				roi[1].push_back(p);
 
-			line(frame, p, q, Scalar(0, 0, 255));
+			// line(frame, p, q, Scalar(0, 0, 255));
 
-			p.x = (int) (q.x + 9 * cos(angle + PI / 4));
-			p.y = (int) (q.y + 9 * sin(angle + PI / 4));
-			line(frame, p, q, Scalar(0, 0, 255));
+			// p.x = (int) (q.x + 9 * cos(angle + PI / 4));
+			// p.y = (int) (q.y + 9 * sin(angle + PI / 4));
+			// line(frame, p, q, Scalar(0, 0, 255));
 
-			p.x = (int) (q.x + 9 * cos(angle - PI / 4));
-			p.y = (int) (q.y + 9 * sin(angle - PI / 4));
-			line(frame, p, q, Scalar(0, 0, 255));
+			// p.x = (int) (q.x + 9 * cos(angle - PI / 4));
+			// p.y = (int) (q.y + 9 * sin(angle - PI / 4));
+			// line(frame, p, q, Scalar(0, 0, 255));
 		}
 	}
 
-	if(roi[0].size() > 5) 
-		rois.push_back( VetROI(_findBoundingRect(roi[0]), "Warn") );
-	if(roi[1].size() > 5)
-		rois.push_back( VetROI(_findBoundingRect(roi[1]), "Warn") );
+	if(roi[0].size() > 10) 
+		rois.push_back( VetROI(_findBoundingRect(roi[0]), "Warning") );
+	if(roi[1].size() > 10)
+		rois.push_back( VetROI(_findBoundingRect(roi[1]), "Warning") );
 }
 
 bool VetOptFlowDetector::optFlowFarneback(const Mat &frame, Mat &flow)
@@ -151,6 +150,28 @@ bool VetOptFlowDetector::_optFlowPyrLK(const cv::Mat &frame, OptFlowPyrLKResult 
 	vector<uchar> &state = result.state_;
 	vector<float> &err = result.err_;
 
+	if(frame.size() != _mask.size())
+	{
+		_createMask4Detection(frame);
+		printf("VetOptFlowDetector::_optFlowPyrLK creates new mask\n");
+	}
+
+	goodFeaturesToTrack(prev_gray_img_, prev_points, pyrLK_max_corners_, 
+		0.001, 10, _mask, 3, false, 0.04);
+
+	cornerSubPix(prev_gray_img_, prev_points, Size(10,10), Size(-1,-1), 
+		TermCriteria(CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.03));
+
+	calcOpticalFlowPyrLK(prev_gray_img_, cur_gray_image, prev_points, 
+		next_points, state, err, Size(31,31), 3);
+
+	cur_gray_image.copyTo(prev_gray_img_);
+
+	return true;	
+}
+
+void VetOptFlowDetector::_createMask4Detection(const Mat &frame)
+{
 	Mat mask(frame.size(), CV_8UC1, Scalar(0));
 	vector<vector<Point> > contours;
 	vector<Point> _rois;
@@ -182,18 +203,7 @@ bool VetOptFlowDetector::_optFlowPyrLK(const cv::Mat &frame, OptFlowPyrLKResult 
 	contours.push_back(_rois);
 	drawContours(mask, contours, -1, Scalar(255));
 
-	goodFeaturesToTrack(prev_gray_img_, prev_points, pyrLK_max_corners_, 
-		0.001, 10, mask, 3, false, 0.04);
-
-	cornerSubPix(prev_gray_img_, prev_points, Size(10,10), Size(-1,-1), 
-		TermCriteria(CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.03));
-
-	calcOpticalFlowPyrLK(prev_gray_img_, cur_gray_image, prev_points, 
-		next_points, state, err, Size(31,31), 3);
-
-	cur_gray_image.copyTo(prev_gray_img_);
-
-	return true;	
+	mask.copyTo(_mask);
 }
 
 void VetOptFlowDetector::_makeColorPalette()

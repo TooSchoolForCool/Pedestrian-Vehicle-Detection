@@ -51,13 +51,15 @@ public:
 
 public:
 	void detect(const cv::Mat &frame, std::vector<VetROI> &rois);
-	void detect(cv::Mat &frame, std::vector<VetROI> &rois);
 	bool optFlowFarneback(const cv::Mat &frame, cv::Mat &flow);
 
 private:
 	bool _optFlowPyrLK(const cv::Mat &frame, OptFlowPyrLKResult &result);
+	void _createMask4Detection(const cv::Mat &frame);
+	
 	void _makeColorPalette();
 	void _motion2color(cv::Mat &flow, cv::Mat &color);
+
 	double _calcDistance(const cv::Point &a, const cv::Point &b);
 	double _calcAngleInDegree(const cv::Point &a, const cv::Point &b);
 	cv::Rect _findBoundingRect(const std::vector<cv::Point> &src);
@@ -76,6 +78,9 @@ private:
 
 	// color palette for Optical Flow Farneback approach
 	std::vector<cv::Scalar> color_palette_;
+
+	// Mask for pyrLK detector
+	cv::Mat _mask;
 };
 
 #endif 	// VETOPTFLOWDETECTOR_H
