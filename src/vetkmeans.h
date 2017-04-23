@@ -40,10 +40,15 @@ public:
 	~VetKmeans();
 
 public:
-	void kmeans(const vetPoints &points, std::vector<vetPoints> &clusters, int k);
+	void kmeans(const vetPoints &points, std::vector<vetPoints> &clusters, unsigned int k);
 
 private:
 	double _calcDistance(const cv::Point &a, const cv::Point &b);
+	bool _updateClustersIndex(const vetPoints &points, std::vector<int> &clusters_index,
+		const std::vector<cv::Point> &clusters_means);
+	void _updateClustersMeans(const vetPoints &points, const std::vector<int> &clusters_index,
+		std::vector<cv::Point> &clusters_means);
+	int _findClosestCluster(const cv::Point &a, const std::vector<cv::Point> &clusters_means);
 };
 
 #endif 	// _VETKMEANS_H

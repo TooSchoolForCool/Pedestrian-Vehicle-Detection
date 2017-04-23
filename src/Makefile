@@ -52,6 +52,7 @@ SRCS = main.cpp \
 	   vetimagetoolkit.cpp \
 	   veterror.cpp \
 	   vetfastvideocapture.cpp \
+	   vetkmeans.cpp \
 	   vetconcurrentqueue.cpp
 
 # define the C object files 
