@@ -61,23 +61,11 @@ void VetKmeans::kmeans(const vetPoints &points, std::vector<vetPoints> &clusters
 		clusters_index[i] = i;
 		// the middle point of cluster #i is points[i]
 		clusters_means[i] = points[i];
-
-		cerr << "init means" << endl;
-	}
-
-	for(int i = 0; i < clusters_index.size(); i++)
-	{
-		printf("(%d, %d):\t#%d\n", points[i].x, points[i].y, clusters_index[i]);
 	}
 
 	while(_updateClustersIndex(points, clusters_index, clusters_means))
 	{
-		for(int i = 0; i < clusters_index.size(); i++)
-		{
-			printf("(%d, %d):\t#%d\n", points[i].x, points[i].y, clusters_index[i]);
-		}
 		_updateClustersMeans(points, clusters_index, clusters_means);
-		cerr << "update means" << endl;
 	}
 
 	for(unsigned int i = 0; i < points.size(); i++)
@@ -122,7 +110,6 @@ void VetKmeans::_updateClustersMeans(const vetPoints &points, const vector<int> 
 
 	for(int i = 0; i < clusters_means.size(); i++)
 	{
-		printf("start cluster #%d:\t(%d, %d)\n", i, clusters_means[i].x, clusters_means[i].y);
 		clusters_means[i] = Point(0, 0);
 	}
 
@@ -141,8 +128,6 @@ void VetKmeans::_updateClustersMeans(const vetPoints &points, const vector<int> 
 			clusters_means[i].x /= clusters_cnt[i];
 			clusters_means[i].y /= clusters_cnt[i];
 		}
-		
-		printf("end cluster #%d:\t(%d, %d)\n", i, clusters_means[i].x, clusters_means[i].y);
 	}
 }
 
