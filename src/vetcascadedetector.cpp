@@ -44,10 +44,11 @@ VetCascadeDetector::VetCascadeDetector(DetectedObject detected_object)
 			cv_hog_detector_.setSVMDetector( HOGDescriptor::getDefaultPeopleDetector() );			
 			hit_threshold_ = 0.3;
 			win_stride_ = Size(8, 8);
-			padding_ = Size(32, 32);
+			hog_padding_ = Size(16, 16);
 			hog_scaler_ = 1.1;
 			group_threshold_ = 2;
 
+			padding_ = Size(16, 32);
 			label_ = "People";
 			break;
 		default:
@@ -63,18 +64,39 @@ VetCascadeDetector::~VetCascadeDetector()
 
 void VetCascadeDetector::detect(const Mat &frame, vector<VetROI> &rois)
 {
-	vector<Rect> rects;
+	vector<Rect> cv_cascade_rects, cv_hog_rects;
 
 	// clear previous rois recordsmake 
 	rois.clear();
 
-	cv_cascade_.detectMultiScale(frame, rects, cascade_scaler_, min_neighbors_, haar_flags_, window_size_);
+	cv_cascade_.detectMultiScale(frame, cv_cascade_rects, cascade_scaler_, min_neighbors_, haar_flags_, window_size_);
 
-	// cv_hog_detector_.detectMultiScale(frame, rects, hit_threshold_, 
-	// 	win_stride_, padding_, hog_scaler_, group_threshold_);
-
-	for(vector<Rect>::iterator iter = rects.begin(); iter != rects.end(); iter++)
+	// second cascaded detector -- hog svm detector
+	for(vector<Rect>::iterator iter = cv_cascade_rects.begin(); iter != cv_cascade_rects.end(); iter++)
 	{
-		rois.push_back( VetROI(*iter, label_) );
+		int tl_x = max(0, iter->tl().x - padding_.width);
+		int tl_y = max(0, iter->tl().y - padding_.height);
+		int width = iter->width + padding_.width * 2;
+		int height = iter->height + padding_.height * 2;
+
+		// check if roi region out of the frame boundary
+		if(tl_x + width > frame.size().width)
+			width = frame.size().width - tl_x;
+		if(tl_y + height > frame.size().height)
+			height = frame.size().height - tl_y;
+
+		// create roi region in Rectangle
+		Rect rect_roi(tl_x, tl_y, width, height);
+
+		// create roi image
+		Mat image_roi = frame(rect_roi);
+
+		cv_hog_detector_.detectMultiScale(image_roi, cv_hog_rects, hit_threshold_, 
+			win_stride_, hog_padding_, hog_scaler_, group_threshold_);
+
+		if( !cv_hog_rects.empty() )
+		{
+			rois.push_back( VetROI(*iter, label_) );
+		}
 	}
 }

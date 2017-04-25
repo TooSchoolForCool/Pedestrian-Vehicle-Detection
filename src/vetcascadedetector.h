@@ -44,19 +44,21 @@ private:
 	cv::CascadeClassifier cv_cascade_;
 	cv::HOGDescriptor cv_hog_detector_;
 
-	// for cascade_ classifier
+	// for opencv cascade_ classifier
 	double cascade_scaler_;
 	int min_neighbors_;
 	int haar_flags_;
 	cv::Size window_size_;
 
-	// for hog svm classifier
+	// for opencv hog svm classifier
 	double hit_threshold_;
 	cv::Size win_stride_;
-	cv::Size padding_;
+	cv::Size hog_padding_;
 	double hog_scaler_;
 	int group_threshold_;
 
+	// for the whole detector
+	cv::Size padding_;
 	std::string label_;
 };
 
