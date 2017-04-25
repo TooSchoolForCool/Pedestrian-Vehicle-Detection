@@ -35,7 +35,7 @@ VetHaarDetector::VetHaarDetector(DetectedObject detected_object)
 {
 	switch(detected_object){
 		case FRONT_CAR:
-			cout << "VetHaarDetector::VetHaarDetector: load FRONT_CAR xml file" << HAAR_CASCADE_FRONT_CAR_XML << endl;
+			cout << "[VetHaarDetector::VetHaarDetector]: load FRONT_CAR xml file" << HAAR_CASCADE_FRONT_CAR_XML << endl;
 			cascade_.load(HAAR_CASCADE_FRONT_CAR_XML);
 			this->scaler_ = 1.1;
 			this->min_neighbors_ = 3;
@@ -44,7 +44,7 @@ VetHaarDetector::VetHaarDetector(DetectedObject detected_object)
 			this->label_ = "Car";
 			break;
 		case REAR_CAR:
-			cout << "VetHaarDetector::VetHaarDetector: load REAR_CAR xml file" << HAAR_CASCADE_REAR_CAR_XML << endl;
+			cout << "[VetHaarDetector::VetHaarDetector]: load REAR_CAR xml file" << HAAR_CASCADE_REAR_CAR_XML << endl;
 			cascade_.load(HAAR_CASCADE_REAR_CAR_XML);
 			this->scaler_ = 1.1;
 			this->min_neighbors_ = 3;
@@ -53,7 +53,7 @@ VetHaarDetector::VetHaarDetector(DetectedObject detected_object)
 			this->label_ = "Car";
 			break;
 		case FULLBODY:
-			cout << "VetHaarDetector::VetHaarDetector: load FULLBODY xml file" << HAAR_CASCADE_FULLBODY_XML << endl;
+			cout << "[VetHaarDetector::VetHaarDetector]: load FULLBODY xml file" << HAAR_CASCADE_FULLBODY_XML << endl;
 			cascade_.load(HAAR_CASCADE_FULLBODY_XML);
 			this->scaler_ = 1.1;
 			this->min_neighbors_ = 3;
@@ -62,19 +62,14 @@ VetHaarDetector::VetHaarDetector(DetectedObject detected_object)
 			this->label_ = "People";
 			break;
 		default:
-			cout << "VetHaarDetector::VetHaarDetector: No such option" << endl;
+			cout << "[VetHaarDetector::VetHaarDetector]: No such option" << endl;
 			break;
 	}
-
-	// cout << this->scaler_ << endl;
-	// cout << this->min_neighbors_ << endl;
-	// cout << this->haar_flags_ << endl;
-	// cout << this->window_size_ << endl;
 }
 
 VetHaarDetector::~VetHaarDetector()
 {
-	cout << "VetHaarDetector::~VetHaarDetector: delete cascade_" << endl;
+	cout << "[VetHaarDetector::~VetHaarDetector]: delete cascade_" << endl;
 }
 
 void VetHaarDetector::detect(const Mat &frame, vector<VetROI> &rois)

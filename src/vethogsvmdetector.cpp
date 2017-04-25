@@ -39,7 +39,7 @@ VetHOGSVMDetector::VetHOGSVMDetector(DetectedObject detected_object)
 			hit_threshold_ = 0.3;
 			win_stride_ = Size(8, 8);
 			padding_ = Size(32, 32);
-			scaler_ = 1.3;
+			scaler_ = 1.1;
 			group_threshold_ = 2;
 
 			label_ = "People";
