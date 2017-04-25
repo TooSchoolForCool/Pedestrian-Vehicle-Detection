@@ -26,6 +26,7 @@
 #define VETOPTFLOWDETECTOR_H
 
 #include "vetdetectorstrategy.h"
+#include "vetkmeans.h"
 
 #include <opencv2/opencv.hpp>
 
@@ -51,6 +52,7 @@ public:
 
 public:
 	void detect(const cv::Mat &frame, std::vector<VetROI> &rois);
+	void detect(cv::Mat &frame, std::vector<VetROI> &rois);
 	bool optFlowFarneback(const cv::Mat &frame, cv::Mat &flow);
 
 private:
@@ -75,6 +77,12 @@ private:
 
 	// pyrLK approach find maximum number of corners
 	int pyrLK_max_corners_;
+
+	// pyrLK approach pre-defined maximum number of clusters
+	int pyrLK_max_clusters_;
+
+	// pyrLK approach clusters overlap threshold
+	double pyrLK_clusters_overlap_;
 
 	// color palette for Optical Flow Farneback approach
 	std::vector<cv::Scalar> color_palette_;

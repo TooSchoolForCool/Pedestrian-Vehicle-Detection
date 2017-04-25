@@ -34,6 +34,13 @@ VetOptFlowDetector::VetOptFlowDetector()
 	// set pyrLK method maximum corner tracked
 	pyrLK_max_corners_ = 200;
 
+	// set maximum number of clusters for pyrLK method
+	pyrLK_max_clusters_ = 2;
+
+	// set pyrLK approach clusters overlap threshold
+	// the greater of this value, the less chance to merge
+	pyrLK_clusters_overlap_ = 0.6;
+
 	_makeColorPalette();
 }
 
@@ -43,6 +50,11 @@ VetOptFlowDetector::~VetOptFlowDetector()
 }
 
 void VetOptFlowDetector::detect(const Mat &frame, vector<VetROI> &rois)
+{
+	// ...
+}
+
+void VetOptFlowDetector::detect(Mat &frame, vector<VetROI> &rois)
 {
 	OptFlowPyrLKResult result;
 
@@ -54,9 +66,9 @@ void VetOptFlowDetector::detect(const Mat &frame, vector<VetROI> &rois)
 	vector<Point2f> &prev_points = result.prev_points_;
 	vector<Point2f> &next_points = result.next_points_;
 	vector<uchar> &state = result.state_;
-	vector<float> &err = result.err_;
 
-	vector<vector<Point> > roi(2, vector<Point>());
+	vector<Point> left_corners, right_corners;
+	vector<vector<Point> > clusters;
 
 	for(int i = 0; i < (int)state.size();i++)
 	{
@@ -88,9 +100,9 @@ void VetOptFlowDetector::detect(const Mat &frame, vector<VetROI> &rois)
 				continue;
 
 			if(p.x <= frame.cols / 2)
-				roi[0].push_back(p);
+				left_corners.push_back(p);
 			else
-				roi[1].push_back(p);
+				right_corners.push_back(p);
 
 			// line(frame, p, q, Scalar(0, 0, 255));
 
@@ -104,10 +116,27 @@ void VetOptFlowDetector::detect(const Mat &frame, vector<VetROI> &rois)
 		}
 	}
 
-	if(roi[0].size() > 10) 
-		rois.push_back( VetROI(_findBoundingRect(roi[0]), "Warning") );
-	if(roi[1].size() > 10)
-		rois.push_back( VetROI(_findBoundingRect(roi[1]), "Warning") );
+	VetKmeans kmeans;
+
+	if(left_corners.size() > 10)
+	{
+		kmeans.kmeans(left_corners, clusters, pyrLK_max_clusters_, pyrLK_clusters_overlap_);
+
+		for(int i = 0; i < clusters.size(); i++)
+		{
+			rois.push_back( VetROI(_findBoundingRect(clusters[i]), "Warning") );
+		}
+	}
+
+	if(right_corners.size() > 10)
+	{
+		kmeans.kmeans(right_corners, clusters, pyrLK_max_clusters_, pyrLK_clusters_overlap_);
+
+		for(int i = 0; i < clusters.size(); i++)
+		{
+			rois.push_back( VetROI(_findBoundingRect(clusters[i]), "Warning") );
+		}
+	}
 }
 
 bool VetOptFlowDetector::optFlowFarneback(const Mat &frame, Mat &flow)
@@ -169,41 +198,18 @@ bool VetOptFlowDetector::_optFlowPyrLK(const cv::Mat &frame, OptFlowPyrLKResult 
 
 	cur_gray_image.copyTo(prev_gray_img_);
 
-	return true;	
+	return true;
 }
 
 void VetOptFlowDetector::_createMask4Detection(const Mat &frame)
 {
 	Mat mask(frame.size(), CV_8UC1, Scalar(0));
-	vector<vector<Point> > contours;
-	vector<Point> _rois;
 	
-	for(int i = 0; i <= frame.cols / 4; i++)
-	{
-		_rois.push_back( Point(i, frame.rows / 2) );
-		_rois.push_back( Point(i, frame.rows) );
-	}
-	for(int i = frame.rows / 2; i <= frame.rows; i++)
-	{
-		_rois.push_back( Point(0, i) );
-		_rois.push_back( Point(frame.cols / 4, i) );
-	}
+	Rect roi_1(0, frame.rows / 2, frame.cols / 4, frame.rows / 2);
+	Rect roi_2(frame.cols * 3 / 4, frame.rows / 2, frame.cols / 4, frame.rows / 2);
 
-	contours.push_back(_rois);
-	_rois.clear();
-
-	for(int i = frame.cols * 3 / 4; i <= frame.cols; i++)
-	{
-		_rois.push_back( Point(i, frame.rows / 2) );
-		_rois.push_back( Point(i, frame.rows) );
-	}
-	for(int i = frame.rows / 2; i <= frame.rows; i++)
-	{
-		_rois.push_back( Point(frame.cols * 3 / 4, i) );
-		_rois.push_back( Point(frame.cols, i) );
-	}
-	contours.push_back(_rois);
-	drawContours(mask, contours, -1, Scalar(255));
+	mask(roi_1).setTo(255);
+	mask(roi_2).setTo(255);
 
 	mask.copyTo(_mask);
 }
