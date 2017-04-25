@@ -16,45 +16,48 @@
 
 
 /*!
-* \file vetdetectorfactory.h
+* \file vetcascadedetector.h
 * \author [Zeyu Zhang]
 * \version [0.1]
-* \date 2017-04-05
+* \date 2017-04-25
 */
 
-#ifndef VETDETECTORFACTORY_H
-#define VETDETECTORFACTORY_H
+#ifndef VETCASCADEDETECTOR_H
+#define VETCASCADEDETECTOR_H
 
 #include "vetdetectorstrategy.h"
-#include "vethaardetector.h"
-#include "vetcolordetector.h"
-#include "vethogsvmdetector.h"
-#include "vetoptflowdetector.h"
-#include "vetcascadedetector.h"
 
 #include <opencv2/opencv.hpp>
 
 #include <iostream>
 
-typedef enum _DetectorType
-{
-	HAAR_DETECTOR,
-	HOG_SVM_DETECTOR,
-	COLOR_DETECTOR,
-	OPT_FLOW_DETECTOR,
-	CASCADE_DETECTOR
-}DetectorType;
-
-class VetDetectorFactory
+class VetCascadeDetector: public VetDetectorStrategy
 {
 public:
-	VetDetectorFactory();
-	~VetDetectorFactory();
+	VetCascadeDetector(DetectedObject detected_object);
+	~VetCascadeDetector();
 
 public:
-	VetDetectorStrategy *createDetector(DetectorType detector_type, 
-		DetectedObject detected_object);
+	void detect(const cv::Mat &frame, std::vector<VetROI> &rois);
+
+private:
+	cv::CascadeClassifier cv_cascade_;
+	cv::HOGDescriptor cv_hog_detector_;
+
+	// for cascade_ classifier
+	double cascade_scaler_;
+	int min_neighbors_;
+	int haar_flags_;
+	cv::Size window_size_;
+
+	// for hog svm classifier
+	double hit_threshold_;
+	cv::Size win_stride_;
+	cv::Size padding_;
+	double hog_scaler_;
+	int group_threshold_;
+
+	std::string label_;
 };
 
-#endif	// VETDETECTORFACTORY_H
-
+#endif	// VETCASCADEDETECTOR_H

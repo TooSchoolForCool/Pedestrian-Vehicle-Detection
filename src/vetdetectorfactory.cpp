@@ -30,6 +30,10 @@ VetDetectorStrategy *VetDetectorFactory::createDetector(DetectorType detector_ty
 			cout << "[VetDetectorFactory::createDetector]: Create Color Detector" << endl;
 			return new VetColorDetector(detected_object);
 			break;
+		case CASCADE_DETECTOR:
+			cout << "[VetDetectorFactory::createDetector]: Create Cascade Detector" << endl;
+			return new VetCascadeDetector(detected_object);
+			break;
 		default:
 			cout << "No Such Detector Option" << endl;
 			return NULL;
