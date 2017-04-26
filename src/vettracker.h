@@ -42,7 +42,8 @@ typedef struct _DetectedRegion
 class VetTracker
 {
 public:
-	VetTracker(double threshold = 0.8);
+	VetTracker(double overlap_threshold = 0.8, int ack_threshold = 2,
+		int unack_threshold = 1, int delete_threshold = 2);
 	~VetTracker();
 
 public:
@@ -58,7 +59,18 @@ private:
 private:
 	std::vector<DetectedRegion> detected_regions_;
 
+	// determine if two regions matched each other
 	double overlap_threshold_;
+
+	// only when ack_ >= ack_threshold_, region is sound
+	int ack_threshold_;
+
+	// only when unack_ <= unack_threshold_, region is sound
+	int unack_threshold_;
+
+	// when unack_ >= delete_threshold_, region is removed from 
+	// the vector detected_regions_
+	int delete_threshold_;
 };
 
 #endif // VETTRACKER_H

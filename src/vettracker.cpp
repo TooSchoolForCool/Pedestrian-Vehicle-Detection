@@ -31,9 +31,13 @@
 using namespace std;
 using namespace cv;
 
-VetTracker::VetTracker(double threshold)
+VetTracker::VetTracker(double overlap_threshold, int ack_threshold,
+	int unack_threshold, int delete_threshold)
 {
-	this->overlap_threshold_ = threshold;
+	this->overlap_threshold_ = overlap_threshold;
+	this->ack_threshold_ = ack_threshold;
+	this->unack_threshold_ = unack_threshold;
+	this->delete_threshold_ = delete_threshold;
 }
 
 VetTracker::~VetTracker()
@@ -68,8 +72,9 @@ void VetTracker::update(vector<VetROI> &detected_res)
 		iter_res = detected_res.erase(iter_res);
 	}
 
-	_getDetectedRegion(detected_res);
 	_clearNotExistRegion();
+	_getDetectedRegion(detected_res);
+	// _clearNotExistRegion();
 }
 
 void VetTracker::_getDetectedRegion(vector<VetROI> &detected_res)
@@ -80,7 +85,7 @@ void VetTracker::_getDetectedRegion(vector<VetROI> &detected_res)
 
 	while(iter_regions != detected_regions_.end())
 	{
-		if(iter_regions->ack_ >= 2 && iter_regions->unack_ <= 1)
+		if(iter_regions->ack_ >= ack_threshold_ && iter_regions->unack_ <= unack_threshold_)
 		{
 			VetROI res(iter_regions->rect_, iter_regions->label_);
 			detected_res.push_back(res);
@@ -140,6 +145,7 @@ void VetTracker::_clearNotExistRegion()
 	{	
 		if(iter_regions->is_exist_ == false)
 		{
+			iter_regions->ack_--;
 			iter_regions->unack_++;
 		}
 		else
@@ -147,7 +153,7 @@ void VetTracker::_clearNotExistRegion()
 			iter_regions->is_exist_ = false;
 		}
 
-		if(iter_regions->unack_ >= 2)
+		if(iter_regions->unack_ >= delete_threshold_)
 		{
 			iter_regions = detected_regions_.erase(iter_regions);
 		}
