@@ -32,26 +32,33 @@
 
 typedef struct _DetectedRegion
 {
-	VetROI detected_res_;
-	int ack_,
-	int unack_
+	cv::Rect rect_;
+	std::string label_;
+	int ack_;
+	int unack_;
+	bool is_exist_;
 }DetectedRegion;
 
-class VetTracker()
+class VetTracker
 {
 public:
-	VetTracker();
+	VetTracker(double threshold = 0.8);
 	~VetTracker();
 
 public:
-	update(const std::vector<VetROI> &detected_res);
-	getDetectedRegion(std::vector<VetROI> &detected_res);
+	void update(std::vector<VetROI> &detected_res);
+	void _getDetectedRegion(std::vector<VetROI> &detected_res);
 
 private:
-	_calcOverlapped(cv::Rect &a, cv::Rect &b);
+	double _calcOverlapped(const cv::Rect &a, const cv::Rect &b);
+	void _updateDetectedRegion(DetectedRegion &dst, const VetROI &src);
+	void _addDetectedRegion(const VetROI &src);
+	void _clearNotExistRegion();
 
 private:
 	std::vector<DetectedRegion> detected_regions_;
+
+	double overlap_threshold_;
 };
 
 #endif // VETTRACKER_H

@@ -47,6 +47,7 @@ SRCS = main.cpp \
 	   vetcolordetector.cpp \
 	   vetoptflowdetector.cpp \
 	   vetcascadedetector.cpp \
+	   vettracker.cpp \
 	   vetuserstrategy.cpp \
 	   vetusercontext.cpp \
 	   vettestmode.cpp \
