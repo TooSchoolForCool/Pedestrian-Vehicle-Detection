@@ -105,7 +105,7 @@ bool VetKmeans::_updateClustersIndex(const vetPoints &points, vector<int> &clust
 {
 	bool isChanged = false;
 
-	for(int i = 0; i < clusters_index.size(); i++)
+	for(unsigned int i = 0; i < clusters_index.size(); i++)
 	{
 		int closest_cluster_index = _findClosestCluster(points[i], clusters_means);
 
@@ -124,12 +124,12 @@ void VetKmeans::_updateClustersMeans(const vetPoints &points, const vector<int> 
 {
 	vector<int> clusters_cnt(clusters_means.size(), 0);
 
-	for(int i = 0; i < clusters_means.size(); i++)
+	for(unsigned int i = 0; i < clusters_means.size(); i++)
 	{
 		clusters_means[i] = Point(0, 0);
 	}
 
-	for(int i = 0; i < clusters_index.size(); i++)
+	for(unsigned int i = 0; i < clusters_index.size(); i++)
 	{
 		clusters_means[clusters_index[i]].x += points[i].x;
 		clusters_means[clusters_index[i]].y += points[i].y;
@@ -137,7 +137,7 @@ void VetKmeans::_updateClustersMeans(const vetPoints &points, const vector<int> 
 		clusters_cnt[clusters_index[i]]++;
 	}
 
-	for(int i = 0; i < clusters_means.size(); i++)
+	for(unsigned int i = 0; i < clusters_means.size(); i++)
 	{
 		if(clusters_cnt[i] != 0)
 		{
@@ -152,7 +152,7 @@ int VetKmeans::_findClosestCluster(const Point &a, const vector<Point> &clusters
 	double min_distance = _calcDistance(clusters_means[0], a);
 	int index = 0;
 
-	for(int i = 1; i < clusters_means.size(); i++)
+	for(unsigned int i = 1; i < clusters_means.size(); i++)
 	{
 		double distance = _calcDistance(clusters_means[i], a);
 
@@ -178,12 +178,12 @@ bool VetKmeans::_isMerged(const vetPoints &points, const vector<int> &clusters_i
 	_updateClustersMeans(points, clusters_index, clusters_means);
 	_findClustersBoundingBox(points, clusters_index, clusters_bounding_box, k);
 
-	for(int i = 0; i < k - 1; i++)
+	for(unsigned int i = 0; i < k - 1; i++)
 	{
 		const Rect &box_i = clusters_bounding_box[i];
 		const Point &mean_i = clusters_means[i];
 
-		for(int j = i + 1; j < k; j++)
+		for(unsigned int j = i + 1; j < k; j++)
 		{
 			const Rect &box_j = clusters_bounding_box[j];
 			const Point &mean_j = clusters_means[j];
@@ -210,7 +210,7 @@ void VetKmeans::_findClustersBoundingBox(const vetPoints &points, const vector<i
 
 	clusters_bounding_box.clear();
 
-	for(int i = 0; i < clusters_index.size(); i++)
+	for(unsigned int i = 0; i < clusters_index.size(); i++)
 	{
 		if(points[i].x < tl_vec[clusters_index[i]].x)
 			tl_vec[clusters_index[i]].x = points[i].x;
@@ -225,7 +225,7 @@ void VetKmeans::_findClustersBoundingBox(const vetPoints &points, const vector<i
 			br_vec[clusters_index[i]].y = points[i].y;
 	}
 
-	for(int i = 0; i < k; i++)
+	for(unsigned int i = 0; i < k; i++)
 	{
 		clusters_bounding_box.push_back( Rect(tl_vec[i], br_vec[i]) );
 	}
