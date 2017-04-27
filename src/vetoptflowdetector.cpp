@@ -55,7 +55,7 @@ VetOptFlowDetector::VetOptFlowDetector()
 	// if the ratio of left-direction vector in the reference region
 	// is greater than or equal to this threshold, then we assume the
 	// camera is turn right, vice versa.
-	direction_ref_threshold_ = 0.8;
+	direction_ref_threshold_ = 0.6;
 
 	_makeColorPalette();
 }
@@ -72,7 +72,7 @@ void VetOptFlowDetector::detect(const Mat &frame, vector<VetROI> &rois)
 
 void VetOptFlowDetector::detect(Mat &frame, vector<VetROI> &rois)
 {
-	OptFlowPyrLKResult result;
+	vector<OptFlowPyrLKResult> result;
 	vector<Point> left_corners, right_corners;
 	vector<vector<Point> > clusters;
 
@@ -124,7 +124,7 @@ bool VetOptFlowDetector::optFlowFarneback(const Mat &frame, Mat &flow)
 	return true;
 }
 
-bool VetOptFlowDetector::_optFlowPyrLK(const cv::Mat &frame, OptFlowPyrLKResult &result)
+bool VetOptFlowDetector::_optFlowPyrLK(const cv::Mat &frame, vector<OptFlowPyrLKResult> &result)
 {
 	Mat cur_gray_image;
 
@@ -187,15 +187,12 @@ void VetOptFlowDetector::_createMask4Detection(const Mat &frame)
 	mask.copyTo(_mask);
 }
 
-void VetOptFlowDetector::_printSpeedVector(cv::Mat &frame, OptFlowPyrLKResult &result)
+void VetOptFlowDetector::_printSpeedVector(cv::Mat &frame, vector<OptFlowPyrLKResult> &result)
 {
-	vector<Point> &prev_points = result.prev_points_;
-	vector<Point> &next_points = result.next_points_;
-
-	for(int i = 0; i < (int)prev_points.size();i++)
+	for(unsigned int i = 0; i < result.size();i++)
 	{
-		Point p = prev_points[i];
-		Point q = next_points[i];
+		Point p = result[i].prev_point_;
+		Point q = result[i].next_point_;
 
 		double delta_x = p.x - q.x;
 		double delta_y = p.y - q.y;
@@ -219,12 +216,9 @@ void VetOptFlowDetector::_printSpeedVector(cv::Mat &frame, OptFlowPyrLKResult &r
 }
 
 void VetOptFlowDetector::_calcSpeedVector(vector<Point2f> prev_p, vector<Point2f> next_p,
-	vector<uchar> state, OptFlowPyrLKResult &result)
+	vector<uchar> state, vector<OptFlowPyrLKResult> &result)
 {
-	vector<Point> &prev_points = result.prev_points_;
-	vector<Point> &next_points = result.next_points_;
-	vector<double> &distances = result.distances_;
-	vector<double> &angles = result.angles_;
+	OptFlowPyrLKResult tmp;
 
 	for(unsigned int i = 0; i < state.size();i++)
 	{
@@ -233,8 +227,8 @@ void VetOptFlowDetector::_calcSpeedVector(vector<Point2f> prev_p, vector<Point2f
 			Point p = Point( (int) prev_p[i].x, (int) prev_p[i].y );
 			Point q = Point( (int) next_p[i].x, (int) next_p[i].y );
 
-			prev_points.push_back(p);
-			next_points.push_back(q);
+			tmp.prev_point_ = p;
+			tmp.next_point_ = q;
 			
 			double delta_x = p.x - q.x;
 			double delta_y = p.y - q.y;
@@ -242,41 +236,31 @@ void VetOptFlowDetector::_calcSpeedVector(vector<Point2f> prev_p, vector<Point2f
 			double angle = atan2( (double)delta_y, (double)delta_x );
 			double hypotenuse = sqrt( delta_y * delta_y + delta_x * delta_x );
 
-			double distance, angle_in_degree;
-
 			q.x = (int) (p.x - 3 * hypotenuse * cos(angle));
 			q.y = (int) (p.y - 3 * hypotenuse * sin(angle));
 
-			distance = _calcDistance(p, q);
-			angle_in_degree = _calcAngleInDegree(p, q);
+			tmp.distance_ = _calcDistance(p, q);
+			tmp.angle_ = _calcAngleInDegree(p, q);
+			tmp.is_left_ = (p.x <= prev_gray_img_.cols / 2 ? true : false);
 
-			distances.push_back(distance);
-			angles.push_back(angle_in_degree);
-
-			result.is_left_.push_back( p.x <= prev_gray_img_.cols / 2 );
+			result.push_back(tmp);
 		}
 	}
 }
 
-void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, OptFlowPyrLKResult &result)
+void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, vector<OptFlowPyrLKResult> &result)
 {
-	vector<Point> &prev_points = result.prev_points_;
-	vector<Point> &next_points = result.next_points_;
-	vector<double> &distances = result.distances_;
-	vector<double> &angles = result.angles_;
-	vector<bool> &is_left = result.is_left_;
-
 	int left_vec_cnt = 0, right_vec_cnt = 0, cnt = 0;
 
-	OptFlowPyrLKResult ret;
+	vector<OptFlowPyrLKResult> ret;
 
-	for(unsigned int i = 0; i < prev_points.size();i++)
+	for(unsigned int i = 0; i < result.size(); i++)
 	{
 		bool is_saved = true;
 
-		Point p = prev_points[i];
-		double distance = distances[i];
-		double angle_in_degree = angles[i];
+		Point p = result[i].prev_point_;
+		double distance = result[i].distance_;
+		double angle_in_degree = result[i].angle_;
 
 		// determine the moving direction of the camera
 		if( (p.x >= ref_region_.tl().x - 10) && (p.y >= ref_region_.tl().y - 10)
@@ -287,28 +271,26 @@ void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, OptFlowPyrLKResult
 
 			if( (angle_in_degree >= 0) && (angle_in_degree <= 45) )
 				right_vec_cnt++;
+			else if( (angle_in_degree >= 315) && (angle_in_degree <= 360) )
+				right_vec_cnt++;
 
 			cnt++;
 
-			// is_saved = false;
+			is_saved = false;
 		}
 
-		// // erase some trivial vector
-		// if( distance < distance_lower_threshold_ || distance > distance_upper_threshold_ )
-		// 	is_saved = false;
+		// erase some trivial vector
+		if( distance < distance_lower_threshold_ || distance > distance_upper_threshold_ )
+			is_saved = false;
 
-		// // remove some front-to-back vector
-		// if( !( ( !is_left[i] && (angle_in_degree >= 135) && (angle_in_degree <= 225) )
-		// 	|| ( is_left[i] && (angle_in_degree >= 0) && (angle_in_degree <= 45) ) ) )
-		// 	is_saved = false;
+		// remove some front-to-back vector
+		if( !( ( !result[i].is_left_ && (angle_in_degree >= 135) && (angle_in_degree <= 225) )
+			|| ( result[i].is_left_ && (angle_in_degree >= 0) && (angle_in_degree <= 45) ) ) )
+			is_saved = false;
 		
 		if( is_saved == true )
 		{
-			ret.prev_points_.push_back(prev_points[i]);
-			ret.next_points_.push_back(next_points[i]);
-			ret.distances_.push_back(distance);
-			ret.angles_.push_back(angle_in_degree);
-			ret.is_left_.push_back(is_left[i]);
+			ret.push_back(result[i]);
 		}
 	}
 
@@ -325,12 +307,16 @@ void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, OptFlowPyrLKResult
 			cout << "turn left:\t";
 			cout << right_vec_cnt << ", " << cnt << endl;
 		}
+		else
+		{
+			cout << right_vec_cnt << ", " << cnt << endl;
+		}
 	}
 
-	result = ret;
+	result.swap(ret);
 }
 
-void VetOptFlowDetector::_getVectorClusters(const OptFlowPyrLKResult &result,
+void VetOptFlowDetector::_getVectorClusters(const vector<OptFlowPyrLKResult> &result,
 	vector<vector<Point> > &clusters)
 {
 	VetKmeans kmeans;
@@ -338,11 +324,11 @@ void VetOptFlowDetector::_getVectorClusters(const OptFlowPyrLKResult &result,
 	vector<Point> left_corners, right_corners;
 	vector<vector<Point> > tmp_clusters;
 
-	for(unsigned int i = 0; i < result.prev_points_.size();i++)
+	for(unsigned int i = 0; i < result.size();i++)
 	{
-		Point p = result.prev_points_[i];
+		Point p = result[i].prev_point_;
 
-		if( result.is_left_[i] )
+		if( result[i].is_left_ )
 			left_corners.push_back(p);
 		else
 			right_corners.push_back(p);

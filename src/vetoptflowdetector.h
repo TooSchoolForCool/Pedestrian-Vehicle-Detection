@@ -38,13 +38,13 @@
 
 typedef struct _OptFlowPyrLKResult
 {
-	std::vector<cv::Point> prev_points_;
-	std::vector<cv::Point> next_points_;
+	cv::Point prev_point_;
+	cv::Point next_point_;
 
-	std::vector<double> distances_;
-	std::vector<double> angles_;	// angle in degree
+	double distance_;
+	double angle_;	// angle in degree
 
-	std::vector<bool> is_left_;
+	bool is_left_;
 }OptFlowPyrLKResult;
 
 class VetOptFlowDetector: public VetDetectorStrategy
@@ -59,13 +59,13 @@ public:
 	bool optFlowFarneback(const cv::Mat &frame, cv::Mat &flow);
 
 private:
-	bool _optFlowPyrLK(const cv::Mat &frame, OptFlowPyrLKResult &result);
+	bool _optFlowPyrLK(const cv::Mat &frame, std::vector<OptFlowPyrLKResult> &result);
 	void _createMask4Detection(const cv::Mat &frame);
-	void _printSpeedVector(cv::Mat &frame, OptFlowPyrLKResult &result);
+	void _printSpeedVector(cv::Mat &frame, std::vector<OptFlowPyrLKResult> &result);
 	void _calcSpeedVector(std::vector<cv::Point2f> prev_p, std::vector<cv::Point2f> next_p,
-		std::vector<uchar> state, OptFlowPyrLKResult &result);
-	void _speedVectorFilter(const cv::Mat &frame, OptFlowPyrLKResult &result);
-	void _getVectorClusters(const OptFlowPyrLKResult &result, std::vector<std::vector<cv::Point> > &clusters);
+		std::vector<uchar> state, std::vector<OptFlowPyrLKResult> &result);
+	void _speedVectorFilter(const cv::Mat &frame, std::vector<OptFlowPyrLKResult> &result);
+	void _getVectorClusters(const std::vector<OptFlowPyrLKResult> &result, std::vector<std::vector<cv::Point> > &clusters);
 	
 	void _makeColorPalette();
 	void _motion2color(cv::Mat &flow, cv::Mat &color);
