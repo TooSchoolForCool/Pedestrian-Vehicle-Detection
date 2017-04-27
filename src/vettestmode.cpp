@@ -15,6 +15,7 @@ static void (*ptr_test_process[])(string)
 	   	fastHOGSVMTester,					// FAST_HOG_SVM_TESTER
 	   	optFlowTester,						// OPT_FLOW_TESTER
 	   	cascadeHumanTester,					// CASCADE_HUMAN_TESTER
+	   	trackerTester,						// TRACKER_TESTER
 	   	capstoneTester,						// CAPSTONE_TESTER
 	   	fooTester							// FOO_TESTER
 	  };
@@ -424,10 +425,10 @@ void cascadeHumanTester(string video_path)
 	VetFastVideoCapture fvs(video_path, 128);
 
 	Mat frame;
-	vector<VetROI> rois, rois1, rois2;
+	vector<VetROI> cascade_res, haar_res;
 
-	VetDetectorStrategy *human_detector_haar = detector_factory.createDetector(HAAR_DETECTOR, FULLBODY);
-	VetDetectorStrategy *human_detector_hog = detector_factory.createDetector(HOG_SVM_DETECTOR, FULLBODY);
+	VetDetectorStrategy *human_cascade_detector = detector_factory.createDetector(CASCADE_DETECTOR, FULLBODY);
+	VetDetectorStrategy *human_haar_detector = detector_factory.createDetector(HAAR_DETECTOR, FULLBODY);
 
 	printf("CASCADE_HUMAN_TESTER starts.\n");
 
@@ -437,29 +438,33 @@ void cascadeHumanTester(string video_path)
 	moveWindow("frame", 25, 25);
 
 	while( fvs.more() ){
-		if ( fvs.read(frame) ){
-			human_detector_haar->detect(frame, rois);
-			human_detector_hog->detect(frame, rois2);
+		if ( fvs.read(frame) )
+		{
+			human_cascade_detector->detect(frame, cascade_res);
+			human_haar_detector->detect(frame, haar_res);
 
-			NMS(rois, 0.3);
-			drawRectangles(frame, rois, COLOR_RED);
-			rois.clear();  
+			NMS(cascade_res, 0.3);
+			NMS(haar_res, 0.3);
 
-			NMS(rois2, 0.3);
-			drawRectangles(frame, rois2, COLOR_GREEN);
-			rois2.clear();  
+			drawRectangles(frame, haar_res, COLOR_RED);
+			drawRectangles(frame, cascade_res, COLOR_GREEN);
+
+			cascade_res.clear();
+			haar_res.clear();
 
 			imshow("frame", frame);
 		}
 
 		char resp = waitKey(5);
 
-		if(resp == KEY_ESC){
+		if(resp == KEY_ESC)
+		{
 			cout << "window: frame closed" << endl;
 			destroyWindow("frame");
 			break;
 		}
-		else if(resp == KEY_SPACE){
+		else if(resp == KEY_SPACE)
+		{
 			cout << "window: frame paused" << endl;
 			cout << "Press any key to continue..." << endl;
 			waitKey(-1);
@@ -467,31 +472,33 @@ void cascadeHumanTester(string video_path)
 	}
 
 	fvs.stop();
-	delete human_detector_haar;
-	delete human_detector_hog;
+
+	delete human_cascade_detector;
+	delete human_haar_detector;
 
 	printf("CASCADE_HUMAN_TESTER ends.\n");
 }
 
-void capstoneTester(std::string video_path)
+void trackerTester(string video_path)
 {
+	printf("TRACKER_TESTER starts.\n");
+
 	VetDetectorFactory detector_factory;
 	VetFastVideoCapture fvs(video_path, 128);
 
 	Mat frame;
-	vector<VetROI> rois_car, rois_opt, rois_human, temp_rois;
+	vector<VetROI> rois_car, rois_human, temp_rois;
 
 	if( !fvs.isOpened() )
 		error(string("Cannot open video:") + video_path);
 
-	VetOptFlowDetector optFlowDetector;
-
-	VetDetectorStrategy *human_detector = detector_factory.createDetector(HAAR_DETECTOR, FULLBODY);
+	VetDetectorStrategy *human_detector = detector_factory.createDetector(CASCADE_DETECTOR, FULLBODY);
 
 	VetDetectorStrategy *front_car_detector = detector_factory.createDetector(HAAR_DETECTOR, FRONT_CAR);
 	VetDetectorStrategy *rear_car_detector = detector_factory.createDetector(HAAR_DETECTOR, REAR_CAR);
 
-	printf("CAPSTONE_TESTER starts.\n");
+	VetTracker human_tracker(0.8, 2, 1, 2);
+	VetTracker car_tracker(0.8, 2, 1, 2);
 
 	fvs.start();
 
@@ -502,8 +509,6 @@ void capstoneTester(std::string video_path)
 	{
 		if ( fvs.read(frame) )
 		{
-			optFlowDetector.detect(frame, rois_opt);
-
 			front_car_detector->detect(frame, temp_rois);
 			rois_car.insert(rois_car.end(), temp_rois.begin(), temp_rois.end());
 
@@ -512,9 +517,97 @@ void capstoneTester(std::string video_path)
 
 			human_detector->detect(frame, rois_human);
 
-			NMS(rois_opt, 0.3);
 			NMS(rois_car, 0.3);
 			NMS(rois_human, 0.3);
+			drawRectangles(frame, rois_car, COLOR_RED);
+			drawRectangles(frame, rois_human, COLOR_RED);
+
+			human_tracker.update(rois_human);
+			car_tracker.update(rois_car);
+			drawRectangles(frame, rois_car, COLOR_GREEN);
+			drawRectangles(frame, rois_human, COLOR_BLUE);
+			
+			rois_car.clear();
+			rois_human.clear();
+
+			imshow("frame", frame);
+		}
+
+		char resp = waitKey(5);
+
+		if(resp == KEY_ESC)
+		{
+			cout << "window: frame closed" << endl;
+			destroyWindow("frame");
+			break;
+		}
+		else if(resp == KEY_SPACE)
+		{
+			cout << "window: frame paused" << endl;
+			cout << "Press any key to continue..." << endl;
+			waitKey(-1);
+		}
+	}
+
+	fvs.stop();
+
+	delete human_detector;
+	delete rear_car_detector;
+	delete front_car_detector;
+
+	printf("TRACKER_TESTER ends.\n");
+}
+
+void capstoneTester(std::string video_path)
+{
+	printf("CAPSTONE_TESTER starts.\n");
+
+	VetDetectorFactory detector_factory;
+	VetFastVideoCapture fvs(video_path, 128);
+
+	VetOptFlowDetector optFlowDetector;
+	VetDetectorStrategy *human_detector = detector_factory.createDetector(CASCADE_DETECTOR, FULLBODY);
+	VetDetectorStrategy *front_car_detector = detector_factory.createDetector(HAAR_DETECTOR, FRONT_CAR);
+	VetDetectorStrategy *rear_car_detector = detector_factory.createDetector(HAAR_DETECTOR, REAR_CAR);
+
+	VetTracker human_tracker(0.8, 2, 1, 2);
+	VetTracker car_tracker(0.8, 2, 1, 2);
+
+	Mat frame;
+	vector<VetROI> rois_car, rois_opt, rois_human, temp_rois;
+	
+	int cnt = 0;
+
+	if( !fvs.isOpened() )
+		error(string("Cannot open video:") + video_path);
+
+	fvs.start();
+
+	namedWindow("frame");
+	moveWindow("frame", 25, 25);
+
+	while( fvs.more() )
+	{
+		if ( fvs.read(frame) )
+		{
+			if(cnt++ % 2 == 1)
+				continue;
+			
+			front_car_detector->detect(frame, temp_rois);
+			rois_car.insert(rois_car.end(), temp_rois.begin(), temp_rois.end());
+
+			rear_car_detector->detect(frame, temp_rois);
+			rois_car.insert(rois_car.end(), temp_rois.begin(), temp_rois.end());
+
+			human_detector->detect(frame, rois_human);
+
+			optFlowDetector.detect(frame, rois_opt);
+
+			NMS(rois_car, 0.3);
+			NMS(rois_human, 0.3);
+
+			human_tracker.update(rois_human);
+			car_tracker.update(rois_car);
 
 			drawRectangles(frame, rois_opt, COLOR_RED);
 			drawRectangles(frame, rois_car, COLOR_GREEN);
@@ -527,7 +620,7 @@ void capstoneTester(std::string video_path)
 			imshow("frame", frame);
 		}
 
-		char resp = waitKey(5);
+		char resp = waitKey(30);
 
 		if(resp == KEY_ESC)
 		{

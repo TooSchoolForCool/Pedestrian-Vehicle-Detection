@@ -6,6 +6,7 @@
 #include "vethaardetector.h"
 #include "vetcolordetector.h"
 #include "vetoptflowdetector.h"
+#include "vettracker.h"
 #include "vetimagetoolkit.h"
 #include "vetconcurrentqueue.h"
 #include "vetfastvideocapture.h"
@@ -29,8 +30,9 @@
 #define FAST_HOG_SVM_TESTER			7
 #define OPT_FLOW_TESTER				8
 #define CASCADE_HUMAN_TESTER		9
-#define CAPSTONE_TESTER				10
-#define FOO_TESTER					11
+#define TRACKER_TESTER				10
+#define CAPSTONE_TESTER				11
+#define FOO_TESTER					12
 
 /**
  * Tester Video File Path
@@ -59,6 +61,7 @@ void redDetectorTester(std::string video_path);
 void fastHOGSVMTester(std::string video_path);
 void optFlowTester(std::string video_path);
 void cascadeHumanTester(std::string video_path);
+void trackerTester(std::string video_path);
 void capstoneTester(std::string video_path);
 void fooTester(std::string video_path);
 
