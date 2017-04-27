@@ -99,6 +99,16 @@ private:
 	// pyrLK clusters area lower bound
 	int cluster_area_threshold_;
 
+	// pyrLK optflow reference region, to determine 
+	// if the camera turn left or turn right
+	cv::Rect ref_region_;
+
+	// direction reference threshold
+	// if the ratio of left-direction vector in the reference region
+	// is greater than or equal to this threshold, then we assume the
+	// camera is turn right, vice versa.
+	double direction_ref_threshold_;
+
 	// color palette for Optical Flow Farneback approach
 	std::vector<cv::Scalar> color_palette_;
 

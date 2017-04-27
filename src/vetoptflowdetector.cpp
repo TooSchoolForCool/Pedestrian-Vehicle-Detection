@@ -51,6 +51,12 @@ VetOptFlowDetector::VetOptFlowDetector()
 	// less than this threshold will be dumped. 
 	cluster_area_threshold_ = 100 * 100;
 
+	// direction reference threshold
+	// if the ratio of left-direction vector in the reference region
+	// is greater than or equal to this threshold, then we assume the
+	// camera is turn right, vice versa.
+	direction_ref_threshold_ = 0.8;
+
 	_makeColorPalette();
 }
 
@@ -161,11 +167,22 @@ void VetOptFlowDetector::_createMask4Detection(const Mat &frame)
 {
 	Mat mask(frame.size(), CV_8UC1, Scalar(0));
 	
+	// detection region
 	Rect roi_1(0, frame.rows / 2, frame.cols / 4, frame.rows / 2);
 	Rect roi_2(frame.cols * 3 / 4, frame.rows / 2, frame.cols / 4, frame.rows / 2);
 
+	if(ref_region_.area() == 0)
+	{
+		// pyrLK optflow reference region, to determine 
+		// if the camera turn left or turn right
+		ref_region_ = Rect(frame.cols * 2 / 5, frame.rows * 3 / 4,frame.cols / 5, frame.rows / 4);
+	}
+
 	mask(roi_1).setTo(255);
 	mask(roi_2).setTo(255);
+
+	// reference region
+	mask(ref_region_).setTo(255);
 
 	mask.copyTo(_mask);
 }
@@ -249,22 +266,38 @@ void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, OptFlowPyrLKResult
 	vector<double> &angles = result.angles_;
 	vector<bool> &is_left = result.is_left_;
 
+	int left_vec_cnt = 0, right_vec_cnt = 0, cnt = 0;
+
 	OptFlowPyrLKResult ret;
 
 	for(unsigned int i = 0; i < prev_points.size();i++)
 	{
 		bool is_saved = true;
 
+		Point p = prev_points[i];
 		double distance = distances[i];
 		double angle_in_degree = angles[i];
 
-		// if( (p.x <= frame.cols / 2 && (distance < distance_lower_threshold_ || distance > distance_upper_threshold_) )
-		// 	|| (p.x > frame.cols / 2 && (distance < distance_lower_threshold_ || distance > distance_upper_threshold_) ) )
-		// 	is_saved = false;
+		// determine the moving direction of the camera
+		if( (p.x >= ref_region_.tl().x - 10) && (p.y >= ref_region_.tl().y - 10)
+			&& (p.x <= ref_region_.br().x + 10) && (p.y <= ref_region_.br().y + 10) )
+		{
+			if( (angle_in_degree >= 135) && (angle_in_degree <= 225) )
+				left_vec_cnt++;
 
+			if( (angle_in_degree >= 0) && (angle_in_degree <= 45) )
+				right_vec_cnt++;
+
+			cnt++;
+
+			is_saved = false;
+		}
+
+		// erase some trivial vector
 		if( distance < distance_lower_threshold_ || distance > distance_upper_threshold_ )
 			is_saved = false;
 
+		// remove some front-to-back vector
 		if( !( ( !is_left[i] && (angle_in_degree >= 135) && (angle_in_degree <= 225) )
 			|| ( is_left[i] && (angle_in_degree >= 0) && (angle_in_degree <= 45) ) ) )
 			is_saved = false;
@@ -276,6 +309,25 @@ void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, OptFlowPyrLKResult
 			ret.distances_.push_back(distance);
 			ret.angles_.push_back(angle_in_degree);
 			ret.is_left_.push_back(is_left[i]);
+
+			if( (angle_in_degree >= 135) && (angle_in_degree <= 225) )
+				left_vec_cnt++;
+
+			if( (angle_in_degree >= 0) && (angle_in_degree <= 45) )
+				right_vec_cnt++;
+		}
+	}
+
+	if(cnt != 0)
+	{
+		if(left_vec_cnt / cnt >= direction_ref_threshold_)
+		{
+			cout << "turn right" << endl;
+			
+		}
+		else if(right_vec_cnt / cnt >= direction_ref_threshold_)
+		{
+			cout << "turn left" << endl;
 		}
 	}
 
