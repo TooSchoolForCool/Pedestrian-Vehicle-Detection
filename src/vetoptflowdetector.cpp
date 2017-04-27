@@ -55,7 +55,7 @@ VetOptFlowDetector::VetOptFlowDetector()
 	// if the ratio of left-direction vector in the reference region
 	// is greater than or equal to this threshold, then we assume the
 	// camera is turn right, vice versa.
-	direction_ref_threshold_ = 0.6;
+	direction_ref_threshold_ = 0.55;
 
 	_makeColorPalette();
 }
@@ -251,6 +251,7 @@ void VetOptFlowDetector::_calcSpeedVector(vector<Point2f> prev_p, vector<Point2f
 void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, vector<OptFlowPyrLKResult> &result)
 {
 	int left_vec_cnt = 0, right_vec_cnt = 0, cnt = 0;
+	bool is_turn_left = false, is_turn_right = false;
 
 	vector<OptFlowPyrLKResult> ret;
 
@@ -260,33 +261,41 @@ void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, vector<OptFlowPyrL
 
 		Point p = result[i].prev_point_;
 		double distance = result[i].distance_;
-		double angle_in_degree = result[i].angle_;
-
-		// determine the moving direction of the camera
-		if( (p.x >= ref_region_.tl().x - 10) && (p.y >= ref_region_.tl().y - 10)
+		double angle = result[i].angle_;
+		
+		// erase some trivial vector
+		if( distance < distance_lower_threshold_ || distance > distance_upper_threshold_ )
+		{
+			is_saved = false;
+		}
+		// determine the moving direction of the camera by counting the
+		// direction vector in the reference region
+		else if( (p.x >= ref_region_.tl().x - 10) && (p.y >= ref_region_.tl().y - 10)
 			&& (p.x <= ref_region_.br().x + 10) && (p.y <= ref_region_.br().y + 10) )
 		{
-			if( (angle_in_degree >= 135) && (angle_in_degree <= 225) )
+			if( (angle >= 135) && (angle <= 225) )
 				left_vec_cnt++;
 
-			if( (angle_in_degree >= 0) && (angle_in_degree <= 45) )
+			if( (angle >= 0) && (angle <= 45) )
 				right_vec_cnt++;
-			else if( (angle_in_degree >= 315) && (angle_in_degree <= 360) )
+			else if( (angle >= 315) && (angle <= 360) )
 				right_vec_cnt++;
 
 			cnt++;
 
 			is_saved = false;
 		}
-
-		// erase some trivial vector
-		if( distance < distance_lower_threshold_ || distance > distance_upper_threshold_ )
-			is_saved = false;
-
 		// remove some front-to-back vector
-		if( !( ( !result[i].is_left_ && (angle_in_degree >= 135) && (angle_in_degree <= 225) )
-			|| ( result[i].is_left_ && (angle_in_degree >= 0) && (angle_in_degree <= 45) ) ) )
-			is_saved = false;
+		else if( !result[i].is_left_ )
+		{
+			if( !( (angle >= 135) && (angle <= 225) ) )
+				is_saved = false;
+		}
+		else if( result[i].is_left_ )
+		{
+			if( !( ((angle >= 0) && (angle <= 45)) || ((angle >= 315) && (angle <= 360)) )  )
+				is_saved = false;
+		}
 		
 		if( is_saved == true )
 		{
@@ -294,26 +303,46 @@ void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, vector<OptFlowPyrL
 		}
 	}
 
+	// determine the moving direction of the camera
 	if(cnt != 0)
 	{
-		if(left_vec_cnt / cnt >= direction_ref_threshold_)
+		if((left_vec_cnt / (double)cnt >= direction_ref_threshold_))
 		{
-			cout << "turn right:\t";
-			cout << left_vec_cnt << ", " << cnt << endl;
-
+			// cout << "turn right:\t";
+			// cout << left_vec_cnt << ", " << cnt << endl;
+			is_turn_right = true;
 		}
-		else if(right_vec_cnt / cnt >= direction_ref_threshold_)
+		else if((right_vec_cnt / (double)cnt >= direction_ref_threshold_) )
 		{
-			cout << "turn left:\t";
-			cout << right_vec_cnt << ", " << cnt << endl;
+			// cout << "turn left:\t";
+			// cout << right_vec_cnt << ", " << cnt << endl;
+			is_turn_left = true;
 		}
 		else
 		{
-			cout << right_vec_cnt << ", " << cnt << endl;
+			// cout << "go straight:\t";
+			// cout << left_vec_cnt / (double)cnt << ", " << right_vec_cnt / (double)cnt << ", " << cnt << endl;
 		}
 	}
 
-	result.swap(ret);
+	// copy ret to result
+	result.clear();
+	for(unsigned int i = 0; i < ret.size(); i++)
+	{
+		if( is_turn_left )
+		{
+			if( (ret[i].angle_ >= 0) && (ret[i].angle_ <= 45) )
+				continue;
+			if( (ret[i].angle_ >= 315) && (ret[i].angle_ <= 360) )
+				continue;
+		}
+		else if( is_turn_right && (ret[i].angle_ >= 135) && (ret[i].angle_ <= 225) )
+		{
+			continue;
+		}
+		
+		result.push_back(ret[i]);
+	}
 }
 
 void VetOptFlowDetector::_getVectorClusters(const vector<OptFlowPyrLKResult> &result,
