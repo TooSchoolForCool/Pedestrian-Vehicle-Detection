@@ -43,6 +43,8 @@ typedef struct _OptFlowPyrLKResult
 
 	std::vector<double> distances_;
 	std::vector<double> angles_;	// angle in degree
+
+	std::vector<bool> is_left_;
 }OptFlowPyrLKResult;
 
 class VetOptFlowDetector: public VetDetectorStrategy
@@ -63,6 +65,7 @@ private:
 	void _calcSpeedVector(std::vector<cv::Point2f> prev_p, std::vector<cv::Point2f> next_p,
 		std::vector<uchar> state, OptFlowPyrLKResult &result);
 	void _speedVectorFilter(const cv::Mat &frame, OptFlowPyrLKResult &result);
+	void _getVectorClusters(const OptFlowPyrLKResult &result, std::vector<std::vector<cv::Point> > &clusters);
 	
 	void _makeColorPalette();
 	void _motion2color(cv::Mat &flow, cv::Mat &color);
@@ -92,6 +95,9 @@ private:
 	// pyrLK speed vector filter
 	double distance_lower_threshold_;
 	double distance_upper_threshold_;
+
+	// pyrLK clusters area lower bound
+	int cluster_area_threshold_;
 
 	// color palette for Optical Flow Farneback approach
 	std::vector<cv::Scalar> color_palette_;

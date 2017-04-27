@@ -47,6 +47,10 @@ VetOptFlowDetector::VetOptFlowDetector()
 	distance_lower_threshold_ = 10;
 	distance_upper_threshold_ = 128;
 
+	// lower bound of cluster area, any cluster's area
+	// less than this threshold will be dumped. 
+	cluster_area_threshold_ = 100 * 100;
+
 	_makeColorPalette();
 }
 
@@ -77,39 +81,16 @@ void VetOptFlowDetector::detect(Mat &frame, vector<VetROI> &rois)
 	// when the camera turn left/right, some vector will be removed according
 	// to the direction the camera turned.
 	_speedVectorFilter(frame, result);
-
-	for(unsigned int i = 0; i < result.prev_points_.size();i++)
-	{
-		Point p = result.prev_points_[i];
-
-		if(p.x <= frame.cols / 2)
-			left_corners.push_back(p);
-		else
-			right_corners.push_back(p);
-	}
-
+	
 	_printSpeedVector(frame, result);
 
-	VetKmeans kmeans;
-
-	if(left_corners.size() > 10)
+	_getVectorClusters(result, clusters);
+	for(unsigned int i = 0; i < clusters.size(); i++)
 	{
-		kmeans.kmeans(left_corners, clusters, pyrLK_max_clusters_, pyrLK_clusters_overlap_);
+		Rect rect = _findBoundingRect(clusters[i]);
 
-		for(unsigned int i = 0; i < clusters.size(); i++)
-		{
-			rois.push_back( VetROI(_findBoundingRect(clusters[i]), "Warning") );
-		}
-	}
-
-	if(right_corners.size() > 10)
-	{
-		kmeans.kmeans(right_corners, clusters, pyrLK_max_clusters_, pyrLK_clusters_overlap_);
-
-		for(unsigned int i = 0; i < clusters.size(); i++)
-		{
-			rois.push_back( VetROI(_findBoundingRect(clusters[i]), "Warning") );
-		}
+		if(rect.area() >= cluster_area_threshold_)
+			rois.push_back( VetROI(rect, "Warning") );
 	}
 }
 
@@ -254,6 +235,8 @@ void VetOptFlowDetector::_calcSpeedVector(vector<Point2f> prev_p, vector<Point2f
 
 			distances.push_back(distance);
 			angles.push_back(angle_in_degree);
+
+			result.is_left_.push_back( p.x <= prev_gray_img_.cols / 2 );
 		}
 	}
 }
@@ -264,6 +247,7 @@ void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, OptFlowPyrLKResult
 	vector<Point> &next_points = result.next_points_;
 	vector<double> &distances = result.distances_;
 	vector<double> &angles = result.angles_;
+	vector<bool> &is_left = result.is_left_;
 
 	OptFlowPyrLKResult ret;
 
@@ -271,7 +255,6 @@ void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, OptFlowPyrLKResult
 	{
 		bool is_saved = true;
 
-		const Point &p = prev_points[i];
 		double distance = distances[i];
 		double angle_in_degree = angles[i];
 
@@ -282,8 +265,8 @@ void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, OptFlowPyrLKResult
 		if( distance < distance_lower_threshold_ || distance > distance_upper_threshold_ )
 			is_saved = false;
 
-		if( !( ( (p.x > frame.cols / 2) && (angle_in_degree >= 135) && (angle_in_degree <= 225) )
-			|| ( (p.x <= frame.cols / 2) && (angle_in_degree >= 0) && (angle_in_degree <= 45) ) ) )
+		if( !( ( !is_left[i] && (angle_in_degree >= 135) && (angle_in_degree <= 225) )
+			|| ( is_left[i] && (angle_in_degree >= 0) && (angle_in_degree <= 45) ) ) )
 			is_saved = false;
 		
 		if( is_saved == true )
@@ -292,10 +275,42 @@ void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, OptFlowPyrLKResult
 			ret.next_points_.push_back(next_points[i]);
 			ret.distances_.push_back(distance);
 			ret.angles_.push_back(angle_in_degree);
+			ret.is_left_.push_back(is_left[i]);
 		}
 	}
 
 	result = ret;
+}
+
+void VetOptFlowDetector::_getVectorClusters(const OptFlowPyrLKResult &result,
+	vector<vector<Point> > &clusters)
+{
+	VetKmeans kmeans;
+
+	vector<Point> left_corners, right_corners;
+	vector<vector<Point> > tmp_clusters;
+
+	for(unsigned int i = 0; i < result.prev_points_.size();i++)
+	{
+		Point p = result.prev_points_[i];
+
+		if( result.is_left_[i] )
+			left_corners.push_back(p);
+		else
+			right_corners.push_back(p);
+	}
+
+	if(left_corners.size() > 10)
+	{
+		kmeans.kmeans(left_corners, tmp_clusters, pyrLK_max_clusters_, pyrLK_clusters_overlap_);
+		clusters.insert(clusters.end(), tmp_clusters.begin(), tmp_clusters.end());
+	}
+
+	if(right_corners.size() > 10)
+	{
+		kmeans.kmeans(right_corners, tmp_clusters, pyrLK_max_clusters_, pyrLK_clusters_overlap_);
+		clusters.insert(clusters.end(), tmp_clusters.begin(), tmp_clusters.end());
+	}
 }
 
 void VetOptFlowDetector::_makeColorPalette()
