@@ -38,10 +38,11 @@
 
 typedef struct _OptFlowPyrLKResult
 {
-	std::vector<cv::Point2f> prev_points_;
-	std::vector<cv::Point2f> next_points_;
-	std::vector<uchar> state_;
-	std::vector<float> err_;
+	std::vector<cv::Point> prev_points_;
+	std::vector<cv::Point> next_points_;
+
+	std::vector<double> distances_;
+	std::vector<double> angles_;	// angle in degree
 }OptFlowPyrLKResult;
 
 class VetOptFlowDetector: public VetDetectorStrategy
@@ -58,6 +59,10 @@ public:
 private:
 	bool _optFlowPyrLK(const cv::Mat &frame, OptFlowPyrLKResult &result);
 	void _createMask4Detection(const cv::Mat &frame);
+	void _printSpeedVector(cv::Mat &frame, OptFlowPyrLKResult &result);
+	void _calcSpeedVector(std::vector<cv::Point2f> prev_p, std::vector<cv::Point2f> next_p,
+		std::vector<uchar> state, OptFlowPyrLKResult &result);
+	void _speedVectorFilter(const cv::Mat &frame, OptFlowPyrLKResult &result);
 	
 	void _makeColorPalette();
 	void _motion2color(cv::Mat &flow, cv::Mat &color);
@@ -83,6 +88,10 @@ private:
 
 	// pyrLK approach clusters overlap threshold
 	double pyrLK_clusters_overlap_;
+
+	// pyrLK speed vector filter
+	double distance_lower_threshold_;
+	double distance_upper_threshold_;
 
 	// color palette for Optical Flow Farneback approach
 	std::vector<cv::Scalar> color_palette_;
