@@ -290,17 +290,17 @@ void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, OptFlowPyrLKResult
 
 			cnt++;
 
-			is_saved = false;
+			// is_saved = false;
 		}
 
-		// erase some trivial vector
-		if( distance < distance_lower_threshold_ || distance > distance_upper_threshold_ )
-			is_saved = false;
+		// // erase some trivial vector
+		// if( distance < distance_lower_threshold_ || distance > distance_upper_threshold_ )
+		// 	is_saved = false;
 
-		// remove some front-to-back vector
-		if( !( ( !is_left[i] && (angle_in_degree >= 135) && (angle_in_degree <= 225) )
-			|| ( is_left[i] && (angle_in_degree >= 0) && (angle_in_degree <= 45) ) ) )
-			is_saved = false;
+		// // remove some front-to-back vector
+		// if( !( ( !is_left[i] && (angle_in_degree >= 135) && (angle_in_degree <= 225) )
+		// 	|| ( is_left[i] && (angle_in_degree >= 0) && (angle_in_degree <= 45) ) ) )
+		// 	is_saved = false;
 		
 		if( is_saved == true )
 		{
@@ -309,12 +309,6 @@ void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, OptFlowPyrLKResult
 			ret.distances_.push_back(distance);
 			ret.angles_.push_back(angle_in_degree);
 			ret.is_left_.push_back(is_left[i]);
-
-			if( (angle_in_degree >= 135) && (angle_in_degree <= 225) )
-				left_vec_cnt++;
-
-			if( (angle_in_degree >= 0) && (angle_in_degree <= 45) )
-				right_vec_cnt++;
 		}
 	}
 
@@ -322,12 +316,14 @@ void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, OptFlowPyrLKResult
 	{
 		if(left_vec_cnt / cnt >= direction_ref_threshold_)
 		{
-			cout << "turn right" << endl;
-			
+			cout << "turn right:\t";
+			cout << left_vec_cnt << ", " << cnt << endl;
+
 		}
 		else if(right_vec_cnt / cnt >= direction_ref_threshold_)
 		{
-			cout << "turn left" << endl;
+			cout << "turn left:\t";
+			cout << right_vec_cnt << ", " << cnt << endl;
 		}
 	}
 
