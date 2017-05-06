@@ -44,7 +44,7 @@ VetOptFlowDetector::VetOptFlowDetector()
 	// pyrLK speed vector filter
 	// only when speed vector's distance between lower threshold and
 	// upper threshold will be accepted
-	distance_lower_threshold_ = 10;
+	distance_lower_threshold_ = 13;
 	distance_upper_threshold_ = 128;
 
 	// lower bound of cluster area, any cluster's area
@@ -88,7 +88,7 @@ void VetOptFlowDetector::detect(Mat &frame, vector<VetROI> &rois)
 	// to the direction the camera turned.
 	_speedVectorFilter(frame, result);
 	
-	_printSpeedVector(frame, result);
+	// _printSpeedVector(frame, result);
 
 	_getVectorClusters(result, clusters);
 	for(unsigned int i = 0; i < clusters.size(); i++)
