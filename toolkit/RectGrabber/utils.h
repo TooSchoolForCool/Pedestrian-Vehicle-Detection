@@ -40,6 +40,7 @@ void parseArgs(int argc, char ** argv);
 void usage();
 void writeTargets2file(std::ofstream &outfile, const std::vector<cv::Rect> &targets,
 	int frame_counter);
-
+void mouseActionReactor(MouseEventParam &mouse_param, cv::Mat &frame,
+	std::vector<cv::Rect> &targets);
 
 #endif	//_UTILS_H

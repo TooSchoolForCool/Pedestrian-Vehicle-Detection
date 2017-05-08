@@ -137,3 +137,16 @@ void writeTargets2file(ofstream &outfile, const vector<Rect> &targets, int frame
 		outfile << str << endl;
 	}
 }
+
+void mouseActionReactor(MouseEventParam &mouse_param, Mat &frame, vector<Rect> &targets)
+{
+	if(mouse_param.action_ == DONE)
+	{
+		targets.push_back(mouse_param.rect_);
+		mouse_param.action_ = WAIT_NEXT;
+	}
+	else if(mouse_param.action_ == DRAWING)
+	{
+		rectangle(frame, mouse_param.rect_, Scalar(255, 0, 0), 2);
+	}
+}

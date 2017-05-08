@@ -68,16 +68,8 @@ int main(int argc, char **argv)
 
 		Mat drawing_frame;
 		frame.copyTo(drawing_frame);
-		
-		if(mouse_param.action_ == DONE)
-		{
-			targets.push_back(mouse_param.rect_);
-			mouse_param.action_ = WAIT_NEXT;
-		}
-		else if(mouse_param.action_ == DRAWING)
-		{
-			rectangle(drawing_frame, mouse_param.rect_, Scalar(255, 0, 0), 2);
-		}
+
+		mouseActionReactor(mouse_param, drawing_frame, targets);
 
 		switch(ret)
 		{
