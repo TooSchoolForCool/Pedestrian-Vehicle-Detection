@@ -9,9 +9,10 @@ using namespace cv;
 #define HELP 				'h'
 #define VIDEO_SRC 			'c'
 #define OUTPUT_DST			'o'
+#define TARGET_NAME 		't'
 #define TRACE_TARGET		1001
 
-char short_opts[] = "hc:o:";
+char short_opts[] = "hc:o:t:";
 static struct option long_opts[] = {
 	{"help", no_argument, NULL, HELP},
 	{"TraceTarget", no_argument, NULL, TRACE_TARGET}
@@ -59,6 +60,9 @@ void mouseEvent(int event, int x, int y, int flags, void *param)
 
 void parseArgs(int argc, char **argv)
 {
+	if(argc == 1)
+		usage();
+
 	int opt;
 	int opt_index;
 
@@ -75,12 +79,14 @@ void parseArgs(int argc, char **argv)
 			case OUTPUT_DST:
 				strcpy(_output_dst_, optarg);
 				break;
+			case TARGET_NAME:
+				strcpy(_target_name_, optarg);
 			case TRACE_TARGET:
 				_trace_target_ = true;
 				break;
 			default:
 				char msg[512];
-				sprintf(msg, "[util.cpp parseArgs()] no such option '-%s'", argv[opt_index]);
+				sprintf(msg, "[utils.cpp parseArgs()] wrong option arg '%s'", argv[optind - 1]);
 				cout << msg << endl;
 				exit(1);
 				break;
@@ -90,6 +96,11 @@ void parseArgs(int argc, char **argv)
 	if(_output_dst_[0] == '\0')
 	{
 		sprintf(_output_dst_, "output.txt");
+	}
+
+	if(_target_name_[0] == '\0')
+	{
+		sprintf(_target_name_, "unknown");
 	}
 }
 
@@ -106,9 +117,23 @@ void usage()
 	out += "-h                    Print helping manual\n";
 	out += "-c <video_file_path>  Define video file path";
 	out += "-o <out file name>    Define output file name\n";
+	out += "-t <target name>      Define target name\n";
 	out += "--help                Print helping manual\n";
 	out += "--TraceTarget         Trace target (print coordinates in terminal)\n";
 
 	cout << out << endl;
 	exit(0);
+}
+
+void writeTargets2file(ofstream &outfile, const vector<Rect> &targets, int frame_counter)
+{
+	char str[1024];
+
+	for(int i = 0; i < targets.size(); i++)
+	{
+		sprintf(str, "%d\t%d\t%d\t%d\t%d\t%s", frame_counter, targets[i].x, targets[i].y,
+			targets[i].width, targets[i].height, _target_name_);
+
+		outfile << str << endl;
+	}
 }

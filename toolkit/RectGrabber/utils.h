@@ -19,6 +19,7 @@
 
 extern char _video_src_[1024];
 extern char _output_dst_[1024];
+extern char _target_name_[1024];
 extern bool _trace_target_;
 
 typedef enum _MouseAction
@@ -37,5 +38,8 @@ typedef struct _MouseEventParam
 void mouseEvent(int event, int x, int y, int flags, void *param);
 void parseArgs(int argc, char ** argv);
 void usage();
+void writeTargets2file(std::ofstream &outfile, const std::vector<cv::Rect> &targets,
+	int frame_counter);
+
 
 #endif	//_UTILS_H

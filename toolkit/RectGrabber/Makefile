@@ -52,7 +52,7 @@ SRCS = main.cpp	\
 OBJS = $(SRCS:%.cpp=$(OBJS_DIR)/%.o)
 
 # define the executable file 
-TARGET = RectGrabber
+TARGET = RectGrabber.out
 
 #
 # The following part of the makefile is generic; it can be used to 

@@ -28,6 +28,7 @@ using namespace cv;
 
 char _video_src_[1024] = "";
 char _output_dst_[1024] = "";
+char _target_name_[1024] = "";
 bool _trace_target_ = false;
 
 int main(int argc, char **argv)
@@ -41,18 +42,20 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	Mat frame;
-	int frame_counter = 1;
+	ofstream outfile(_output_dst_);
 	vector<Rect> targets;
+	int frame_counter = 1;
 
+	// video frame
+	Mat frame;
+	video_stream.read(frame);
+
+	// mouse event params
 	MouseEventParam mouse_param;
 	mouse_param.action_ = WAIT_NEXT;
 
 	namedWindow("frame");
 	moveWindow("frame", 25, 25);
-
-	video_stream.read(frame);
-	imshow("frame", frame);
 
 	setMouseCallback("frame", mouseEvent, &mouse_param);
 
@@ -80,6 +83,10 @@ int main(int argc, char **argv)
 		{
 			case 'n':
 				video_stream.read(frame);
+				writeTargets2file(outfile, targets, frame_counter++);
+				break;
+			case 'c':
+				targets.clear();
 				break;
 			default:
 				break;
@@ -91,7 +98,9 @@ int main(int argc, char **argv)
 		imshow("frame", drawing_frame);
 	}
 
-	cout << "End..." << endl;
+	destroyWindow("frame");
+	outfile.close();
+	video_stream.release();
 
 	return 0;
 }
