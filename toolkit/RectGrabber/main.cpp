@@ -26,24 +26,27 @@
 using namespace std;
 using namespace cv;
 
-
+char _video_src_[1024] = "";
+char _output_dst_[1024] = "";
+bool _trace_target_ = false;
 
 int main(int argc, char **argv)
 {
-	VideoCapture video_stream("HPIM0026_Trimed.mov");
+	parseArgs(argc, argv);
 
+	VideoCapture video_stream(_video_src_);
 	if( !video_stream.isOpened() )
 	{
-		printf("[main]: Cannot open video file\n");
+		printf("[main]: Cannot open video file %s\n", _video_src_);
 		exit(1);
 	}
 
-
 	Mat frame;
 	int frame_counter = 1;
+	vector<Rect> targets;
 
 	MouseEventParam mouse_param;
-	mouse_param.action_ = WAIT;
+	mouse_param.action_ = WAIT_NEXT;
 
 	namedWindow("frame");
 	moveWindow("frame", 25, 25);
@@ -56,18 +59,21 @@ int main(int argc, char **argv)
 	while(1)
 	{
 		char ret = waitKey(15);
-		
+
 		if(ret == 27)
 			break;
 
+		Mat drawing_frame;
+		frame.copyTo(drawing_frame);
+		
 		if(mouse_param.action_ == DONE)
 		{
-			cout << mouse_param.rect_ << endl;
-			mouse_param.action_ = WAIT;
+			targets.push_back(mouse_param.rect_);
+			mouse_param.action_ = WAIT_NEXT;
 		}
-		else if(mouse_param.action_ == START)
+		else if(mouse_param.action_ == DRAWING)
 		{
-			cout << mouse_param.rect_ << endl;
+			rectangle(drawing_frame, mouse_param.rect_, Scalar(255, 0, 0), 2);
 		}
 
 		switch(ret)
@@ -79,7 +85,10 @@ int main(int argc, char **argv)
 				break;
 		}
 
-		imshow("frame", frame);
+		for(int i = 0; i < targets.size(); i++)
+			rectangle(drawing_frame, targets[i], Scalar(0, 255, 0), 2);
+
+		imshow("frame", drawing_frame);
 	}
 
 	cout << "End..." << endl;

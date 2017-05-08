@@ -56,4 +56,4 @@ data/haar-cascades/
 *.out
 *.app
 launch
-RectGrabber
+RectGrabber.out
