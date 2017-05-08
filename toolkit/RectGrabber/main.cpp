@@ -1,161 +1,88 @@
-//Tools for Labeling Video
-//Coded by L. Wei
-//Date: 9/4/2013
+/*********************************************************************
+ * MODULE: Rectangle Grabber
+ *
+ * PURPOSE: RectGrabber is for video labeling. Using your mouse
+ * 		pointer rectangle the region, and this program will output
+ *		the coordinate of the rectangle region (x, y, width, height)
+ *		into the target file.
+ *
+ *		The output file contains 6 columns as following:
+ *			frame#  x  y  width  height  object_name
+ *		Each column is separated by a tab charactor '\t'.
+ *		
+ * AUTHER: Zeyu Zhang
+ * DATE STARTED: 2017-05-08
+ *********************************************************************/
+
+#include "utils.h"
 
 #include <opencv2/opencv.hpp>
+
 #include <iostream>
-#include <string>
-#include <vector>
 #include <fstream>
+
+#include <stdio.h>
+
 using namespace std;
 using namespace cv;
 
-// Global variables
-bool is_drawing=false;
-vector<Rect> biaozhu_boxs;
-
-Rect drawing_box;
-Mat img_original,img_drawing;
 
 
-static void help()
+int main(int argc, char **argv)
 {
-	cout << "This program designed for labeling video \n"
-		<<"Coded by L. Wei on 9/4/2013\n"<<endl;
-	
-	cout<<"Use the mouse to draw rectangle on the image for labeling.\n"<<endl;
+	VideoCapture video_stream("HPIM0026_Trimed.mov");
 
-	cout << "Hot keys: \n"
-		"\tESC - quit the program\n"
-		"\tn - next frame of the video\n"
-		"\tz - undo the last label\n"
-		"\tc - clear all the labels\n"
-		<<endl;
-}
-
-static void onMouse( int event, int x, int y, int, void* )
-{
-	switch(event)
+	if( !video_stream.isOpened() )
 	{
-	case CV_EVENT_LBUTTONDOWN: 
-		//the left up point of the rect
-		is_drawing=true;
-		drawing_box.x=x;
-		drawing_box.y=y;
-		break;
-	case CV_EVENT_MOUSEMOVE:
-		//adjust the rect (use color blue for moving)
-		if(is_drawing){
-			drawing_box.width=x-drawing_box.x;
-			drawing_box.height=y-drawing_box.y;
-			img_original.copyTo(img_drawing);
-			for(vector<Rect>::iterator it=biaozhu_boxs.begin();
-				it!=biaozhu_boxs.end();++it){
-					rectangle(img_drawing,(*it),Scalar(0,255,0));
-			}
-			rectangle(img_drawing,drawing_box,Scalar(255,0,0));
-		}
-		break;
-	case CV_EVENT_LBUTTONUP:
-		//finish drawing the rect (use color green for finish)
-		if(is_drawing){
-			drawing_box.width=x-drawing_box.x;
-			drawing_box.height=y-drawing_box.y;
-			img_original.copyTo(img_drawing);
-			for(vector<Rect>::iterator it=biaozhu_boxs.begin();
-				it!=biaozhu_boxs.end();++it){
-					rectangle(img_drawing,(*it),Scalar(0,255,0));
-			}
-			rectangle(img_drawing,drawing_box,Scalar(0,255,0));
-			biaozhu_boxs.push_back(drawing_box);
-		}
-		is_drawing=false;
-		break;
+		printf("[main]: Cannot open video file\n");
+		exit(1);
 	}
-	imshow("Video",img_drawing);
-	return;
-}
-//画车道线标注直线
-//int _tmain(IplImage * img)
-//{
-//	IplImage * img = cvCreateImage(cvSize(500,500),IPL_DEPTH_8U,3); //创建一张图片
-//	cvZero(img);//初始化图片
-//	cvLine(img,cvPoint(250,154),cvPoint(250,250),CV_RGB(0,255,255),5,CV_AA,0);//画直线  cvLine:确定圆的坐标  cvPoint(250,154)与cvPoint(250,250)是线段的起点和终点 CV_RGB：圆的颜色 5：线圈的粗细 CV_AA：线段的类型
-//	cvNamedWindow("Circle",1); //创建窗体
-//	cvShowImage("Circle",img);//显示图片
-//	cvWaitKey(0);
-//	cvReleaseImage(&img);
-//	cvDestroyWindow("Circle");
-//	return 0;
-//}
 
 
-int main(){
-	namedWindow("Video");
-	ofstream outfile("a.txt");
-	help();
-	VideoCapture capture("HPIM00261.mov");
-	capture>>img_original;
-	img_original.copyTo(img_drawing);
-	for(vector<Rect>::iterator it=biaozhu_boxs.begin();
-		it!=biaozhu_boxs.end();++it){
-			rectangle(img_drawing,(*it),Scalar(0,255,0));
-	}
-	imshow("Video",img_original);
-	setMouseCallback( "Video", onMouse, 0 );
+	Mat frame;
+	int frame_counter = 1;
 
-	int frame_counter=0;
+	MouseEventParam mouse_param;
+	mouse_param.action_ = WAIT;
 
-	while(1){
-		int c=waitKey(0);
-		if( (c & 255) == 27 )
+	namedWindow("frame");
+	moveWindow("frame", 25, 25);
+
+	video_stream.read(frame);
+	imshow("frame", frame);
+
+	setMouseCallback("frame", mouseEvent, &mouse_param);
+
+	while(1)
+	{
+		char ret = waitKey(15);
+		
+		if(ret == 27)
+			break;
+
+		if(mouse_param.action_ == DONE)
 		{
-			cout << "Exiting ...\n";
-			break;
+			cout << mouse_param.rect_ << endl;
+			mouse_param.action_ = WAIT;
 		}
-		switch((char)c)
+		else if(mouse_param.action_ == START)
 		{
-		case 'n':
-			//read the next frame
-			++frame_counter;
-			capture>>img_original;
-			if(img_original.empty()){
-				cout<<"\nVideo Finished!"<<endl;
-				return 0;
-			}
-
-			img_original.copyTo(img_drawing);
-			//save all of the labeling rects
-			for(vector<Rect>::iterator it=biaozhu_boxs.begin();
-				it!=biaozhu_boxs.end();++it){
-					rectangle(img_drawing,(*it),Scalar(0,255,0));
-					outfile<<frame_counter<<" "<<(*it).x<<" "
-						<<(*it).y<<" "<<(*it).width<<" "
-						<<(*it).height<<endl;
-			}
-			break;
-		case 'z':
-			//undo the latest labeling
-			if(!biaozhu_boxs.empty()){
-				vector<Rect>::iterator it_end=biaozhu_boxs.end();
-				--it_end;
-				biaozhu_boxs.erase(it_end);
-			}
-			img_original.copyTo(img_drawing);
-			for(vector<Rect>::iterator it=biaozhu_boxs.begin();
-				it!=biaozhu_boxs.end();++it){
-					rectangle(img_drawing,(*it),Scalar(0,255,0));
-			}
-			break;
-
-		case 'c':
-			//clear all the rects on the image
-			biaozhu_boxs.clear();
-			img_original.copyTo(img_drawing);
+			cout << mouse_param.rect_ << endl;
 		}
 
-		imshow("Video",img_drawing);
+		switch(ret)
+		{
+			case 'n':
+				video_stream.read(frame);
+				break;
+			default:
+				break;
+		}
+
+		imshow("frame", frame);
 	}
+
+	cout << "End..." << endl;
 
 	return 0;
 }

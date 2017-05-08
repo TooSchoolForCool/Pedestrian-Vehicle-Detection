@@ -38,7 +38,8 @@ LFLAGS = `pkg-config --libs opencv`
 LIBS =
 
 # define the C source files
-SRCS = main.cpp
+SRCS = main.cpp	\
+       utils.cpp
 
 # define the C object files 
 #

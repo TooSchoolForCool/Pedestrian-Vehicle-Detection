@@ -9,6 +9,8 @@ others/
 
 # Some huge media files
 data/video/
+*.mov
+*.mp4
 
 # Ubuntu Trash folder
 .Trash-1000/
@@ -54,3 +56,4 @@ data/haar-cascades/
 *.out
 *.app
 launch
+RectGrabber

@@ -586,6 +586,8 @@ void capstoneTester(std::string video_path)
 	namedWindow("frame");
 	moveWindow("frame", 25, 25);
 
+	VideoWriter writer("VideoTest.avi", CV_FOURCC('M', 'J', 'P', 'G'), 25.0, Size(1280, 720));
+
 	while( fvs.more() )
 	{
 		if ( fvs.read(frame) )
@@ -616,7 +618,8 @@ void capstoneTester(std::string video_path)
 			rois_opt.clear();
 			rois_car.clear();
 			rois_human.clear();
-
+			
+			writer << frame;
 			imshow("frame", frame);
 		}
 
