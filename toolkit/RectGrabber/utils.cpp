@@ -129,9 +129,11 @@ void writeTargets2file(ofstream &outfile, const vector<Rect> &targets, int frame
 {
 	char str[1024];
 
+	outfile << frame_counter << " " << targets.size() << endl;
+
 	for(int i = 0; i < targets.size(); i++)
 	{
-		sprintf(str, "%d\t%d\t%d\t%d\t%d\t%s", frame_counter, targets[i].x, targets[i].y,
+		sprintf(str, "%d %d %d %d %d %s", frame_counter, targets[i].x, targets[i].y,
 			targets[i].width, targets[i].height, _target_name_);
 
 		outfile << str << endl;
@@ -142,7 +144,8 @@ void mouseActionReactor(MouseEventParam &mouse_param, Mat &frame, vector<Rect> &
 {
 	if(mouse_param.action_ == DONE)
 	{
-		targets.push_back(mouse_param.rect_);
+		if(mouse_param.rect_.area() > 100)
+			targets.push_back(mouse_param.rect_);
 		mouse_param.action_ = WAIT_NEXT;
 	}
 	else if(mouse_param.action_ == DRAWING)
