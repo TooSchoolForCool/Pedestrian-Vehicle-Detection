@@ -51,6 +51,7 @@ SRCS = main.cpp \
 	   vetuserstrategy.cpp \
 	   vetusercontext.cpp \
 	   vettestmode.cpp \
+	   vetevaluator.cpp \
 	   vetimagetoolkit.cpp \
 	   veterror.cpp \
 	   vetfastvideocapture.cpp \

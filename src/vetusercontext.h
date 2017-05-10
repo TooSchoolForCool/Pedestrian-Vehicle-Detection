@@ -3,13 +3,12 @@
 
 #include "vetuserstrategy.h"
 #include "vettestmode.h"
+#include "vetevaluator.h"
 
 #include <iostream>
 #include <string>
 
-
 #define TEST_TRIMED_VIDEO_PATH "../data/video/HPIM0026_Trimed.mov"
-
 
 class VetUserContext
 {

@@ -6,7 +6,8 @@
 
 typedef enum _UserMode
 {
-	TEST_MODE = 1
+	TEST_MODE,
+	EVALUATE_MODE
 }UserMode;
 
 class VetUserStrategy
