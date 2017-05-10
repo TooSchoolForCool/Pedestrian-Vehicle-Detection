@@ -84,8 +84,7 @@ int main(int argc, char **argv)
 				break;
 		}
 
-		for(int i = 0; i < targets.size(); i++)
-			rectangle(drawing_frame, targets[i], Scalar(0, 255, 0), 2);
+		showCurrentFrame(drawing_frame, targets, frame_counter);
 
 		imshow("frame", drawing_frame);
 	}

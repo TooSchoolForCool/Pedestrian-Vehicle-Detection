@@ -150,3 +150,15 @@ void mouseActionReactor(MouseEventParam &mouse_param, Mat &frame, vector<Rect> &
 		rectangle(frame, mouse_param.rect_, Scalar(255, 0, 0), 2);
 	}
 }
+
+void showCurrentFrame(Mat &frame, const vector<Rect> &targets, const int frame_num)
+{
+	char str[256];
+
+	for(int i = 0; i < targets.size(); i++)
+		rectangle(frame, targets[i], Scalar(0, 255, 0), 2);
+
+	sprintf(str, "Frame %d", frame_num);
+
+	putText(frame, str, Point(0, 30), CV_FONT_HERSHEY_COMPLEX, 0.8, Scalar(255, 0, 0) );
+}

@@ -42,5 +42,7 @@ void writeTargets2file(std::ofstream &outfile, const std::vector<cv::Rect> &targ
 	int frame_counter);
 void mouseActionReactor(MouseEventParam &mouse_param, cv::Mat &frame,
 	std::vector<cv::Rect> &targets);
+void showCurrentFrame(cv::Mat &frame, const std::vector<cv::Rect> &targets,
+	const int frame_num);
 
 #endif	//_UTILS_H
