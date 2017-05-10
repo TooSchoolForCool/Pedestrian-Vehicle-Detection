@@ -1,5 +1,6 @@
 # Some Private Document Folders
 doc/
+*.txt
 
 # Others irrelative files
 others/

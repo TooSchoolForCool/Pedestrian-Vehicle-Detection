@@ -115,7 +115,7 @@ void usage()
 
 	out += "OPTIONS:\n";
 	out += "-h                    Print helping manual\n";
-	out += "-c <video_file_path>  Define video file path";
+	out += "-c <video_file_path>  Define video file path\n";
 	out += "-o <out file name>    Define output file name\n";
 	out += "-t <target name>      Define target name\n";
 	out += "--help                Print helping manual\n";

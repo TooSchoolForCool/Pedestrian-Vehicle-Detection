@@ -80,6 +80,10 @@ int main(int argc, char **argv)
 			case 'c':
 				targets.clear();
 				break;
+			case 'p':
+				if( !targets.empty() )
+					targets.pop_back();
+				break;
 			default:
 				break;
 		}
