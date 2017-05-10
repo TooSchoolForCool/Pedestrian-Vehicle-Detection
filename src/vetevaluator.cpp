@@ -58,7 +58,7 @@ void showLabeledVideo(string video_path, string labeled_file_path)
 {
 	printf("[SHOW_LABELED_VIDEO] starts\n");
 
-	ifstream file_in(labeled_file_path);
+	ifstream file_in(labeled_file_path.c_str());
 
 	if( !file_in.is_open() )
 	{
@@ -146,7 +146,7 @@ void capstoneEvaluator(string video_path, string labeled_file_path)
 	string label;
 	vector<VetROI> targets;
 
-	ifstream file_in(labeled_file_path);
+	ifstream file_in(labeled_file_path.c_str());
 
 	if( !file_in.is_open() )
 	{
