@@ -44,7 +44,7 @@ VetOptFlowDetector::VetOptFlowDetector()
 	// pyrLK speed vector filter
 	// only when speed vector's distance between lower threshold and
 	// upper threshold will be accepted
-	distance_lower_threshold_ = 13;
+	distance_lower_threshold_ = 12;
 	distance_upper_threshold_ = 128;
 
 	// lower bound of cluster area, any cluster's area
