@@ -17,6 +17,10 @@ VetUserContext::VetUserContext(UserMode user_mode)
 			cout << "[VetUserContext::VetUserContext]: Create VetEvaluator" << endl;
 			ptr_user_strategy_ = new VetEvaluator();
 			break;
+		case USER_MODE:
+			cout << "[VetUserContext::VetUserContext]: Create VetUser" << endl;
+			ptr_user_strategy_ = new VetUser();
+			break;
 		default:
 			cout << "[VetUserContext::VetUserContext]: No Such Option" << endl;
 			break;

@@ -4,6 +4,7 @@
 #include "vetuserstrategy.h"
 #include "vettestmode.h"
 #include "vetevaluator.h"
+#include "vetuser.h"
 
 #include <iostream>
 #include <string>
