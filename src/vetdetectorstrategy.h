@@ -28,7 +28,7 @@
 
 #include "vetroi.h"
 #include "veterror.h"
-#include "vetimagetoolkit.h"
+#include "vetutils.h"
 
 #include <opencv2/opencv.hpp>
 

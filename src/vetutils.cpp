@@ -22,7 +22,7 @@
 * \date 2016-02-22
 */
 
-#include "vetimagetoolkit.h"
+#include "vetutils.h"
 
 #include <opencv2/opencv.hpp>
 

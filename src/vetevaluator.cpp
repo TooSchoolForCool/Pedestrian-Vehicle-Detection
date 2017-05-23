@@ -197,38 +197,39 @@ void capstoneEvaluator(string video_path, string labeled_file_path)
 			rois_car.clear();
 			rois_human.clear();
 
-			file_in >> cur_frame_num >> obj_num;
+			// file_in >> cur_frame_num >> obj_num;
 
-			for(int i = 0; i < obj_num; i++)
-			{
-				file_in >> cur_frame_num >> x >> y >> width >> height >> label;
+			// for(int i = 0; i < obj_num; i++)
+			// {
+			// 	file_in >> cur_frame_num >> x >> y >> width >> height >> label;
 				
-				Rect rect(x, y, width, height);
+			// 	Rect rect(x, y, width, height);
 
-				targets.push_back( VetROI(rect, "car") );
-			}
+			// 	targets.push_back( VetROI(rect, "car") );
+			// }
 
-			drawRectangles(frame, targets, COLOR_BLUE);
-			targets.clear();
+			// drawRectangles(frame, targets, COLOR_BLUE);
+			// targets.clear();
 			
+			cout << "frame " << cnt++ << endl;
 			// writer << frame;
-			imshow("frame", frame);
+			// imshow("frame", frame);
 		}
 
-		char resp = waitKey(30);
+		// char resp = waitKey(30);
 
-		if(resp == KEY_ESC)
-		{
-			cout << "window: frame closed" << endl;
-			destroyWindow("frame");
-			break;
-		}
-		else if(resp == KEY_SPACE)
-		{
-			cout << "window: frame paused" << endl;
-			cout << "Press any key to continue..." << endl;
-			waitKey(-1);
-		}
+		// if(resp == KEY_ESC)
+		// {
+		// 	cout << "window: frame closed" << endl;
+		// 	destroyWindow("frame");
+		// 	break;
+		// }
+		// else if(resp == KEY_SPACE)
+		// {
+		// 	cout << "window: frame paused" << endl;
+		// 	cout << "Press any key to continue..." << endl;
+		// 	waitKey(-1);
+		// }
 	}
 
 	fvs.stop();
@@ -236,6 +237,7 @@ void capstoneEvaluator(string video_path, string labeled_file_path)
 	delete human_detector;
 	delete rear_car_detector;
 	delete front_car_detector;
+	file_in.close();
 
 	printf("[CAPSTONE_EVALUATOR] ends.\n");
 }

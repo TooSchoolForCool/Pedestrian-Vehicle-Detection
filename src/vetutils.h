@@ -16,14 +16,14 @@
 
 
 /*!
-* \file vetimagetoolkit.h
+* \file vetutils.h
 * \author [Zeyu Zhang]
 * \version [0.1]
 * \date 2016-02-22
 */
 
-#ifndef VETIMAGEPROCESSOR_H
-#define VETIMAGEPROCESSOR_H
+#ifndef VETUTILS_H
+#define VETUTILS_H
 
 #include "vetroi.h"
 #include "veterror.h"
@@ -47,4 +47,4 @@ void NMS(std::vector<VetROI> &rois, double overlap_threshold);
 
 void equalizeHist4ColorImage(const cv::Mat &srcImg, cv::Mat &dstImg);
 
-#endif
+#endif	// VETUTILS_H

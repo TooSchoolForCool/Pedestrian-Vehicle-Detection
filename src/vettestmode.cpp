@@ -373,6 +373,7 @@ void optFlowTester(string video_path)
 	VetDetectorFactory detector_factory;
 	VetFastVideoCapture fvs(video_path, 128);
 
+	int frame_cnt = 1;
 	Mat frame;
 	vector<VetROI> rois, temp_rois;
 
@@ -392,9 +393,12 @@ void optFlowTester(string video_path)
 	{
 		if ( fvs.read(frame) )
 		{
+			if(frame_cnt++ % 2 == 0)
+				continue;
+
 			optFlowDetector.detect(frame, rois);
 			
-			drawRectangles(frame, rois, COLOR_RED);
+			// drawRectangles(frame, rois, COLOR_RED);
 			rois.clear();
 
 			imshow("frame", frame);
@@ -586,7 +590,7 @@ void capstoneTester(std::string video_path)
 	namedWindow("frame");
 	moveWindow("frame", 25, 25);
 
-	VideoWriter writer("VideoTest.avi", CV_FOURCC('M', 'J', 'P', 'G'), 25.0, Size(1280, 720));
+	// VideoWriter writer("VideoTest.avi", CV_FOURCC('M', 'J', 'P', 'G'), 25.0, Size(1280, 720));
 
 	while( fvs.more() )
 	{
@@ -619,7 +623,7 @@ void capstoneTester(std::string video_path)
 			rois_car.clear();
 			rois_human.clear();
 			
-			writer << frame;
+			// writer << frame;
 			imshow("frame", frame);
 		}
 

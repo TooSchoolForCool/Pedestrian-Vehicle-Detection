@@ -7,7 +7,7 @@
 #include "vetcolordetector.h"
 #include "vetoptflowdetector.h"
 #include "vettracker.h"
-#include "vetimagetoolkit.h"
+#include "vetutils.h"
 #include "vetconcurrentqueue.h"
 #include "vetfastvideocapture.h"
 #include "vetroi.h"

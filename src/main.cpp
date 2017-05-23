@@ -33,7 +33,7 @@ using namespace std;
 
 int main()
 {	
-	VetUserContext user(EVALUATE_MODE);
+	VetUserContext user(TEST_MODE);
 	
 	user.start(TEST_TRIMED_VIDEO_PATH);
 
