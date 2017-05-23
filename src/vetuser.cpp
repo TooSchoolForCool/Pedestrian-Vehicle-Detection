@@ -62,7 +62,9 @@ void VetUser::start(string video_path)
 	Mat frame;
 	vector<VetROI> rois_car, rois_opt, rois_human, temp_rois;
 
-	bool enable_car_detector = true, enable_people_detector = true, enable_optflow = true;
+	bool enable_car_detector = ENABLE_PEDESTRIAN;
+	bool enable_people_detector = ENABLE_VEHICLE;
+	bool enable_optflow = ENABLE_OPTFLOW;
 	
 	int cnt = 0;
 
@@ -75,7 +77,22 @@ void VetUser::start(string video_path)
 		{
 			if(cnt++ % 2 == 1)
 				continue;
-			
+
+			// optical flow enabled
+			if( enable_optflow )
+			{
+				optFlowDetector.detect(frame, rois_opt);
+				
+				drawRectangles(frame, rois_opt, COLOR_RED);
+
+				if(ENABLE_DEBUG)
+				{
+					printVetROI(rois_opt);
+				}
+				
+				rois_opt.clear();
+			}
+
 			// car detector enabled
 			if( enable_car_detector )
 			{
@@ -89,6 +106,11 @@ void VetUser::start(string video_path)
 				car_tracker.update(rois_car);
 				drawRectangles(frame, rois_car, COLOR_GREEN);
 
+				if(ENABLE_DEBUG)
+				{
+					printVetROI(rois_car);
+				}
+
 				rois_car.clear();
 			}
 			
@@ -100,20 +122,15 @@ void VetUser::start(string video_path)
 				NMS(rois_human, 0.3);
 				human_tracker.update(rois_human);
 				drawRectangles(frame, rois_human, COLOR_BLUE);
+
+				if(ENABLE_DEBUG)
+				{
+					printVetROI(rois_human);
+				}
 				
 				rois_human.clear();
 			}
 
-			// optical flow enabled
-			if( enable_optflow )
-			{
-				optFlowDetector.detect(frame, rois_opt);
-				
-				drawRectangles(frame, rois_opt, COLOR_RED);
-				
-				rois_opt.clear();
-			}
-			
 			imshow("frame", frame);
 		}
 

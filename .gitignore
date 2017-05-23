@@ -10,6 +10,7 @@ others/
 
 # Some huge media files
 data/video/
+data/image-dataset/
 *.mov
 *.mp4
 

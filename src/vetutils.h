@@ -27,10 +27,16 @@
 
 #include "vetroi.h"
 #include "veterror.h"
+#include "globals.h"
 
 #include <opencv2/opencv.hpp>
 
 #include <iostream>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <getopt.h>
+#include <string.h>
 
 #define COLOR_BLUE 	cv::Scalar(255, 0, 0)
 #define COLOR_GREEN	cv::Scalar(0, 255, 0)
@@ -40,11 +46,18 @@
 #define KEY_SPACE	32
 
 
+void parseArgs(int argc, char **argv);
+
+void usage();
+
 void drawRectangles(cv::Mat &frame, const std::vector<VetROI> &rois,
 	const cv::Scalar &color, std::string label="");
 
 void NMS(std::vector<VetROI> &rois, double overlap_threshold);
 
 void equalizeHist4ColorImage(const cv::Mat &srcImg, cv::Mat &dstImg);
+
+void printVetROI(std::vector<VetROI> &rois);
+
 
 #endif	// VETUTILS_H

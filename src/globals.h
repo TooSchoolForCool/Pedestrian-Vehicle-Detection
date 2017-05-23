@@ -16,35 +16,37 @@
 
 
 /*!
-* \file main.cpp
+* \file globals.h
 * \author [Zeyu Zhang]
 * \version [0.1]
-* \date 2016-02-22
+* \date 2017-05-23
 */
 
-#include "vetusercontext.h"
-#include "globals.h"
-#include "vetutils.h"
+// Some globals variables are declared here.
 
-#include <opencv2/opencv.hpp>
+#ifndef GLOBALS_H
+#define GLOBALS_H
 
 #include <iostream>
 
-using namespace cv;
-using namespace std;
+extern char VIDEO_PATH[1024];
+extern bool ENABLE_PEDESTRIAN;
+extern bool ENABLE_VEHICLE;
+extern bool ENABLE_OPTFLOW;
+extern bool ENABLE_DEBUG;
 
-extern char VIDEO_PATH[1024] = "";
-extern bool ENABLE_PEDESTRIAN = false;
-extern bool ENABLE_VEHICLE = false;
-extern bool ENABLE_OPTFLOW = false;
-extern bool ENABLE_DEBUG = false;
+/**
+ * Tester Video File Path
+ */
+#define TEST_VIDEO_PATH "../data/video/HPIM0026.mov"
+#define TEST_VIDEO_PATH_2 "../data/video/HPIM0096.mov"
+#define TEST_TRIMED_VIDEO_PATH "../data/video/HPIM0026_Trimed.mov"
+#define TEST_PEOPLE_VIDEO_PATH "../data/video/HPIM0026_people.mp4"
 
-int main(int argc, char **argv)
-{	
-	parseArgs(argc, argv);
+/**
+ * Tester Picture File Path
+ */
+#define PIC_NMS_PATH "../data/images/nms.jpg"
+#define PIC_RED_REGION_TEST_PATH "../data/images/red_region_test.jpg"
 
-	VetUserContext user(USER_MODE);
-	user.start(VIDEO_PATH);
-
-	return 0;
-}
+#endif

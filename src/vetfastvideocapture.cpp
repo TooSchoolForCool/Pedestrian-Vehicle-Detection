@@ -47,7 +47,7 @@ void* update(void *ptr)
 				ptr_fvc->stopped_ = true;
 				return NULL;
 			}
-
+			// resize(frame, frame, cv::Size(720, 480), (0, 0), (0, 0), cv::INTER_LINEAR);
 			// printf("update - Before push: queue size: %5d\n", ptr_fvc->queue_.size());
 			ptr_fvc->queue_.push(frame.clone());
 			// printf("update - Before push: queue size: %5d\n", ptr_fvc->queue_.size());

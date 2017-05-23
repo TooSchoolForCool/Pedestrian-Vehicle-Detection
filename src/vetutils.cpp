@@ -32,6 +32,83 @@
 using namespace std;
 using namespace cv;
 
+/**
+ * Command Line Arguments define here
+ */
+#define HELP 				'h'
+#define SRC 				'c'
+#define PEDESTRIAN          1001
+#define VEHICLE             1002
+#define OPTFLOW 			1003
+#define DEBUG				1004
+
+char short_opts[] = "hc:";
+static struct option long_opts[] = {
+	{"help", no_argument, NULL, HELP},
+	{"pedestrian", no_argument, NULL, PEDESTRIAN},
+	{"vehicle", no_argument, NULL, VEHICLE},
+	{"optflow", no_argument, NULL, OPTFLOW},
+	{"debug", no_argument, NULL, DEBUG}
+};
+
+void parseArgs(int argc, char **argv)
+{
+	int opt;
+	int opt_index;
+
+	while( (opt = getopt_long(argc, argv, short_opts, long_opts, &opt_index)) != EOF )
+	{
+		switch(opt)
+		{
+			case HELP:
+				usage();
+				break;
+			case SRC:
+				strcpy(VIDEO_PATH, optarg);
+				break;
+			case PEDESTRIAN:
+				ENABLE_PEDESTRIAN = true;
+				break;
+			case VEHICLE:
+				ENABLE_VEHICLE = true;
+				break;
+			case OPTFLOW:
+				ENABLE_OPTFLOW= true;
+				break;
+			case DEBUG:
+				ENABLE_DEBUG = true;
+				break;
+			default:
+				char msg[512];
+				sprintf(msg, "[vetutils.cpp parseArgs()] no such option '-%s'", argv[opt_index]);
+				error(msg);
+				break;
+		}
+	}
+}
+
+void usage()
+{
+	string out = "";
+
+	out += "OVERVIEW: [ADAS] Pedestrian & Vehicle Detection\n\n";
+
+	out += "USAGE: ./launch [options]\n";
+	out += "args in [] is optional, args in <> is mandatory\n\n";
+
+	out += "OPTIONS:\n";
+	out += "-h                    Print helping manual\n";
+	out += "-c <video src path>   Define video srouce path\n";
+	out += "--help                Print helping manual\n";
+	out += "--pedestrian          Enable pedestrian detection\n";
+	out += "--vehicle             Enable vehicle detection\n";
+	out += "--optflow             Enable optical flow detection\n";
+	out += "--debug               Print out some debug info\n";
+
+	cout << out << endl;
+	exit(0);
+}
+
 bool compareCvRect(const VetROI &a, const VetROI &b)
 {
 	// int a_y2 = a.br().y;
@@ -136,4 +213,14 @@ void equalizeHist4ColorImage(const Mat &srcImg, Mat &dstImg)
 	combinedImg.insert(combinedImg.end(), channels.begin(), channels.end()); 
 
 	merge(combinedImg, dstImg);
+}
+
+void printVetROI(vector<VetROI> &rois)
+{
+	for(unsigned int i = 0; i < rois.size(); i++)
+	{
+		const VetROI &roi = rois[i];
+		
+		cout << "[" << roi.label() << "]: " << roi.rect() << endl;
+	}
 }

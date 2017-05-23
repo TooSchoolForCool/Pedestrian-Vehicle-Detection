@@ -12,6 +12,7 @@
 #include "vetfastvideocapture.h"
 #include "vetroi.h"
 #include "veterror.h"
+#include "globals.h"
 
 #include <opencv2/opencv.hpp>
 
@@ -33,20 +34,6 @@
 #define TRACKER_TESTER				10
 #define CAPSTONE_TESTER				11
 #define FOO_TESTER					12
-
-/**
- * Tester Video File Path
- */
-#define TEST_VIDEO_PATH "../data/video/HPIM0026.mov"
-#define TEST_VIDEO_PATH_2 "../data/video/HPIM0096.mov"
-#define TEST_TRIMED_VIDEO_PATH "../data/video/HPIM0026_Trimed.mov"
-#define TEST_PEOPLE_VIDEO_PATH "../data/video/HPIM0026_people.mp4"
-
-/**
- * Tester Picture File Path
- */
-#define PIC_NMS_PATH "../data/images/nms.jpg"
-#define PIC_RED_REGION_TEST_PATH "../data/images/red_region_test.jpg"
 
 /**
  * Tester Functions

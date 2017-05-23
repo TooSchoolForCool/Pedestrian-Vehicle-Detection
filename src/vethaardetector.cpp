@@ -58,6 +58,7 @@ VetHaarDetector::VetHaarDetector(DetectedObject detected_object)
 			this->scaler_ = 1.1;
 			this->min_neighbors_ = 3;
 			this->haar_flags_ = 0 | CASCADE_SCALE_IMAGE;
+			// 52 148
 			this->window_size_ = Size(52, 148);		// minimum window size
 			this->label_ = "People";
 			break;
