@@ -22,6 +22,10 @@
 * \date 2016-02-22
 */
 
+/**
+ * 该模块是颜色提取器，用于提取图像内指定的颜色区域
+ */
+
 #include "vetcolordetector.h"
 
 #include <opencv2/opencv.hpp>
@@ -41,6 +45,7 @@ VetColorDetector::VetColorDetector(DetectedObject detected_object)
 			sensitivity_ = 10;
 
 			// Hue, Saturation, Brightness Value
+			// HSV颜色空间，红色的阈值(色度，饱和度，亮度)
 			lower_bound_ = Scalar(0 - sensitivity_, 100, 150);
 			upper_bound_ = Scalar(0 + sensitivity_, 255, 255);
 
@@ -68,29 +73,36 @@ void VetColorDetector::detect(const Mat &frame, vector<VetROI> &rois)
 	rois.clear();
 
 	// euqalize histogram
+	// 3通道直方图均衡化
 	equalizeHist4ColorImage(frame, equalizeFrame);
 	
 	// converter to target color space
+	// BGR转化为HSV颜色空间
 	cvtColor(equalizeFrame, hsvFrame, color_space_converter_);
 
 	// find specific color region
+	// 确定颜色区域
 	inRange(hsvFrame, lower_bound_, upper_bound_, hsvFrame);
 
 	// dilate the target color region
+	// 膨胀提取出的颜色区域,使得分离的小区域和较近的区域融合
 	Mat element = getStructuringElement(MORPH_RECT, Size(25, 25));
 	dilate(hsvFrame, hsvFrame, element);
 	dilate(hsvFrame, hsvFrame, element);
 	
 	// blur the region to make it smooth
+	// 高斯模糊，用于锐化边缘
 	GaussianBlur(hsvFrame, hsvFrame, Size(5, 5), 0, 0);
 
 	// find the contour of the target region (stored as points set)
+	// 找到连通区域的边缘
 	findContours(hsvFrame, contours, hierarchy, RETR_CCOMP, CHAIN_APPROX_SIMPLE);
 
 	// convert the points set into a bounding rectangle box
 	for(vector<vector<Point> >::iterator iter = contours.begin(); 
 		iter != contours.end(); iter++){
 		// rois.push_back(minAreaRect(*iter));
+		// 找到各个连通区域的最大外接矩形
 		rois.push_back( VetROI(boundingRect(*iter), color_label_) );
 	}
 }

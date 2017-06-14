@@ -43,10 +43,16 @@ public:
 private:
 	cv::HOGDescriptor cv_hog_detector_;
 
+	// for opencv hog svm classifier
+	// 特征向量和SVM划分超平面的距离，大于这个值的才作为目标返回
 	double hit_threshold_;
+	// 滑动窗口移动步长
 	cv::Size win_stride_;
+	// 检测窗口边缘扩展大小
 	cv::Size padding_;
+	// 图片每次缩小尺度
 	double scaler_;
+	// bounding box优化参数
 	int group_threshold_;
 
 	std::string label_;

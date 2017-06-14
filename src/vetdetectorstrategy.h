@@ -22,6 +22,9 @@
 * \date 2016-02-18
 */
 
+/**
+ * 本文件定义了派生出各个检测器的基类
+ */
 
 #ifndef VETDETECTORSTRATEGY_H
 #define VETDETECTORSTRATEGY_H
@@ -34,6 +37,7 @@
 
 #include <iostream>
 
+// 定义检测器类型: 枚举类型
 typedef enum _DetectedObject
 {
 	FRONT_CAR = 1,

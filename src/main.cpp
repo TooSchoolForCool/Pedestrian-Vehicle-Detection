@@ -34,6 +34,7 @@ using namespace cv;
 using namespace std;
 
 extern char VIDEO_PATH[1024] = "";
+extern UserMode EXEC_MODE = USER_MODE;
 extern bool ENABLE_PEDESTRIAN = false;
 extern bool ENABLE_VEHICLE = false;
 extern bool ENABLE_OPTFLOW = false;
@@ -43,7 +44,7 @@ int main(int argc, char **argv)
 {	
 	parseArgs(argc, argv);
 
-	VetUserContext user(USER_MODE);
+	VetUserContext user(EXEC_MODE);
 	user.start(VIDEO_PATH);
 
 	return 0;

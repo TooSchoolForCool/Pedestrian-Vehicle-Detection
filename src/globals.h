@@ -24,16 +24,35 @@
 
 // Some globals variables are declared here.
 
+/**
+ * 该文件中定义了一些全局变量，和使用这些变量的一些结构体的定义
+ */
+
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
 #include <iostream>
 
+// 定义用户模式的枚举变量
+typedef enum _UserMode
+{
+	TEST_MODE,
+	EVALUATE_MODE,
+	USER_MODE
+}UserMode;
+
+// 全局变量 main.cpp 中定义: 视频文件读入路径
 extern char VIDEO_PATH[1024];
+// 全局变量 main.cpp 中定义: 是否开启行人检测
 extern bool ENABLE_PEDESTRIAN;
+// 全局变量 main.cpp 中定义: 是否开启车辆检测
 extern bool ENABLE_VEHICLE;
+// 全局变量 main.cpp 中定义: 是否开启光流检测
 extern bool ENABLE_OPTFLOW;
+// 全局变量 main.cpp 中定义: 是否输出一些debug信息
 extern bool ENABLE_DEBUG;
+// 全局变量 main.cpp 中定义: 运行模式
+extern UserMode EXEC_MODE;
 
 /**
  * Tester Video File Path

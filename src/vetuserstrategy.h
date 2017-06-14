@@ -1,15 +1,13 @@
+/**
+ * 策略模式: 定义派生出各个策略的基类
+ */
+
 #ifndef VETUSERSTRATEGY_H
 #define VETUSERSTRATEGY_H
 
 #include "vetdetectorstrategy.h"
 #include "vetdetectorfactory.h"
-
-typedef enum _UserMode
-{
-	TEST_MODE,
-	EVALUATE_MODE,
-	USER_MODE
-}UserMode;
+#include "globals.h"
 
 class VetUserStrategy
 {

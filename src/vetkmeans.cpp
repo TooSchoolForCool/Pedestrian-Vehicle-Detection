@@ -37,6 +37,7 @@ VetKmeans::~VetKmeans()
 	// ...
 }
 
+// 修改版kmeans算法 KmaxMeans
 void VetKmeans::kmeans(const vetPoints &points, vector<vetPoints> &clusters,
 	unsigned int k, double overlap)
 {
@@ -49,8 +50,10 @@ void VetKmeans::kmeans(const vetPoints &points, vector<vetPoints> &clusters,
 
 	while(k >= 1)
 	{
+		// 使用kmeans算法聚类
 		_kmeans(points, clusters_index, k);
 
+		// 判断是否需要重新聚类
 		if( _isMerged(points, clusters_index, k, overlap) )
 			k--;
 		else
@@ -65,12 +68,14 @@ void VetKmeans::kmeans(const vetPoints &points, vector<vetPoints> &clusters,
 	}
 
 	// push every point into its clusters according to its index
+	// 返回聚类结果
 	for(unsigned int i = 0; i < points.size(); i++)
 	{
 		clusters[clusters_index[i]].push_back(points[i]);
 	}
 }
 
+// kmeans算法实现
 void VetKmeans::_kmeans(const vetPoints &points, vector<int> &clusters_index, unsigned int k)
 {
 	vector<Point> clusters_means(k);
@@ -84,12 +89,14 @@ void VetKmeans::_kmeans(const vetPoints &points, vector<int> &clusters_index, un
 		clusters_means[i] = points[i];
 	}
 
+	// 更新每个簇的中心点
 	while(_updateClustersIndex(points, clusters_index, clusters_means))
 	{
 		_updateClustersMeans(points, clusters_index, clusters_means);
 	}
 }
 
+// 计算两点之间的距离
 double VetKmeans::_calcDistance(const cv::Point &a, const cv::Point &b)
 {
 	double distance;
@@ -100,6 +107,7 @@ double VetKmeans::_calcDistance(const cv::Point &a, const cv::Point &b)
     return distance;   
 }
 
+// 更新聚类结果，若聚类的簇没有变化，则返回false
 bool VetKmeans::_updateClustersIndex(const vetPoints &points, vector<int> &clusters_index,
 	const vector<Point> &clusters_means)
 {
@@ -119,6 +127,7 @@ bool VetKmeans::_updateClustersIndex(const vetPoints &points, vector<int> &clust
 	return isChanged;
 }
 
+// 计算每个簇的新的中心点
 void VetKmeans::_updateClustersMeans(const vetPoints &points, const vector<int> &clusters_index,
 	vector<Point> &clusters_means)
 {
@@ -147,6 +156,7 @@ void VetKmeans::_updateClustersMeans(const vetPoints &points, const vector<int> 
 	}
 }
 
+// 确定点a属于哪个簇，返回该簇的索引号
 int VetKmeans::_findClosestCluster(const Point &a, const vector<Point> &clusters_means)
 {
 	double min_distance = _calcDistance(clusters_means[0], a);
@@ -166,6 +176,7 @@ int VetKmeans::_findClosestCluster(const Point &a, const vector<Point> &clusters
 	return index;
 }
 
+// 判断聚类结果中簇和簇之间重叠的比例是否超过了预设定的阈值
 bool VetKmeans::_isMerged(const vetPoints &points, const vector<int> &clusters_index,
 	unsigned int k, double overlap)
 {
@@ -202,6 +213,7 @@ bool VetKmeans::_isMerged(const vetPoints &points, const vector<int> &clusters_i
 	return false;
 }
 
+// 找到每个簇的最大外接矩形
 void VetKmeans::_findClustersBoundingBox(const vetPoints &points, const vector<int> &clusters_index,
 	vector<Rect> &clusters_bounding_box, unsigned int k)
 {

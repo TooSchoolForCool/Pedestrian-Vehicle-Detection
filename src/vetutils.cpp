@@ -29,11 +29,14 @@
 #include <iostream>
 #include <algorithm>
 
+#include <string.h>
+
 using namespace std;
 using namespace cv;
 
 /**
  * Command Line Arguments define here
+ * 配置命令行解析参数
  */
 #define HELP 				'h'
 #define SRC 				'c'
@@ -41,6 +44,7 @@ using namespace cv;
 #define VEHICLE             1002
 #define OPTFLOW 			1003
 #define DEBUG				1004
+#define MODE				1005
 
 char short_opts[] = "hc:";
 static struct option long_opts[] = {
@@ -48,9 +52,11 @@ static struct option long_opts[] = {
 	{"pedestrian", no_argument, NULL, PEDESTRIAN},
 	{"vehicle", no_argument, NULL, VEHICLE},
 	{"optflow", no_argument, NULL, OPTFLOW},
-	{"debug", no_argument, NULL, DEBUG}
+	{"debug", no_argument, NULL, DEBUG},
+	{"mode", required_argument, NULL, MODE}
 };
 
+// 命令行参数解析
 void parseArgs(int argc, char **argv)
 {
 	int opt;
@@ -78,6 +84,20 @@ void parseArgs(int argc, char **argv)
 			case DEBUG:
 				ENABLE_DEBUG = true;
 				break;
+			case MODE:
+				if(strcmp(optarg, "test") == 0)
+					EXEC_MODE = TEST_MODE;
+				else if(strcmp(optarg, "eval") == 0)
+					EXEC_MODE = EVALUATE_MODE;
+				else if(strcmp(optarg, "user") == 0)
+					EXEC_MODE = USER_MODE;
+				else
+				{
+					char msg[512];
+					sprintf(msg, "[vetutils.cpp parseArgs()] no such mode '%s'", optarg);
+					error(msg);
+				}
+				break;
 			default:
 				char msg[512];
 				sprintf(msg, "[vetutils.cpp parseArgs()] no such option '-%s'", argv[opt_index]);
@@ -87,6 +107,7 @@ void parseArgs(int argc, char **argv)
 	}
 }
 
+// 输出帮助文档
 void usage()
 {
 	string out = "";
@@ -119,7 +140,7 @@ bool compareCvRect(const VetROI &a, const VetROI &b)
 	return a.area() > b.area();
 }
 
-
+// 在图像上写入检测信息
 void drawRectangles(Mat &frame, const vector<VetROI> &rois,
 	const Scalar &color, string label)
 {
@@ -145,6 +166,7 @@ void drawRectangles(Mat &frame, const vector<VetROI> &rois,
 	}
 }
 
+// Non-Maximum Suppression
 void NMS(vector<VetROI> &rois, double overlap_threshold)
 {
 	if( rois.empty() )
@@ -169,6 +191,7 @@ void NMS(vector<VetROI> &rois, double overlap_threshold)
 		vector<VetROI>::iterator iter = rois.begin();
 		while(iter != rois.end()){
 			// find the overlap bounding box top-left & bottom-right coordinates
+			// 计算连个矩形宽重叠区域坐标
 			int overlap_x1 = max(cur_rect.tl().x, iter->tl().x);
 			int overlap_y1 = max(cur_rect.tl().y, iter->tl().y);
 			int overlap_x2 = min(cur_rect.br().x, iter->br().x);
@@ -176,11 +199,13 @@ void NMS(vector<VetROI> &rois, double overlap_threshold)
 
 			// compute the width and height of the overlap between
 			// computed bounding box(cur_rect) and the bounding box(iter)
+			// 计算重叠区域的长和宽
 			int overlap_width = max(0, overlap_x2 - overlap_x1 + 1);
 			int overlap_height = max(0, overlap_y2 - overlap_y1 + 1);
 
 			// compute the ratio of overlap between the computed
 			// bounding box(cur_rect) and the bounding box(iter) in the rois
+			// 计算重叠区域面和重叠比例
 			double overlap_area = (float)(overlap_width * overlap_height);
 			double overlap_rate = max(overlap_area / cur_rect.area(), overlap_area / iter->area());
 			
@@ -197,6 +222,7 @@ void NMS(vector<VetROI> &rois, double overlap_threshold)
 	rois.swap(pick);
 }
 
+// 3通道直方图均衡化
 void equalizeHist4ColorImage(const Mat &srcImg, Mat &dstImg)
 {
 	vector<Mat> channels;  
@@ -215,6 +241,7 @@ void equalizeHist4ColorImage(const Mat &srcImg, Mat &dstImg)
 	merge(combinedImg, dstImg);
 }
 
+// 输出检测结果到控制台
 void printVetROI(vector<VetROI> &rois)
 {
 	for(unsigned int i = 0; i < rois.size(); i++)

@@ -1,3 +1,7 @@
+/**
+ * 策略模式: 通过该类指定使用哪种策略
+ */
+
 #include "vetusercontext.h"
 
 using namespace std;

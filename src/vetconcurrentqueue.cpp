@@ -22,6 +22,10 @@
 * \date 2016-02-22
 */
 
+/**
+ * 该文件实现的是一个线程安全的队列模板
+ */
+
 #ifdef INCLUDE_VETCONCURRENTQUEUE_CPP
 
 #include "vetconcurrentqueue.h"

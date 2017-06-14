@@ -36,6 +36,7 @@ VetHOGSVMDetector::VetHOGSVMDetector(DetectedObject detected_object)
 
 			cv_hog_detector_.setSVMDetector( HOGDescriptor::getDefaultPeopleDetector() );
 			
+			// 初始化hog检测器参数
 			hit_threshold_ = 0.3;
 			win_stride_ = Size(8, 8);
 			padding_ = Size(32, 32);
@@ -59,9 +60,11 @@ void VetHOGSVMDetector::detect(const Mat &frame, vector<VetROI> &rois)
 {
 	vector<Rect> rects;
 
+	// 调用opencv检测函数
 	cv_hog_detector_.detectMultiScale(frame, rects, hit_threshold_, 
 		win_stride_, padding_, scaler_, group_threshold_);
 
+	// 返回检测结果
 	for(vector<Rect>::iterator iter = rects.begin(); iter != rects.end(); iter++)
 	{
 		rois.push_back( VetROI(*iter, label_) );

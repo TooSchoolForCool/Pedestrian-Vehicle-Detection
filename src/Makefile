@@ -16,7 +16,7 @@ RM = rm
 OBJS_DIR = obj
 
 # define any compile-time flags
-CFLAGS = -Wall -g
+CFLAGS = -g -O3
 
 # define any directories containing header files other than /usr/include
 # eg: INCLUDES = -I/home/newhall/include  -I../include

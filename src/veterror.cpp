@@ -25,6 +25,7 @@
 
 using namespace std;
 
+// 输出报错信息到标准错误cerr
 void error(string msg)
 {
 	cerr << msg << ": " << strerror(errno) << endl;

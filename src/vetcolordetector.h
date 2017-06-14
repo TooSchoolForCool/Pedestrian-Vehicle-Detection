@@ -41,6 +41,7 @@ public:
 	void detect(const cv::Mat &frame, std::vector<VetROI> &rois);
 
 private:
+	// 颜色提取器 颜色上下限阈值
 	cv::Scalar lower_bound_;
 	cv::Scalar upper_bound_;
 	int sensitivity_;

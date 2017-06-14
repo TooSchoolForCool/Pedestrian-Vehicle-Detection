@@ -37,6 +37,7 @@ VetUser::~VetUser()
 	cout << "[VetUser::~VetUser]: VetUser deleted" << endl;
 }
 
+// 用户模式：运行完整的功能（行人检测,车辆检测,光流检测）
 void VetUser::start(string video_path)
 {
 	cout << "[VetUser::start]: user mode starts" << endl;
@@ -79,6 +80,7 @@ void VetUser::start(string video_path)
 				continue;
 
 			// optical flow enabled
+			// 光流检测，检测车旁超车物体
 			if( enable_optflow )
 			{
 				optFlowDetector.detect(frame, rois_opt);
@@ -94,6 +96,7 @@ void VetUser::start(string video_path)
 			}
 
 			// car detector enabled
+			// 车辆检测
 			if( enable_car_detector )
 			{
 				front_car_detector->detect(frame, temp_rois);
@@ -115,6 +118,7 @@ void VetUser::start(string video_path)
 			}
 			
 			// pedestrain detector enabled
+			// 行人检测
 			if( enable_people_detector )
 			{
 				human_detector->detect(frame, rois_human);
@@ -134,30 +138,36 @@ void VetUser::start(string video_path)
 			imshow("frame", frame);
 		}
 
+		// 按键控制
 		char resp = waitKey(30);
 
+		// 退出
 		if(resp == KEY_ESC)
 		{
 			cout << "window: frame closed" << endl;
 			destroyWindow("frame");
 			break;
 		}
+		// 暂停
 		else if(resp == KEY_SPACE)
 		{
 			cout << "window: frame paused" << endl;
 			cout << "Press any key to continue..." << endl;
 			waitKey(-1);
 		}
+		// 开启/关闭车辆检测
 		else if(resp == 'c')
 		{
 			enable_car_detector = !enable_car_detector;
 			printf("%s car detector.\n", (enable_car_detector ? "enable" : "disable"));
 		}
+		// 开启/关闭行人检测
 		else if(resp == 'p')
 		{
 			enable_people_detector = !enable_people_detector;
 			printf("%s people detector.\n", (enable_people_detector ? "enable" : "disable"));
 		}
+		// 开启/关闭光流检测
 		else if(resp == 'o')
 		{
 			enable_optflow = !enable_optflow;

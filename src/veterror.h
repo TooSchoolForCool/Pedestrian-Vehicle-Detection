@@ -22,6 +22,10 @@
 * \date 2016-02-22
 */ 
 
+/**
+ * 本文件定义了一个输出错误信息的函数error()
+ */
+
 #ifndef VETERROR_H
 #define VETERROR_H
 

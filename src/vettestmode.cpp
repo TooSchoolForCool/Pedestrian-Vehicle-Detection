@@ -1,3 +1,6 @@
+/**
+ * 该文件内定义了大量的测试函数，方便我在开发期间做相关函数功能模块的测试
+ */
 #include "vettestmode.h"
 
 using namespace std;
@@ -43,6 +46,7 @@ void VetTestMode::start(string path)
  * Tester Functions go below
  *******************************************/
 
+// 测试VetFastVideoCapture模块
 void fastVideoPlayerTester(string video_path)
 {
 	VetFastVideoCapture fvs(video_path, 128);
@@ -76,6 +80,7 @@ void fastVideoPlayerTester(string video_path)
 	printf("FAST_VIDEO_PLAYER_TESTER ends.\n");
 }
 
+// 测试Opencv视频读入
 void videoPlayerTester(string video_path)
 {
 	VideoCapture videoStream(video_path);
@@ -103,6 +108,7 @@ void videoPlayerTester(string video_path)
 	printf("VIDEO_PLAYER_TESTER ends.\n");
 }
 
+// 测试NMS效果
 void NMSTester(string image_path)
 {
 	Mat image = imread(image_path);
@@ -134,6 +140,7 @@ void NMSTester(string image_path)
 	printf("NMS_TESTER ends.\n");
 }
 
+// 测试车辆检测 Cascade Adaboost haar
 void carHaarTester(string video_path)
 {
 	VetDetectorFactory detector_factory;
@@ -181,6 +188,7 @@ void carHaarTester(string video_path)
 	printf("CAR_HAAR_TESTER ends.\n");
 }
 
+// 测试VetFastVideoCapture和检测模块一起运行是否有问题
 void fastCarHaarTester(string video_path)
 {
 	VetDetectorFactory detector_factory;
@@ -232,6 +240,7 @@ void fastCarHaarTester(string video_path)
 	printf("FAST_CAR_HAAR_TESTER ends.\n");
 }
 
+// 测试行人检测单独使用Cascade Adaboost Haar的效果
 void fastFullbodyHaarTester(string video_path)
 {
 	VetDetectorFactory detector_factory;
@@ -277,6 +286,7 @@ void fastFullbodyHaarTester(string video_path)
 	printf("FAST_FULLBODY_HAAR_TESTER ends.\n");
 }
 
+// 测试颜色提取器的效果 提取红色区域
 void redDetectorTester(string video_path)
 {
 	VetDetectorFactory detector_factory;
@@ -324,6 +334,7 @@ void redDetectorTester(string video_path)
 	printf("RED_DETECTOR_TESTER ends.\n");
 }
 
+// 测试行人检测功能 HOG + SVM
 void fastHOGSVMTester(std::string video_path)
 {
 	VetDetectorFactory detector_factory;
@@ -368,6 +379,7 @@ void fastHOGSVMTester(std::string video_path)
 	printf("FAST_HOG_SVM_TESTER ends.\n");
 }
 
+// 测试光流检测模块
 void optFlowTester(string video_path)
 {
 	VetDetectorFactory detector_factory;
@@ -423,6 +435,7 @@ void optFlowTester(string video_path)
 	printf("OPT_FLOW_TESTER ends.\n");
 }
 
+// 测试级联行人检测器性能, Cascade Adaboost Haar -> HOG + SVM
 void cascadeHumanTester(string video_path)
 {
 	VetDetectorFactory detector_factory;
@@ -483,6 +496,7 @@ void cascadeHumanTester(string video_path)
 	printf("CASCADE_HUMAN_TESTER ends.\n");
 }
 
+// 测试检测目标管理模块,对每一个检测结果维护一个状态机
 void trackerTester(string video_path)
 {
 	printf("TRACKER_TESTER starts.\n");
@@ -562,6 +576,7 @@ void trackerTester(string video_path)
 	printf("TRACKER_TESTER ends.\n");
 }
 
+// 综合测试：测试完整系统性能
 void capstoneTester(std::string video_path)
 {
 	printf("CAPSTONE_TESTER starts.\n");

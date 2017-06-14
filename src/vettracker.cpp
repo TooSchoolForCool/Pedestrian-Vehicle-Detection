@@ -45,6 +45,7 @@ VetTracker::~VetTracker()
 	cout << "[VetTracker::~VetTracker] delete VetTracker" << endl;
 }
 
+// 跟新每个检测目标的状态
 void VetTracker::update(vector<VetROI> &detected_res)
 {
 	for(vector<VetROI>::iterator iter_res = detected_res.begin(); iter_res != detected_res.end(); )
@@ -77,6 +78,7 @@ void VetTracker::update(vector<VetROI> &detected_res)
 	// _clearNotExistRegion();
 }
 
+// 获取当前被确认(可显示)的检测目标
 void VetTracker::_getDetectedRegion(vector<VetROI> &detected_res)
 {
 	detected_res.clear();
@@ -95,6 +97,7 @@ void VetTracker::_getDetectedRegion(vector<VetROI> &detected_res)
 	}
 }
 
+// 通过计算重叠比例的方式来匹配检测框
 double VetTracker::_calcOverlapped(const Rect &a, const Rect &b)
 {
 	// find the overlap bounding box top-left & bottom-right coordinates
@@ -115,6 +118,7 @@ double VetTracker::_calcOverlapped(const Rect &a, const Rect &b)
 	return overlap_rate;
 }
 
+// 更新指定检测目标的状态
 void VetTracker::_updateDetectedRegion(DetectedRegion &dst, const VetROI &src)
 {
 	dst.rect_ = src.rect();
@@ -124,6 +128,7 @@ void VetTracker::_updateDetectedRegion(DetectedRegion &dst, const VetROI &src)
 	dst.is_exist_ = true;
 }
 
+// 增加新的检测目标
 void VetTracker::_addDetectedRegion(const VetROI &src)
 {
 	DetectedRegion dst;
@@ -137,6 +142,7 @@ void VetTracker::_addDetectedRegion(const VetROI &src)
 	detected_regions_.push_back(dst);	
 }
 
+// 移除检测目标
 void VetTracker::_clearNotExistRegion()
 {
 	vector<DetectedRegion>::iterator iter_regions = detected_regions_.begin();

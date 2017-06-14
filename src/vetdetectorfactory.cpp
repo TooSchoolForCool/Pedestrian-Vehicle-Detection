@@ -13,6 +13,9 @@ VetDetectorFactory::~VetDetectorFactory()
 	// ...
 }
 
+// 生成指定的检测器
+// detector_type 检测器类型
+// detector_object 检测目标
 VetDetectorStrategy *VetDetectorFactory::createDetector(DetectorType detector_type,
 	DetectedObject detected_object)
 {

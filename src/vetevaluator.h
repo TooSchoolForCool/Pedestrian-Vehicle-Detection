@@ -45,15 +45,27 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/time.h>
 
 #define SHOW_LABELED_VIDEO 	0
 #define CAPSTONE_EVALUATOR	1
+#define TIME_EVALUATOR		2
 
 /**
  * Some evaluator functions declared here
  */
 void showLabeledVideo(std::string video_path, std::string labeled_file_path);
 void capstoneEvaluator(std::string video_path, std::string labeled_file_path);
+void timeEvaluator(std::string video_path, std::string labeled_file_path);
+
+/**
+ * Some utils functions
+ */
+int calcTP(const std::vector<VetROI> &label_res, const std::vector<VetROI> &detect_res, double overlap_rate);
+int calcFP(const std::vector<VetROI> &label_res, const std::vector<VetROI> &detect_res, double overlap_rate);
+int calcFN(const std::vector<VetROI> &label_res, const std::vector<VetROI> &detect_res, double overlap_rate);
+
+double calcOverlap(const VetROI &a, const VetROI &b);
 
 class VetEvaluator: public VetUserStrategy
 {

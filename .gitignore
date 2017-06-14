@@ -13,6 +13,7 @@ data/video/
 data/image-dataset/
 *.mov
 *.mp4
+*.avi
 
 # Ubuntu Trash folder
 .Trash-1000/

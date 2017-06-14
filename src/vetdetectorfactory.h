@@ -22,6 +22,11 @@
 * \date 2017-04-05
 */
 
+
+/**
+ * 该文件声明了一个生成检测器的类(e.g., 对应工厂模式中的工厂)
+ */
+
 #ifndef VETDETECTORFACTORY_H
 #define VETDETECTORFACTORY_H
 

@@ -22,6 +22,10 @@
 * \date 2016-02-22
 */
 
+/**
+ * 定义了相关辅助功能函数
+ */
+
 #ifndef VETUTILS_H
 #define VETUTILS_H
 
@@ -45,18 +49,23 @@
 #define KEY_ESC		27
 #define KEY_SPACE	32
 
-
+// 命令行参数解析
 void parseArgs(int argc, char **argv);
 
+// 输出帮助文档
 void usage();
 
+// 在图像上写入检测信息
 void drawRectangles(cv::Mat &frame, const std::vector<VetROI> &rois,
 	const cv::Scalar &color, std::string label="");
 
+// Non-Maximum Suppression
 void NMS(std::vector<VetROI> &rois, double overlap_threshold);
 
+// 3通道直方图均衡化
 void equalizeHist4ColorImage(const cv::Mat &srcImg, cv::Mat &dstImg);
 
+// 输出检测结果到控制台
 void printVetROI(std::vector<VetROI> &rois);
 
 

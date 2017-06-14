@@ -78,6 +78,7 @@ void VetOptFlowDetector::detect(Mat &frame, vector<VetROI> &rois)
 
 	rois.clear();
 
+	// 光流向量的计算(该函数内还实现了跟踪点位置的确定，确定后才会来计算这些位置处的光流向量)
 	if( !_optFlowPyrLK(frame, result) )
 		return;
 
@@ -86,20 +87,27 @@ void VetOptFlowDetector::detect(Mat &frame, vector<VetROI> &rois)
 	// some trivil data will be removed (e.g., like very small speed)
 	// when the camera turn left/right, some vector will be removed according
 	// to the direction the camera turned.
+	// 过滤掉一部分无关或错误的光流向量
 	_speedVectorFilter(frame, result);
 	
 	// _printSpeedVector(frame, result);
 
+	// 对过滤后的向量进行聚类
 	_getVectorClusters(result, clusters);
+
+	// 处理聚类结果
 	for(unsigned int i = 0; i < clusters.size(); i++)
-	{
+	{	
+		// 找到每一个聚类簇的最大外接矩形
 		Rect rect = _findBoundingRect(clusters[i]);
 
+		// 保存返回结果
 		if(rect.area() >= cluster_area_threshold_)
 			rois.push_back( VetROI(rect, "Warning") );
 	}
 }
 
+// Farneback稠密光流算法
 bool VetOptFlowDetector::optFlowFarneback(const Mat &frame, Mat &flow)
 {
 	Mat gray_image;
@@ -124,6 +132,7 @@ bool VetOptFlowDetector::optFlowFarneback(const Mat &frame, Mat &flow)
 	return true;
 }
 
+// 计算图像帧中光流向量的关键函数
 bool VetOptFlowDetector::_optFlowPyrLK(const cv::Mat &frame, vector<OptFlowPyrLKResult> &result)
 {
 	Mat cur_gray_image;
@@ -133,6 +142,7 @@ bool VetOptFlowDetector::_optFlowPyrLK(const cv::Mat &frame, vector<OptFlowPyrLK
 	vector<float> err;
 
 	cvtColor(frame, cur_gray_image, CV_BGR2GRAY);
+	// 判断是否有上一帧的信息
 	if( !is_ready_ )
 	{
 		cur_gray_image.copyTo(prev_gray_img_);
@@ -140,29 +150,35 @@ bool VetOptFlowDetector::_optFlowPyrLK(const cv::Mat &frame, vector<OptFlowPyrLK
 		return false;
 	}
 	
+	// 判断是否初始化了掩码,该掩码用于确定光流检测的区域,即图像的左下角和右下角
 	if(frame.size() != _mask.size())
 	{
 		_createMask4Detection(frame);
 		printf("VetOptFlowDetector::_optFlowPyrLK creates new mask\n");
 	}
 
+	// 确定跟踪点位置
 	goodFeaturesToTrack(prev_gray_img_, prev_points, pyrLK_max_corners_, 
 		0.001, 10, _mask, 3, false, 0.04);
 
+	// 亚像素级位置提取
 	cornerSubPix(prev_gray_img_, prev_points, Size(10,10), Size(-1,-1), 
 		TermCriteria(CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.03));
 
+	// 计算跟踪点处光流向量
 	calcOpticalFlowPyrLK(prev_gray_img_, cur_gray_image, prev_points, 
 		next_points, state, err, Size(31, 31), 3);
 
+	// 保存当前图像帧
 	cur_gray_image.copyTo(prev_gray_img_);
 
-	// save result
+	// 计算光流向量的相对速度大小和方向
 	_calcSpeedVector(prev_points, next_points, state, result);
 
 	return true;
 }
 
+// 设置掩码，该掩码用于确定光流检测的区域,即图像的左下角和右下角
 void VetOptFlowDetector::_createMask4Detection(const Mat &frame)
 {
 	Mat mask(frame.size(), CV_8UC1, Scalar(0));
@@ -215,6 +231,7 @@ void VetOptFlowDetector::_printSpeedVector(cv::Mat &frame, vector<OptFlowPyrLKRe
 	}
 }
 
+// 计算光流向量的相对速度大小和方向
 void VetOptFlowDetector::_calcSpeedVector(vector<Point2f> prev_p, vector<Point2f> next_p,
 	vector<uchar> state, vector<OptFlowPyrLKResult> &result)
 {
@@ -248,6 +265,7 @@ void VetOptFlowDetector::_calcSpeedVector(vector<Point2f> prev_p, vector<Point2f
 	}
 }
 
+// 过滤掉无关向量
 void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, vector<OptFlowPyrLKResult> &result)
 {
 	int left_vec_cnt = 0, right_vec_cnt = 0, cnt = 0;
@@ -345,6 +363,7 @@ void VetOptFlowDetector::_speedVectorFilter(const Mat &frame, vector<OptFlowPyrL
 	}
 }
 
+// 对过滤后的光流向量进行聚类
 void VetOptFlowDetector::_getVectorClusters(const vector<OptFlowPyrLKResult> &result,
 	vector<vector<Point> > &clusters)
 {
@@ -365,17 +384,22 @@ void VetOptFlowDetector::_getVectorClusters(const vector<OptFlowPyrLKResult> &re
 
 	if(left_corners.size() > 10)
 	{
+		// 对左侧的结果进行聚类调用修改版的kmeans聚类算法
+		// 该算法在vetkmeans.cpp中实现
 		kmeans.kmeans(left_corners, tmp_clusters, pyrLK_max_clusters_, pyrLK_clusters_overlap_);
 		clusters.insert(clusters.end(), tmp_clusters.begin(), tmp_clusters.end());
 	}
 
 	if(right_corners.size() > 10)
 	{
+		// 对右侧的结果进行聚类调用修改版的kmeans聚类算法
+		// 该算法在vetkmeans.cpp中实现
 		kmeans.kmeans(right_corners, tmp_clusters, pyrLK_max_clusters_, pyrLK_clusters_overlap_);
 		clusters.insert(clusters.end(), tmp_clusters.begin(), tmp_clusters.end());
 	}
 }
 
+// 为Farneback稠密光流算法分配颜色
 void VetOptFlowDetector::_makeColorPalette()
 {
     int RY = 15;
@@ -404,6 +428,7 @@ void VetOptFlowDetector::_makeColorPalette()
     	color_palette_.push_back( Scalar(255, 0, 255 - 255*i/MR) );
 }
 
+// Farneback稠密光流算法: 根据光流向量计算对应颜色
 void VetOptFlowDetector::_motion2color(Mat &flow, Mat &color)
 {
 	if (color.empty())
@@ -465,6 +490,7 @@ void VetOptFlowDetector::_motion2color(Mat &flow, Mat &color)
 	}
 }
 
+// 计算光流向量大小
 double VetOptFlowDetector::_calcDistance(const Point &a, const Point &b)    
 {    
     double distance;
@@ -475,6 +501,7 @@ double VetOptFlowDetector::_calcDistance(const Point &a, const Point &b)
     return distance;    
 }
 
+// 计算光流向量方向
 double VetOptFlowDetector::_calcAngleInDegree(const Point &a, const Point &b)
 {
 	int delta_x = b.x - a.x;
@@ -492,6 +519,7 @@ double VetOptFlowDetector::_calcAngleInDegree(const Point &a, const Point &b)
 	return angle;
 }
 
+// 找到最大外接矩形
 Rect VetOptFlowDetector::_findBoundingRect(const vector<Point> &src)
 {
 	Point tl(9999, 9999), br(0, 0);

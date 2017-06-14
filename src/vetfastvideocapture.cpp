@@ -31,6 +31,7 @@
 using namespace std;
 using namespace cv;
 
+// 线程运行的函数，读取图像帧
 void* update(void *ptr)
 {
 	int ret;
@@ -77,6 +78,7 @@ VetFastVideoCapture::~VetFastVideoCapture()
 	video_stream_.release();
 }
 
+// 开启线程从视频中读取图像帧
 void VetFastVideoCapture::start()
 {
 	// cout << "VetFastVideoCapture::start" << endl;
@@ -91,6 +93,7 @@ void VetFastVideoCapture::start()
 		cout << "VetFastVideoCapture::start: thread created" << endl;
 }
 
+// 从队列中读取图像帧
 bool VetFastVideoCapture::read(Mat &frame)
 {
 	// cout << "VetFastVideoCapture::read: outside if-statement" << endl;
@@ -110,6 +113,7 @@ bool VetFastVideoCapture::read(Mat &frame)
 	return false;
 }
 
+// 关闭线程收回资源
 void VetFastVideoCapture::stop()
 {
 	stopped_ = true;
@@ -118,11 +122,13 @@ void VetFastVideoCapture::stop()
 	cout << "Thread joined" << endl;
 }
 
+// 判断队列里面是否还有图像帧
 bool VetFastVideoCapture::more()
 {
 	return ( !stopped_ || !queue_.empty() );
 }
 
+// 判断视频是否打开成功
 bool VetFastVideoCapture::isOpened()
 {
 	return video_stream_.isOpened();

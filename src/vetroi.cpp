@@ -37,26 +37,31 @@ VetROI::~VetROI()
 	// ...
 }
 
+// 返回检测矩形框右下角的坐标
 Point VetROI::br() const
 {
 	return rect_.br();
 }
 
+// 返回检测矩形框左上角的坐标
 Point VetROI::tl() const
 {
 	return rect_.tl();
 }
 
+// 返回检测矩形框
 Rect VetROI::rect() const
 {
 	return rect_;
 }
 
+// 返回检测矩形框面积
 int VetROI::area() const
 {
 	return rect_.area();
 }
 
+// 返回检测目标标签
 string VetROI::label() const
 {
 	return label_;

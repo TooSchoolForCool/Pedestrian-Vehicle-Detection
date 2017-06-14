@@ -45,16 +45,24 @@ private:
 	cv::HOGDescriptor cv_hog_detector_;
 
 	// for opencv cascade_ classifier
+	// 每次降采样缩放尺度
 	double cascade_scaler_;
+	// 每一个级联矩形应该保留的邻近个数
 	int min_neighbors_;
 	int haar_flags_;
+	// 检测窗口大小
 	cv::Size window_size_;
 
 	// for opencv hog svm classifier
+	// 特征向量和SVM划分超平面的距离，大于这个值的才作为目标返回
 	double hit_threshold_;
+	// 滑动窗口移动步长
 	cv::Size win_stride_;
+	// 检测窗口边缘扩展大小
 	cv::Size hog_padding_;
+	// 图片每次缩小尺度
 	double hog_scaler_;
+	// bounding box优化参数
 	int group_threshold_;
 
 	// for the whole detector

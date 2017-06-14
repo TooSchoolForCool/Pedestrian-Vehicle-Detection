@@ -22,6 +22,9 @@
 * \date 2016-02-22
 */ 
 
+/**
+ * 定义保存检测结果的结构体
+ */
 #ifndef VETROI_H
 #define VETROI_H
 

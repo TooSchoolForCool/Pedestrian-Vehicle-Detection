@@ -34,6 +34,7 @@ using namespace cv;
 VetHaarDetector::VetHaarDetector(DetectedObject detected_object)
 {
 	switch(detected_object){
+		// 车辆检测器初始化(Front Car)
 		case FRONT_CAR:
 			cout << "[VetHaarDetector::VetHaarDetector]: load FRONT_CAR xml file" << HAAR_CASCADE_FRONT_CAR_XML << endl;
 			cascade_.load(HAAR_CASCADE_FRONT_CAR_XML);
@@ -43,6 +44,7 @@ VetHaarDetector::VetHaarDetector(DetectedObject detected_object)
 			this->window_size_ = Size(120, 120);	// minimum window size
 			this->label_ = "Car";
 			break;
+		// 车辆检测器初始化(Rear Car)
 		case REAR_CAR:
 			cout << "[VetHaarDetector::VetHaarDetector]: load REAR_CAR xml file" << HAAR_CASCADE_REAR_CAR_XML << endl;
 			cascade_.load(HAAR_CASCADE_REAR_CAR_XML);
@@ -52,6 +54,7 @@ VetHaarDetector::VetHaarDetector(DetectedObject detected_object)
 			this->window_size_ = Size(120, 120);	// minimum window size
 			this->label_ = "Car";
 			break;
+		// 行人Adaboost检测器初始化
 		case FULLBODY:
 			cout << "[VetHaarDetector::VetHaarDetector]: load FULLBODY xml file" << HAAR_CASCADE_FULLBODY_XML << endl;
 			cascade_.load(HAAR_CASCADE_FULLBODY_XML);

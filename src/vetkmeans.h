@@ -40,25 +40,33 @@ public:
 	~VetKmeans();
 
 public:
+	// 修改版kmeans算法 KmaxMeans
 	void kmeans(const vetPoints &points, std::vector<vetPoints> &clusters,
 		unsigned int k, double overlap);
 
 private:
+	// kmeans算法实现
 	void _kmeans(const vetPoints &points, std::vector<int> &clusters_index, unsigned int k);
 
+	// 计算两点之间的距离
 	double _calcDistance(const cv::Point &a, const cv::Point &b);
 
+	// 更新聚类结果，若聚类的簇没有变化，则返回false
 	bool _updateClustersIndex(const vetPoints &points, std::vector<int> &clusters_index,
 		const std::vector<cv::Point> &clusters_means);
 
+	// 计算每个簇的新的中心点
 	void _updateClustersMeans(const vetPoints &points, const std::vector<int> &clusters_index,
 		std::vector<cv::Point> &clusters_means);
 
+	// 确定点a属于哪个簇，返回该簇的索引号
 	int _findClosestCluster(const cv::Point &a, const std::vector<cv::Point> &clusters_means);
 
+	// 判断聚类结果中簇和簇之间重叠的比例是否超过了预设定的阈值
 	bool _isMerged(const vetPoints &points, const std::vector<int> &clusters_index,
 		unsigned int k, double overlap);
 
+	// 找到每个簇的最大外接矩形
 	void _findClustersBoundingBox(const vetPoints &points, const std::vector<int> &clusters_index,
 		std::vector<cv::Rect> &clusters_bounding_box, unsigned int k);
 };
