@@ -165,3 +165,23 @@ void showCurrentFrame(Mat &frame, const vector<Rect> &targets, const int frame_n
 
 	putText(frame, str, Point(0, 30), CV_FONT_HERSHEY_COMPLEX, 0.8, Scalar(255, 0, 0) );
 }
+
+void copyTargetImage(const Mat &frame, const vector<Rect> &targets, int &cnt)
+{
+	char out_path[1024];
+
+	vector<int> compression_params;
+	compression_params.push_back(IMWRITE_JPEG_QUALITY);
+	compression_params.push_back(95);
+
+	for(unsigned int i = 0; i < targets.size(); i++)
+	{
+		Rect rect = targets[i];
+
+		Mat image_roi = frame(rect);
+		resize(image_roi, image_roi, Size(148, 148), (0, 0), (0, 0), cv::INTER_LINEAR);
+
+		sprintf(out_path, "%s/%d.jpg", "./front_car/", cnt++);
+		imwrite(out_path, image_roi, compression_params);
+	}
+}

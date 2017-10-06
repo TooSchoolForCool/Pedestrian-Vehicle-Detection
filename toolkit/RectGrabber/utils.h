@@ -44,5 +44,6 @@ void mouseActionReactor(MouseEventParam &mouse_param, cv::Mat &frame,
 	std::vector<cv::Rect> &targets);
 void showCurrentFrame(cv::Mat &frame, const std::vector<cv::Rect> &targets,
 	const int frame_num);
+void copyTargetImage(const cv::Mat &frame, const std::vector<cv::Rect> &targets, int &cnt);
 
 #endif	//_UTILS_H

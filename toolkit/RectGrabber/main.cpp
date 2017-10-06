@@ -45,6 +45,9 @@ int main(int argc, char **argv)
 	ofstream outfile(_output_dst_);
 	vector<Rect> targets;
 	int frame_counter = 1;
+	int img_counter = 1289;
+	bool is_end = false;
+	int i;
 
 	// video frame
 	Mat frame;
@@ -59,7 +62,13 @@ int main(int argc, char **argv)
 
 	setMouseCallback("frame", mouseEvent, &mouse_param);
 
-	while(1)
+	while(frame_counter <= 0)
+	{
+		video_stream.read(frame);
+		frame_counter++;
+	}
+
+	while( !is_end )
 	{
 		char ret = waitKey(15);
 
@@ -74,8 +83,16 @@ int main(int argc, char **argv)
 		switch(ret)
 		{
 			case 'n':
-				video_stream.read(frame);
-				writeTargets2file(outfile, targets, frame_counter++);
+				// writeTargets2file(outfile, targets, frame_counter);
+				copyTargetImage(frame, targets, img_counter);
+
+				i = 5;
+				while(i--)
+				{
+					if( !video_stream.read(frame) )
+						is_end = true;
+					frame_counter++;
+				}
 				break;
 			case 'c':
 				targets.clear();
