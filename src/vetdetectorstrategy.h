@@ -51,7 +51,7 @@ typedef enum _DetectedObject
  */
 #define HAAR_CASCADE_FRONT_CAR_XML "../data/haar-cascades/haar_cascade_front_car.xml"
 #define HAAR_CASCADE_REAR_CAR_XML "../data/haar-cascades/haar_cascade_rear_car.xml"
-#define HAAR_CASCADE_FULLBODY_XML "../data/haar-cascades/vision_art_lbp_human.xml"
+#define HAAR_CASCADE_FULLBODY_XML "../data/haar-cascades/lbp_human.xml"
 
 
 /*!
