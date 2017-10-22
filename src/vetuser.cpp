@@ -63,8 +63,8 @@ void VetUser::start(string video_path)
 	Mat frame;
 	vector<VetROI> rois_car, rois_opt, rois_human, temp_rois;
 
-	bool enable_car_detector = ENABLE_PEDESTRIAN;
-	bool enable_people_detector = ENABLE_VEHICLE;
+	bool enable_car_detector = ENABLE_VEHICLE;
+	bool enable_people_detector = ENABLE_PEDESTRIAN;
 	bool enable_optflow = ENABLE_OPTFLOW;
 	
 	int cnt = 0;
