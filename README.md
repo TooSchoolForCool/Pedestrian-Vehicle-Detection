@@ -2,7 +2,7 @@
 
 This repo is my undergrad capstone project, which is a Vehicle & Pedestrian Detection system and is a part of a vision module for an Advanced Driver Assistance System (ADAS).
 
-This system performed its vehicle/pedestrian detection processes using a single camera mounted at the front of the car. The camera will return a video sequence which contains a sequence of images. By analyzing these images based on some detection/tracking algorithms, the system could an understanding of  surrounding environment.
+This system performed its car and pedestrian detection processes using a single camera mounted at the front of the car. The camera will return a video sequence which contains a sequence of images. By analyzing these images based on some detection/tracking algorithms, the system could an understanding of  surrounding environment.
 
 This program has been tested on two platform: 
 
